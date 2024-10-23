@@ -11,7 +11,12 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
-
+import os
+from cryptography.fernet import Fernet
+from hashlib import sha256
+import base64
+from dotenv import load_dotenv
+load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -20,12 +25,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-jgr@0_wls-d5=iw9xw_r6np!hcxkl-_*#1*gz23d4r+9v8oxau'
-
-# SECURITY WARNING: don't run with debug turned on in production!
+SECRET_KEY = os.getenv("SECRET_KEY")
+custom_string  = SECRET_KEY
+def generate_custom_key(custom_string):
+    key = sha256(custom_string.encode()).digest()
+    return base64.urlsafe_b64encode(key).decode()
 DEBUG = True
-
-ALLOWED_HOSTS = []
+ENCRYPTION_KEY = generate_custom_key(custom_string)
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -37,6 +44,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
+    'rest_framework',
+    'core.login',
+    'core.contabilidad'
 ]
 
 MIDDLEWARE = [
@@ -98,7 +109,15 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'config.middleware.TokenAuthentication', 
+        'rest_framework.authentication.SessionAuthentication',  
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',  
+    ),
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
