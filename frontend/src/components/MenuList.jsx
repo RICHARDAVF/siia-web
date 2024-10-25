@@ -1,5 +1,5 @@
 import {Menu} from "antd"
-import {FaHome,FaCalculator} from "react-icons/fa"
+import {FaHome,FaCalculator,FaDollarSign } from "react-icons/fa"
 import {useState } from "react"
 import {useNavigate} from "react-router-dom"
 const items = [
@@ -34,8 +34,8 @@ const items = [
                 children:[
                     {
                         key:'221',
-                        label:"Registro de Asientos",
-                        route:"/registro-asientos"
+                        label:"Asientos",
+                        route:"/asientos/list"
                     },
                     {
                         key:'222',
@@ -52,6 +52,7 @@ const items = [
             {
                 key:"31",
                 label:"Tipo de Cambio",
+                icon:<FaDollarSign />,
                 route:"/tipo-cambio"
             }
 
