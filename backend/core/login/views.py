@@ -15,9 +15,12 @@ class LoginUser(GenericAPIView,DataBase):
             params = (datos["username"],self.hash_password(datos["password"]))
             token = self.token(document)
             res = self.query(document,sql,params,'GET',0)
+            if res is None:
+                raise ValueError("Documento, usuario o Contraseña incorrecta")
             user = {
                 "username":res[0].strip(),
-                "token":token
+                "token":token,
+                "document":document
             }
             return Response(user,status=status.HTTP_200_OK)
         except Exception as e:

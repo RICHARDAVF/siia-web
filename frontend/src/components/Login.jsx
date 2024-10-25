@@ -1,24 +1,51 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { Button, Form, Input, Typography, message } from 'antd';
-import { UserOutlined, LockOutlined,FileAddOutlined } from '@ant-design/icons';
+import { UserOutlined, LockOutlined, FileAddOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
+import config from '../config';
+import { Context } from './GlobalContext';
 
 const { Title } = Typography;
 
 function Login({ onLogin }) {
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate()
-  const onFinish = (values) => {
-    setLoading(true);
+  const navigate = useNavigate();
+  const { BASE_URL } = config;
+  const { updateState } = useContext(Context);
 
-    setTimeout(() => {
-      const fakeToken = '12345abcde'; 
-      localStorage.setItem('authToken', fakeToken);
-      message.success('Login successful!');
-      onLogin(fakeToken); 
-      setLoading(false);
-      navigate("/home")
-    }, 1000);
+  const onFinish = async (values) => {
+    const url = `${BASE_URL}/api/v1/users/login/${values.document}/`;
+    setLoading(true);
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(values),
+      });
+
+      if (response.ok) {
+        const res = await response.json();
+        updateState({ "token": res.token, "document": values.document });
+
+        setTimeout(() => {
+          onLogin(res);
+          message.success('Se inició sesión exitosamente');
+          navigate('/home');
+        }, 1000);
+      } else {
+        const res = await response.json();
+
+        const errorMessage = res.error || 'Ocurrió un error al iniciar sesión';
+        message.error(errorMessage);
+      }
+    } catch (error) {
+     
+      message.error(error.message || 'Error en la red o servidor');
+    } finally {
+      setLoading(false); 
+    }
   };
 
   return (
