@@ -6,13 +6,11 @@ const items = [
     {
         key:"1",
         label:"Home",
-        icon:<FaHome/>,
         route:"/home"
     },
     {
         key:"2",
         label:"Contabilidad",
-        icon:<FaCalculator/>,
         children:[
             {
                 key:"21",
@@ -52,10 +50,31 @@ const items = [
             {
                 key:"31",
                 label:"Tipo de Cambio",
-                icon:<FaDollarSign />,
                 route:"/tipo-cambio"
             }
 
+        ]
+    },
+    {
+        key:"4",
+        label:"Compras",
+        children:[
+            {
+                key:"41",
+                label:"Movimientos",
+                children:[
+                    {
+                        key:"411",
+                        label:"Comprobantes",
+                        route:"/list/comprobantes"
+                    },
+                    // {
+                    //     key:"412",
+                    //     label:"Registro de Comprobantes",
+                    //     route:"/registro/comprobantes"
+                    // }
+                ]
+            }
         ]
     }
 ]

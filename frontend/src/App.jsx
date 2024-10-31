@@ -101,8 +101,8 @@ function AuthenticatedLayout({ darkMode, collapsed, setCollapsed, toggleTheme, s
             margin: '24px 16px',
             padding: 24,
             minHeight: 280,
-            background: theme.colorBgContainer,
-            borderRadius: theme.borderRadiusLG,
+            // background: darkMode ? '#021529':'#ffffff' ,
+            borderRadius: 10,
           }}>
             <ContentViews />
           </Content>

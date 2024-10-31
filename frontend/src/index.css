@@ -86,13 +86,15 @@
   background-color: #1d1ad9;
 }
 
-/* Íconos de usuario y contraseña */
 .site-form-item-icon {
   color: rgba(0, 0, 0, 0.25);
 }
 
-/* Animación de hover en el botón */
 .login-form-button:hover {
   background-color: #1553d8;
   transition: background-color 0.3s ease;
+}
+.form-asientos .ant-form-item{
+  margin-bottom: 0px;
+  margin-top: 0px;
 }

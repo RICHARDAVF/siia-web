@@ -16,9 +16,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
-
+from core.views import ListOrigen
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/users/',include('core.login.urls')),
-    path('api/v1/contabilidad/',include('core.contabilidad.urls'))
+    path('api/v1/contabilidad/',include('core.contabilidad.urls')),
+    path('api/v1/compras/',include('core.compras.urls')),
+    #generic vies
+    path('api/v1/generics/list/origen/<str:document>/',ListOrigen.as_view())
 ]
