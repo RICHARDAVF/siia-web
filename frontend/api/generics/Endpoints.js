@@ -1,4 +1,4 @@
-const endpoints = {
+const endpointsGenerics = {
     Ubicacion:{
         get:async(url,token)=>{
             return fetch(url,{
@@ -110,4 +110,4 @@ const endpoints = {
         }
     }
 }
-export default endpoints
+export default endpointsGenerics

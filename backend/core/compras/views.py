@@ -6,7 +6,7 @@ from config.middleware import TokenAuthentication
 from rest_framework import status
 from core.conn import DataBase
 from datetime import datetime
-class ListCompras(GenericAPIView,DataBase):
+class ListComprasView(GenericAPIView,DataBase):
     permission_classes = [AllowAny]
     authentication_classes = [TokenAuthentication]
     def post(self,request,*args,**kwargs):
@@ -21,7 +21,6 @@ class ListCompras(GenericAPIView,DataBase):
                 LEFT JOIN t_auxiliar AS c ON a.AUX_CLAVE = c.AUX_CLAVE
                 WHERE b.ori_tipo = ?
                 ORDER BY a.MOV_FECHA,a.MOV_COMPRO ASC
-
 """
             params = (tipo_origen,)
             res  = self.query(document,sql,params,"GET",1)
@@ -48,3 +47,25 @@ class ListCompras(GenericAPIView,DataBase):
             return date.strftime("%Y-%m-%d")
         except:
             return date
+class SaveComporasView(GenericAPIView,DataBase):
+    permission_classes = [AllowAny]
+    authentication_classes = [TokenAuthentication]
+    fecha :datetime = datetime.now() 
+    def post(self,request,*args,**kwargs):
+        try:
+            document = kwargs['document']
+            datos = request.data
+            sql = f"""INSERT INTO MOVA{self.fecha.year}(
+            alm_codigo,mov_mes,ORI_CODIGO,UBI_CODIGO,MOV_COMPRO,mov_fecha,MOV_GLOSA,PLA_CUENTA,AUX_CLAVE,DOC_CODIGO,MOV_SERIE,MOV_DOCUM,MOV_D,MOV_H,MOV_D_D,MOV_H_D,MOV_T_C,MOV_GLOSA1,USUARIO,ven_codigo,mov_tipoas
+            ) VALUES """
+            correlativo = '001-0000001'
+            for item in datos['items']:
+                params = ("53",str(self.fecha.month).zfill(2),datos['origen'],datos['ubicacion'],correlativo,self.fecha.strftime("%Y-%m-%d"),item['observacion'],item['cuenta'],datos['proveedor'],datos['tipo_documento'],datos['numero_serie'],datos['numero_documento'],item['debe_soles'],item['haber_soles'],item['debe_dolares'],item['haber_dolares'],datos['tipo_cambio'],datos['observacion'],datos['codigo_usuario'],datos['codigo_vendedor'],datos['tipo_asiento'])
+                sql1 = sql+f"({','.join('?' for i in params)})"
+                self.query(document,sql1,params,'POST')
+            return Response({'success':"Los datos se guardaron correctamente"},status=status.HTTP_200_OK)
+        except Exception as e:
+            print(str(e))
+            return Response({"error":f"Ocurrio un error: {str(e)}"},status= status.HTTP_500_INTERNAL_SERVER_ERROR)
+    def validate(self):
+        pass

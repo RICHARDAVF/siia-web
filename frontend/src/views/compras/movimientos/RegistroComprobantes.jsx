@@ -3,7 +3,8 @@ import { Modal, Button, Table,  Form, Input, DatePicker,Popconfirm, InputNumber,
 import { useLocation } from 'react-router-dom';
 import config from '../../../config';
 import { Context } from '../../../components/GlobalContext';
-import endpoints from '../../../../api/generics/Endpoints';
+import endpointsGenerics from '../../../../api/generics/Endpoints';
+import endpointsCompras from '../../../../api/compras/apiCompras';
 import dayjs from 'dayjs';
 import {FaTrash} from 'react-icons/fa'
 const { TextArea } = Input;
@@ -25,9 +26,11 @@ const RegistroComprobantes = () => {
   const [MyForm2] = Form.useForm()
   const { params } = location.state || {}
   const { BASE_URL } = config
-  const { token, document } = useContext(Context)
+  const { token, document,user } = useContext(Context)
+  console.log(user)
   const fecha = dayjs()
-  const {Ubicacion,Proveedor,Document,CentroCostos,Cuentas} = endpoints
+  const {Ubicacion,Proveedor,Document,CentroCostos,Cuentas} = endpointsGenerics
+  const {Compras} = endpointsCompras
   const openModal = () => {
     setOpen(!open)
   }
@@ -132,7 +135,7 @@ const RegistroComprobantes = () => {
     {
       title: "Haber S/",
       dataIndex: "haber_soles",
-      dataIndex:'haber_soles'
+      key:'haber_soles'
     },
     {
       title: 'Debe S/',
@@ -235,15 +238,38 @@ const RegistroComprobantes = () => {
       })
     }
   }
+  const saveData = async(values)=>{
+    const url = `${BASE_URL}/api/v1/compras/save/comprobantes/${document}/`
+    
+    const datos = {
+      ...values,
+      "detraccion":detracion,
+      "codigo_usuario":user.codigo_usuario,
+      "codigo_vendedor":user.codigo_vendedor,
+      "tipo_asiento":1,
+      'tipo_cambio':user.tipo_cambio,
+      "fecha_vencimiento":values.fecha_vencimiento.format("YYYY-MM-DD"),
+      "fecha_contable":values.fecha_vencimiento.format("YYYY-MM-DD"),
+      "fecha_emision":values.fecha_vencimiento.format("YYYY-MM-DD"),
+      "fecha_deposito":values.fecha_vencimiento.format("YYYY-MM-DD"),
+      'items':data
+    }
+    const res = await Compras.post(url,datos,token)
+    if(!res){
+      return message.success("Comprobante guardado con exito")
+    }
+    message.error(res.error)
+    
+  }
   return (
     <div>
       <div>
         <Form
           name='form-asientas-contables'
           className='form-asientos'
-         
           form={MyForm1}
           layout={"vertical"}
+          onFinish={saveData}
         >
           <Row gutter={6}>
             <Col xs={20} sm={15} md={4}>
@@ -478,13 +504,19 @@ const RegistroComprobantes = () => {
               </Form.Item>
             </Col>
           </Row>
-
+          <Row>
+            <Button onClick={openModal} style={{background:'green',color:'white'}} >
+              Agregar
+            </Button>
+            <Button htmlType='submit' style={{background:'blue',color:'white'}}>
+              Guardar
+            </Button>
+          </Row>
+      
         </Form>
-      </div>
-      <Button onClick={openModal} type='primary'>
-        Agregar
-      </Button>
       <Table columns={columns} dataSource={data} scroll={{x:"max-content"}} rowKey={(record)=>`${record.cuenta}-${record.centro_costo}`}   />
+      </div>
+  
       <Modal
         title="Registros un nuevo asiento"
         open={open}
@@ -632,13 +664,13 @@ const RegistroComprobantes = () => {
                 </Form.Item>
               </Col>
             </Row>
-            <Row>
+            <Row style={{justifyContent:'end'}}>
 
-              <Col xs={24} sm={12} md={6}>
-                  <Button type='button' id='btn-cancelar' onClick={()=>console.log("SE CANCELA")}>CANCELAR</Button>
+              <Col xs={24} sm={12} md={6} style={{justifyContent:'end'}}>
+                  <Button style={{background:'red',color:'white'}} type='button' id='btn-cancelar' onClick={()=>console.log("SE CANCELA")}>CANCELAR</Button>
               </Col>
-              <Col xs={24} sm={12} md={6}>
-                  <Button htmlType='submit' id='bn-agregar' type='submit'>AGREGAR</Button>
+              <Col xs={24} sm={12} md={6} style={{justifyContent:'end'}}>
+                  <Button style={{background:'blue',color:'white'}} htmlType='submit' id='bn-agregar' type='submit'>AGREGAR</Button>
               </Col>
             </Row>
           </Form>
