@@ -1,0 +1,100 @@
+*{
+  margin: 0;
+  padding: 0;
+  border: none;
+  outline: none;
+  list-style: none;
+  box-sizing: border-box;
+  font-family: 'Poppins',sans-serif;
+}
+.sidebar{
+  color: #fff;
+}
+.logo{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  padding: 10px;
+}
+.logo-icon{
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  align-content: center;
+  font-size: 1.5rem;
+  border-radius: 50%;
+  background: rgba(20, 17, 41, 0.88);
+}
+.toggle-theme-button{
+  position: absolute;
+  bottom: 30px;
+  left: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+}
+.toggle{
+  margin-left: 15px;
+
+}
+
+/* Estilos para el contenedor principal */
+.login-container {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+
+/* Caja de login */
+.login-box {
+  background-color: white;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  width: 100%;
+}
+
+/* Título de login */
+.login-title {
+  text-align: center;
+  color: #f05a28;
+  font-weight: 600;
+  margin-bottom: 30px;
+}
+
+/* Input form */
+.login-form input {
+  border-radius: 8px;
+}
+
+/* Botón de login */
+.login-form-button {
+  background-color: #285df0;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.login-form-button:hover {
+  background-color: #1d1ad9;
+}
+
+.site-form-item-icon {
+  color: rgba(0, 0, 0, 0.25);
+}
+
+.login-form-button:hover {
+  background-color: #1553d8;
+  transition: background-color 0.3s ease;
+}
+.form-asientos .ant-form-item{
+  margin-bottom: 0px;
+  margin-top: 0px;
+}
