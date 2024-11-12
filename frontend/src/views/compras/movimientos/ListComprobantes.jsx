@@ -142,7 +142,7 @@ const ListComprobates=()=>{
              dataSource={data}
              columns={columns}
              scroll={{x:"max-content"}}
-                rowKey={(record)=>`${record.mes}-${record.comprobante}`}
+            rowKey={(record)=>`${record.mes}-${record.comprobante}`}
 
              />
              

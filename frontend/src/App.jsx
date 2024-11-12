@@ -15,7 +15,11 @@ const { Header, Sider, Content } = Layout;
 
 function App() {
   const [darkMode, setDarkMode] = useState(true);
+<<<<<<< HEAD
+  const [collapsed, setCollapsed] = useState(false);
+=======
   const [collapsed, setCollapsed] = useState(true);
+>>>>>>> 1cb272c945efe937f26e0e9ac473a96cbaf6a71f
   const [isAuthenticate, setIsAuthenticate] = useState(false);
   const {updateState} = useContext(Context)
   useEffect(() => {
