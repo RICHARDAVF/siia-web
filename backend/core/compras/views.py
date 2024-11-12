@@ -6,11 +6,7 @@ from config.middleware import TokenAuthentication
 from rest_framework import status
 from core.conn import DataBase
 from datetime import datetime
-<<<<<<< HEAD
-class ListCompras(GenericAPIView,DataBase):
-=======
 class ListComprasView(GenericAPIView,DataBase):
->>>>>>> 1cb272c945efe937f26e0e9ac473a96cbaf6a71f
     permission_classes = [AllowAny]
     authentication_classes = [TokenAuthentication]
     def post(self,request,*args,**kwargs):
@@ -25,10 +21,6 @@ class ListComprasView(GenericAPIView,DataBase):
                 LEFT JOIN t_auxiliar AS c ON a.AUX_CLAVE = c.AUX_CLAVE
                 WHERE b.ori_tipo = ?
                 ORDER BY a.MOV_FECHA,a.MOV_COMPRO ASC
-<<<<<<< HEAD
-
-=======
->>>>>>> 1cb272c945efe937f26e0e9ac473a96cbaf6a71f
 """
             params = (tipo_origen,)
             res  = self.query(document,sql,params,"GET",1)
@@ -54,9 +46,6 @@ class ListComprasView(GenericAPIView,DataBase):
         try:
             return date.strftime("%Y-%m-%d")
         except:
-<<<<<<< HEAD
-            return date
-=======
             return date
 class SaveComporasView(GenericAPIView,DataBase):
     permission_classes = [AllowAny]
@@ -83,4 +72,3 @@ class SaveComporasView(GenericAPIView,DataBase):
         cambios para la rama produccion
         """
         pass
->>>>>>> 1cb272c945efe937f26e0e9ac473a96cbaf6a71f
