@@ -3,8 +3,13 @@ import { useNavigate } from "react-router-dom"
 import { Context } from "../../../components/GlobalContext"
 import config from "../../../config"
 import Loading from "../../../components/Loadgin"
+<<<<<<< HEAD
 import { Input, Table } from "antd"
 import { FaEdit } from "react-icons/fa"
+=======
+import { Input, Table,message } from "antd"
+import { FaCheck, FaEdit } from "react-icons/fa"
+>>>>>>> 1cb272c945efe937f26e0e9ac473a96cbaf6a71f
 const ListComprobates=()=>{
     const navigate = useNavigate()
     const {token,document} = useContext(Context)
@@ -34,12 +39,20 @@ const ListComprobates=()=>{
             })
             const res = await response.json()
             if(res.error){
+<<<<<<< HEAD
                 console.log(res.error)
+=======
+                message.error(res.error)
+>>>>>>> 1cb272c945efe937f26e0e9ac473a96cbaf6a71f
                 return -1
             }
             setData(res)
         }catch(error){
+<<<<<<< HEAD
             console.log(res.error)
+=======
+            message.error(error)
+>>>>>>> 1cb272c945efe937f26e0e9ac473a96cbaf6a71f
         }finally{
             setLoading(false)
         }
@@ -142,6 +155,11 @@ const ListComprobates=()=>{
              dataSource={data}
              columns={columns}
              scroll={{x:"max-content"}}
+<<<<<<< HEAD
+=======
+                rowKey={(record)=>`${record.mes}-${record.comprobante}`}
+
+>>>>>>> 1cb272c945efe937f26e0e9ac473a96cbaf6a71f
              />
              
             <Loading status={loading} />

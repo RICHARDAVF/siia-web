@@ -16,12 +16,25 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
+<<<<<<< HEAD
 from core.views import ListOrigen
+=======
+from core.views import ListOrigen,ListUbicacion,ListProveedor,ListDocument,ListCentroCosto,ListCuentas
+>>>>>>> 1cb272c945efe937f26e0e9ac473a96cbaf6a71f
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/users/',include('core.login.urls')),
     path('api/v1/contabilidad/',include('core.contabilidad.urls')),
     path('api/v1/compras/',include('core.compras.urls')),
     #generic vies
+<<<<<<< HEAD
     path('api/v1/generics/list/origen/<str:document>/',ListOrigen.as_view())
+=======
+    path('api/v1/generics/list/origen/<str:document>/',ListOrigen.as_view()),
+    path('api/v1/generics/list/ubicacion/<str:document>/',ListUbicacion.as_view()),
+    path('api/v1/generics/list/proveedor/<str:document>/',ListProveedor.as_view()),
+    path('api/v1/generics/list/document/<str:document>/',ListDocument.as_view()),
+    path('api/v1/generics/list/centro-costo/<str:document>/',ListCentroCosto.as_view()),
+    path('api/v1/generics/list/cuentas/<str:document>/',ListCuentas.as_view()),
+>>>>>>> 1cb272c945efe937f26e0e9ac473a96cbaf6a71f
 ]
