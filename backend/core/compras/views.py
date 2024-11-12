@@ -79,5 +79,8 @@ class SaveComporasView(GenericAPIView,DataBase):
             print(str(e))
             return Response({"error":f"Ocurrio un error: {str(e)}"},status= status.HTTP_500_INTERNAL_SERVER_ERROR)
     def validate(self):
+        """
+        cambios para la rama produccion
+        """
         pass
 >>>>>>> 1cb272c945efe937f26e0e9ac473a96cbaf6a71f
