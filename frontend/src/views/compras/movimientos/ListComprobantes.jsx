@@ -2,7 +2,7 @@ import { useContext, useEffect, useRef, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { Context } from "../../../components/GlobalContext"
 import config from "../../../config"
-import Loading from "../../../components/Loadgin"
+import Loading from "../../../components/Loading"
 import { Input, Table,message } from "antd"
 import { FaCheck, FaEdit } from "react-icons/fa"
 const ListComprobates=()=>{
@@ -138,15 +138,18 @@ const ListComprobates=()=>{
     return(
         <div  style={{ position: "relative" }}
         >
-            <Table
-             dataSource={data}
-             columns={columns}
-             scroll={{x:"max-content"}}
-                rowKey={(record)=>`${record.mes}-${record.comprobante}`}
+        <div>
+            <input type="button" value={"AGREGAR"} style={{background:'blue',color:'white',padding:3,borderRadius:5,cursor:'pointer'}} onClick={()=>navigate("/registro/comprobantes",{state:{"params":{"action":"add"}}})} />
+        </div>
+        <Table
+            dataSource={data}
+            columns={columns}
+            scroll={{x:"max-content"}}
+            rowKey={(record)=>`${record.mes}-${record.comprobante}`}
 
-             />
-             
-            <Loading status={loading} />
+            />
+            
+        <Loading status={loading} />
              
         </div>
     )

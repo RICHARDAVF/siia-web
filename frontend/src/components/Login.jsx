@@ -27,6 +27,7 @@ function Login({ onLogin }) {
 
       if (response.ok) {
         const res = await response.json();
+
         updateState({ "token": res.token, "document": values.document,"user":res });
 
         setTimeout(() => {

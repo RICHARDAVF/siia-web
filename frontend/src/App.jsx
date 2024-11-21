@@ -6,7 +6,7 @@ import MenuList from './components/MenuList.jsx';
 import { MenuUnfoldOutlined, MenuFoldOutlined, LogoutOutlined } from "@ant-design/icons";
 import TogleThemeButton from './components/ToggleThemeButton.jsx';
 import Login from './components/Login.jsx';
-import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom'; 
+import { BrowserRouter, Routes, Route, useNavigate, json } from 'react-router-dom'; 
 
 import ContentViews from './components/ContentViews.jsx';
 import { Context } from './components/GlobalContext.jsx';
@@ -21,9 +21,11 @@ function App() {
   useEffect(() => {
     const token = localStorage.getItem("authToken");
     const document = localStorage.getItem('document')
+    const user = localStorage.getItem('user')
+
     if (token) {
       setIsAuthenticate(true);
-      updateState({"token":token,"document":document})
+      updateState({"token":token,"document":document,"user":JSON.parse(user)})
     }
   }, []);
 
@@ -35,6 +37,7 @@ function App() {
   const handleLogin = (res) => {
     localStorage.setItem("authToken", res.token);
     localStorage.setItem("document", res.document);
+    localStorage.setItem("user", JSON.stringify(res));
     setIsAuthenticate(true);
   
   };

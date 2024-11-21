@@ -108,6 +108,24 @@ const endpointsGenerics = {
                 return erro.toString()
             })
         }
+    },
+    TipoCambio:{
+        post:async(url,token,params)=>{
+            try{
+                const res = await fetch(url,{
+                    method:"POST",
+                    headers:{
+                        'Content-Type':'application/json',
+                        'Authorization':`Bearer ${token}`
+                    },
+                    body:JSON.stringify(params)
+                })
+                const response = await res.json()
+                return response
+            }catch(erro){
+                return {"error":`Hubo problemas con conectarse con el servidor:${erro.toString()}`}
+            }
+        }
     }
 }
 export default endpointsGenerics

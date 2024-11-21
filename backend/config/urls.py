@@ -16,7 +16,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
-from core.views import ListOrigen,ListUbicacion,ListProveedor,ListDocument,ListCentroCosto,ListCuentas
+from core.views import ListOrigen,ListUbicacion,ListProveedor,ListDocument,ListCentroCosto,ListCuentas,TipoDeCambio
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/users/',include('core.login.urls')),
@@ -29,4 +30,5 @@ urlpatterns = [
     path('api/v1/generics/list/document/<str:document>/',ListDocument.as_view()),
     path('api/v1/generics/list/centro-costo/<str:document>/',ListCentroCosto.as_view()),
     path('api/v1/generics/list/cuentas/<str:document>/',ListCuentas.as_view()),
+    path('api/v1/tipo/cambio/<str:document>/',TipoDeCambio.as_view()),
 ]
