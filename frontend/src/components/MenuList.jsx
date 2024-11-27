@@ -33,7 +33,7 @@ const items = [
                     {
                         key:'221',
                         label:"Asientos",
-                        route:"/asientos/list"
+                        route:"/list/asientos"
                     },
                     {
                         key:'222',

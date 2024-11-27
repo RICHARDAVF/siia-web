@@ -5,7 +5,7 @@ import config from "../../../config"
 import Loading from "../../../components/Loading"
 import { Input, Table,message } from "antd"
 import { FaCheck, FaEdit } from "react-icons/fa"
-const ListComprobates=()=>{
+const ListComprobantes=()=>{
     const navigate = useNavigate()
     const {token,document} = useContext(Context)
     const [loading,setLoading] = useState(false)
@@ -154,4 +154,4 @@ const ListComprobates=()=>{
         </div>
     )
 }
-export default ListComprobates
+export default ListComprobantes

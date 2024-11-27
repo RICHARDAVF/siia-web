@@ -42,7 +42,6 @@ class ListAsientosView(GenericAPIView,DataBase):
             mes = kwargs['mes']
             origen = kwargs['origen']
             comprobante = kwargs['compro']
-        
             return Response()
         except:
             return Response() 

@@ -4,9 +4,11 @@ import config from "../../../config"
 import { Context } from "../../../components/GlobalContext"
 import { FaEdit } from "react-icons/fa"
 import { useNavigate } from "react-router-dom"
+import Loading from "../../../components/Loading"
 
 const ListAsientos=()=>{
     const [data,setData]=useState([])
+    const [loading,setLoading]=useState(false)
     const {BASE_URL} = config
     const {token,document} = useContext(Context)
     const navigate = useNavigate()
@@ -14,11 +16,11 @@ const ListAsientos=()=>{
         requestAsientos()
     },[])
     const onEditAsiento=(item)=>{
-        navigate("/asientos/create",{state:{'params':item}})
+        navigate("/registro/asiento",{state:{'params':item}})
     }
     const requestAsientos=async()=>{
         try{
-
+            setLoading(true)
             const url = `${BASE_URL}/api/v1/contabilidad/list/${document}/`
             const response=await fetch(url,{
                 method:'POST',
@@ -32,12 +34,21 @@ const ListAsientos=()=>{
         }catch(error){
             message.error(res.message)
         }finally{
-
+            setLoading(false)
         }
       
 
     }
     const columns = [
+        {
+            title:"Acciones",
+            key: 'acciones',
+            render: (row) => (
+                <div style={{ justifyContent: 'space-between', display: 'flex' }}>
+                    <FaEdit style={{ color: 'green',cursor:'pointer' }} onClick={()=>onEditAsiento(row)} />
+                </div>
+            )
+        },
         {
             title:"Fecha",
             dataIndex:"fecha",
@@ -63,23 +74,21 @@ const ListAsientos=()=>{
             title:'Obersevacion',
             dataIndex:'observacion',
             key:'observacion'
-        },
-        {
-            title:"Acciones",
-            key: 'acciones',
-            render: (row) => (
-                <div style={{ justifyContent: 'space-between', display: 'flex' }}>
-                    <FaEdit style={{ color: 'green',cursor:'pointer' }} onClick={()=>onEditAsiento(row)} />
-                </div>
-            )
         }
+        
     ]
     return (
-        <Table 
-        dataSource={data} 
-        columns={columns}
-        rowKey={(record)=>`${record.mes}-${record.comprobante}`}
-        />
+        <div style={{position:'relative'}}>
+            <div>
+                <input type="button" value={"AGREGAR"} style={{background:'blue',color:'white',borderRadius:5,padding:3}} onClick={()=>navigate('/registro/asientos',{status:{params:{"action":"add"}}})}/>
+            </div>
+            <Table 
+            dataSource={data} 
+            columns={columns}
+            rowKey={(record)=>`${record.mes}-${record.comprobante}`}
+            />
+            <Loading status={loading}/>
+        </div>
 
         
     )

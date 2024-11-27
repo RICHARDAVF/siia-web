@@ -1,100 +1,93 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Space, Modal, Button, Table, Tag, Form, Input, DatePicker, InputNumber, Row, Col, message, Select, Spin } from 'antd';
+import { Space, Modal, Button, Table,  Form, Input, DatePicker, InputNumber, Row, Col, message, Select, Spin } from 'antd';
 import { useLocation, useNavigate } from 'react-router-dom';
 import config from '../../../config';
 import { Context } from '../../../components/GlobalContext';
 import dayjs from 'dayjs'
+import endpointsGenerics from '../../../../api/generics/Endpoints';
 
 
 
 const { TextArea } = Input;
 const { Option } = Select
 const RegistroAsientos = () => {
-  const [option, setOption] = useState([])
   const [loading, setLoading] = useState(false)
   const [open, setOpen] = useState(false)
   const [auxiliar, setAuxiliar] = useState([])
-  const [vendedores, setVendedores] = useState([])
   const [data, setData] = useState([])
-  const [sizeWindown, setSizeWindow] = useState('horizontal')
-  const location = useLocation()
-  const { params } = location.state || {}
+  const [cuentas,setCuentas] = useState([])
+  const [ubicacion,setUbicacion] = useState([])
   const { BASE_URL } = config
   const { token, document } = useContext(Context)
-  const fecha = new Date()
-  const [values, setValues] = useState({
-    fecha_contable: `${fecha.getFullYear()}-${(fecha.getMonth() + 1).toString().padStart(2, '0')}-${fecha.getDate().toString().padStart(2, '0')}`,
-    fecha_emision: `${fecha.getFullYear()}-${(fecha.getMonth() + 1).toString().padStart(2, '0')}-${fecha.getDate().toString().padStart(2, '0')}`,
-  });
+  const [blockInput,setBlockInput] = useState(false)
+  const [vendedor,setVendedor] = useState([])
+  const [tipoDocumento,setTipoDocumento] = useState([])
+  const fecha = dayjs()
+  const {Cuentas,Proveedor} = endpointsGenerics
+  const location = useLocation()
+  const { params } = location.state || {}
   const openModal = () => {
     setOpen(!open)
   }
-  const updateLayout = () => {
-    if (window.innerWidth < 768) {
-      setSizeWindow('vertical');
-    } else {
-      setSizeWindow('horizontal');
-    }
-  };
 
-  // Hook para cambiar el layout cuando el tamaño de la ventana cambia
+
+
   useEffect(() => {
-    updateLayout(); // Detectar el layout inicial
-    window.addEventListener('resize', updateLayout); // Escuchar cambios de tamaño de la ventana
-    return () => window.removeEventListener('resize', updateLayout); 
-  }, []);
-  useEffect(() => {
-    reqqueastAsientos()
-  }, [params])
-  const reqqueastAsientos = async (value) => {
-    const url = ''
-    if (!value) {
-      setOption([])
-      return
-    }
-    setLoading(true)
-    try {
-      const response = data.filter(item => item.name.includes(value))
-      setOption(response.map(item => ({
-        value: item.key,
-        label: item.name
-      })))
-    } catch (error) {
-    } finally { setLoading(false) }
-  }
-  const requestCuentas = async (params) => {
-    const url = `${BASE_URL}/api/v1/list/cuenta/${document}/`
-    try {
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+    requestGeneric()
+  }, [])
+  const requestGeneric=async()=>{
+    try{
+      setLoading(true)
+      const url = `${BASE_URL}/api/v1/generic/${document}/`
+      const datos = {
+        "query_string":"",
+        "tipo_origen":1,
+        "dates":['vendedor',"ubicacion","tipo-documento"]
+      }
+      const response = await fetch(url,{
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json',
+          'Authorization':`Bearer ${token}`
         },
-        body: JSON.stringify(params)
+        body:JSON.stringify(datos)
       })
       const res = await response.json()
-      setData(res.data)
-    } catch (error) {
-      console.log(error)
+      setUbicacion(res.ubicacion)
+      setVendedor(res.vendedor)
+      setTipoDocumento(res.tipo_documento)
+    }catch(err){
+      console.log(err)
+    }finally{
+      setLoading(false)
     }
   }
-  const requestAuxiliar = async (value) => {
-    const url = ''
-    if (!value) {
-      setOption([])
-      return
+  const requestCuentas = async (params) => {
+    const url = `${BASE_URL}/api/v1/generics/list/cuentas/${document}/`
+    const datos = {
+      'query_string': params
     }
-    setLoading(true)
-    try {
-      const response = data.filter(item => item.name.includes(value))
-      setAuxiliar(response.map(item => ({
-        value: item.key,
-        label: item.name
-      })))
-    } catch (error) {
-      console.log(error)
-    } finally { setLoading(false) }
+    const res = await Cuentas.post(url, token, datos)
+    if (res.error) {
+      message.error(res.error)
+    } else {
+      setCuentas(res)
+    }
+  }
+  const changeCuenta=(val)=>{
+
+  }
+  const requestAuxiliar = async (query) => {
+    const url = `${BASE_URL}/api/v1/generics/list/proveedor/${document}/`
+    const params = {
+      "query_string": query
+    }
+    const res = await Proveedor.post(url, token, params)
+    if (res.error) {
+      message.error(res.error)
+    } else {
+      setAuxiliar(res)
+    }
   }
   const columns = [
     {
@@ -158,7 +151,7 @@ const RegistroAsientos = () => {
           name='form-asientas-contables'
           className='form-asientos'
           onFinish={(values) => console.log(values)}
-          layout={sizeWindown}
+          layout={'horizontal'}
         >
           <Row gutter={6}>
             <Col xs={16} sm={12} md={8}>
@@ -166,6 +159,7 @@ const RegistroAsientos = () => {
                 name='fecha_contable'
                 label='Fecha Contable'
                 rules={[{ required: true, message: 'Por favor seleccione una fecha' }]}
+                initialValue={fecha}
               >
                 <DatePicker style={{ width: '100%' }}
                   size={'small'} />
@@ -176,6 +170,7 @@ const RegistroAsientos = () => {
                 name='fecha_emision'
                 label='Fecha Emision'
                 rules={[{ required: true, message: 'Por favor seleccione una fecha' }]}
+                initialValue={fecha}
               >
                 <DatePicker style={{ width: '100%' }}
                   size={'small'} />
@@ -195,6 +190,7 @@ const RegistroAsientos = () => {
                 name='fecha_vencimiento'
                 label='Fecha Vencimiento'
                 rules={[{ required: true, message: 'Por favor seleccione una fecha' }]}
+                initialValue={fecha}
               >
                 <DatePicker
                   size={'small'}
@@ -203,11 +199,12 @@ const RegistroAsientos = () => {
             </Col>
             <Col xs={16} sm={12} md={8}>
               <Form.Item
-                name='ubicaicon'
+                name='ubicacion'
                 label='Ubicacion'
                 rules={[{ required: true, message: 'Por favor seleccione una ubicacion' }]}
               >
                 <Select
+                  options={ubicacion}
                   size={'small'}
                 />
               </Form.Item>
@@ -216,21 +213,28 @@ const RegistroAsientos = () => {
 
         </Form>
       </div>
-      <Button onClick={openModal} type='primary'>
-        Agregar
+      <div>
+
+      <Button size='small' onClick={openModal} style={{background:'blue',color:'white'}} >
+        AGREGAR
       </Button>
+      <Button size='small' onClick={openModal} style={{background:'green',color:'white'}}>
+        GUARDAR
+      </Button>
+      </div>
       <Table columns={columns} dataSource={data} />
       <Modal
-        title="Registros un nuevo asiento"
+        title="Registros de un nuevo asiento"
         open={open}
         onOk={openModal}
         onCancel={openModal}
+      
         footer={
           [
-            <Button type='primary' danger onClick={openModal}>
+            <Button key={"button1"} type='primary' danger onClick={openModal}>
               Cancelar
             </Button>,
-            <Button type="primary" loading={loading} onClick={openModal}>
+            <Button  key={'button2'} type="primary" loading={loading} onClick={openModal}>
               Guardar
             </Button>,
           ]
@@ -258,11 +262,23 @@ const RegistroAsientos = () => {
                     allowClear
                     filterOption={false}
                     placeholder='Buscar...'
+                    size='small'
                     notFoundContent={loading ? <Spin size='small' /> : null}
+                    onChange={(_, option) => {
+
+                      if (option == undefined) {
+                        setBlockInput('')
+                      } else {
+                        changeCuenta(option)
+                      }
+                    }}
+
                   >
-                    {option.map(item => (
-                      <Option key={item.value} value={item.value}>
-                        {item.label}
+                    {cuentas.map(item => (
+                      <Option key={item.value + '-' + item.moneda} value={item.value}>
+                        <div key={item.label} style={{ fontSize: 10 }}>
+                          {item.value} - {item.label}
+                        </div>
                       </Option>
                     ))}
                   </Select>
@@ -280,13 +296,19 @@ const RegistroAsientos = () => {
                     allowClear
                     filterOption={false}
                     placeholder='Buscar...'
+                    size='small'
+
                     notFoundContent={loading ? <Spin size='small' /> : null}
                   >
-                    {auxiliar.map(item => (
-                      <Option key={item.value} value={item.value}>
-                        {item.label}
+                     {
+                    auxiliar.map(item => (
+                      <Option key={item.label} value={item.value}>
+                        <div style={{ fontSize: 10 }}>
+                          {item.value} - {item.label}
+                        </div>
                       </Option>
-                    ))}
+                    ))
+                  }
                   </Select>
                 </Form.Item>
               </Col>
@@ -296,8 +318,12 @@ const RegistroAsientos = () => {
                   label="Vendedor"
                   rules={[{ required: true, message: "Por favor seleccione un vendedor" }]}
                 >
-                  <Select placeholder="Seleccionar vendedor">
-                    {vendedores.map((vendedor) => (
+                  
+                  <Select placeholder="Seleccionar vendedor" 
+                    size='small'
+
+                  >
+                    {vendedor.map((vendedor) => (
                       <Option key={vendedor.value} value={vendedor.value}>
                         {vendedor.label}
                       </Option>
@@ -307,62 +333,78 @@ const RegistroAsientos = () => {
               </Col>
             </Row>
 
-            <Row gutter={16}>
-              <Col xs={24} sm={12} md={8}>
-                <Form.Item
-                  name="fecha_emision"
-                  label="Fecha de emisión"
-                  rules={[{ required: true, message: "Por favor seleccione la fecha de emisión" }]}
-                >
-                  <DatePicker style={{ width: '100%' }} />
-                </Form.Item>
-              </Col>
-              <Col xs={12} sm={6} md={4}>
+            <Row gutter={24}>
+              <Col xs={12} sm={6} md={6}>
                 <Form.Item
                   name="tipo_documento"
                   label="Tipo de documento"
                   rules={[{ required: true, message: "Por favor ingrese el tipo de documento" }]}
                 >
-                  <Input maxLength={4} placeholder="Ej: F001" />
+                  <Select
+                    size='small'
+                    placeholder='Seleccione una moneda'
+                    options={[{ id: '1', value: "S", label: "S" }, { id: '2', value: 'D', label: 'D' }]}
+                    // defaultValue={'S'}
+                    disabled={blockInput != ''}
+                    onChange={(e) => setBlockInput(e)}
+                  />
                 </Form.Item>
               </Col>
-              <Col xs={12} sm={6} md={4}>
+              <Col xs={12} sm={6} md={6}>
                 <Form.Item
                   name="serie"
                   label="Serie"
                   rules={[{ required: true, message: "Por favor ingrese la serie" }]}
                 >
-                  <Input maxLength={4} placeholder="Ej: 0012" />
+                  <Input maxLength={4} placeholder="Ej: 0012"
+                    size='small'
+
+                   />
                 </Form.Item>
               </Col>
-              <Col xs={12} sm={6} md={4}>
+              <Col xs={12} sm={6} md={6}>
                 <Form.Item
                   name="numero"
                   label="Número"
                   rules={[{ required: true, message: "Por favor ingrese el número" }]}
                 >
-                  <Input maxLength={8} placeholder="Ej: 12345678" />
+                  <Input maxLength={8} placeholder="Ej: 12345678"
+                    size='small'
+                  
+                  />
                 </Form.Item>
               </Col>
-              <Col xs={12} sm={6} md={4}>
+              <Col xs={12} sm={6} md={6}>
                 <Form.Item
-                  name="moneda"
-                  label="Moneda"
-                  rules={[{ required: true, message: "Por favor ingrese la moneda" }]}
-                >
-                  <Input maxLength={3} placeholder="Ej: PEN" />
-                </Form.Item>
+                    name="moneda"
+                    label="Moneda"
+                    rules={[{ required: true, message: "Por favor ingrese la moneda" }]}
+                    initialValue={'S'}
+                  >
+                    <Select
+                      size='small'
+                      placeholder='Seleccione una moneda'
+                      options={[{ id: '1', value: "S", label: "S" }, { id: '2', value: 'D', label: 'D' }]}
+                      // defaultValue={'S'}
+                      disabled={blockInput != ''}
+                      onChange={(e) => setBlockInput(e)}
+                    />
+                  </Form.Item>
               </Col>
             </Row>
 
             <Row gutter={16}>
+
               <Col xs={24} sm={12} md={6}>
                 <Form.Item
                   name="debe_soles"
                   label="Debe en soles"
                   rules={[{ required: true, message: "Por favor ingrese el monto en soles" }]}
                 >
-                  <InputNumber style={{ width: '100%' }} min={0} />
+                  <InputNumber style={{ width: '100%' }} min={0} 
+                    size='small'
+                  
+                  />
                 </Form.Item>
               </Col>
               <Col xs={24} sm={12} md={6}>
@@ -371,7 +413,9 @@ const RegistroAsientos = () => {
                   label="Haber en soles"
                   rules={[{ required: true, message: "Por favor ingrese el monto en soles" }]}
                 >
-                  <InputNumber style={{ width: '100%' }} min={0} />
+                  <InputNumber style={{ width: '100%' }} min={0} 
+                    size='small'
+                  />
                 </Form.Item>
               </Col>
               <Col xs={24} sm={12} md={6}>
@@ -380,7 +424,10 @@ const RegistroAsientos = () => {
                   label="Debe en dólares"
                   rules={[{ required: true, message: "Por favor ingrese el monto en dólares" }]}
                 >
-                  <InputNumber style={{ width: '100%' }} min={0} />
+                  <InputNumber style={{ width: '100%' }} min={0} 
+                    size='small'
+                  
+                  />
                 </Form.Item>
               </Col>
               <Col xs={24} sm={12} md={6}>
@@ -389,40 +436,36 @@ const RegistroAsientos = () => {
                   label="Haber en dólares"
                   rules={[{ required: true, message: "Por favor ingrese el monto en dólares" }]}
                 >
-                  <InputNumber style={{ width: '100%' }} min={0} />
+                  <InputNumber style={{ width: '100%' }} min={0} 
+                    size='small'
+                  
+                  />
                 </Form.Item>
               </Col>
             </Row>
-
             <Row gutter={16}>
-              <Col xs={24} sm={12} md={8}>
-                <Form.Item
-                  name="tipo_cambio"
-                  label="Tipo de cambio"
-                  rules={[{ required: true, message: "Por favor ingrese el tipo de cambio" }]}
-                >
-                  <InputNumber style={{ width: '100%' }} min={0} step={0.01} />
-                </Form.Item>
-              </Col>
               <Col xs={24} sm={12} md={8}>
                 <Form.Item
                   name="fecha_vencimiento"
                   label="Fecha de vencimiento"
                   rules={[{ required: true, message: "Por favor seleccione la fecha de vencimiento" }]}
                 >
-                  <DatePicker style={{ width: '100%' }} />
+                  <DatePicker style={{ width: '100%' }} 
+                    size='small'
+                  
+                  />
                 </Form.Item>
               </Col>
-            </Row>
 
-            <Row gutter={16}>
-              <Col xs={24}>
+              <Col xs={24} sm={12} md={16}>
                 <Form.Item
                   name="glosa"
                   label="Glosa"
                   rules={[{ required: true, message: "Por favor ingrese la glosa" }]}
                 >
-                  <TextArea rows={2} placeholder="Descripción..." />
+                  <TextArea rows={2} placeholder="Descripción..."
+                    size='small'
+                  />
                 </Form.Item>
               </Col>
             </Row>

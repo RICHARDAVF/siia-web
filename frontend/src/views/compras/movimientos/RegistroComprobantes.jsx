@@ -54,12 +54,13 @@ const RegistroComprobantes = () => {
 
   }, [])
   const requestGenerics = async () => {
-    const url = `${BASE_URL}/api/v1/compras/generic/${document}/`
+    const url = `${BASE_URL}/api/v1/generic/${document}/`
     setLoading(true)
     try {
       const datos = {
         "query_string": "",
-        "tipo_origen": 1
+        "tipo_origen": 1,
+        "dates":['origen',"ubicacion","centro-constos","tipo-documento"]
       }
       const response = await fetch(url, {
         method: 'POST',
@@ -384,7 +385,7 @@ const RegistroComprobantes = () => {
           name='form-asientas-contables'
           className='form-asientos'
           form={MyForm1}
-          layout={"vertical"}
+          layout={"horizontal"}
           onFinish={saveData}
         >
           <Row gutter={6}>
@@ -514,7 +515,7 @@ const RegistroComprobantes = () => {
               <Form.Item
                 name='fecha_deposito'
                 label='F/Dep'
-                rules={[{ required: true, message: 'Por favor seleccione lfa fecha de deposito' }]}
+                rules={[{ required: true, message: 'Por favor seleccione la fecha de deposito' }]}
                 initialValue={fecha}
               >
                 <DatePicker
@@ -617,6 +618,61 @@ const RegistroComprobantes = () => {
                 <Input
                   size={'small'}
                   placeholder="Ej:000001"
+                />
+              </Form.Item>
+            </Col>
+            <Col xs={20} sm={15} md={4}>
+              <Form.Item
+                name='tipo_doc_referencia'
+                label="T.D/REF"
+                rules={[{ message: 'Por favor  ingrese el numero' }]}
+              >
+                <Select
+                  size={'small'}
+                  placeholder="Tipo documento"
+                  options={tipoDocument}
+                  optionRender={(row) => (
+                    <div style={{ fontSize: 10 }}>{row.value} - {row.label}</div>
+                  )}
+                  showSearch
+                />
+              </Form.Item>
+            </Col>
+            <Col xs={20} sm={15} md={4}>
+              <Form.Item
+                name='serie_doc_referencia'
+                label="Serie/REF."
+                rules={[{ message: 'Por favor  ingrese el numero' }]}
+              >
+                <Input
+                  size={'small'}
+                  placeholder="Ej:000001"
+                />
+              </Form.Item>
+            </Col>
+            <Col xs={20} sm={15} md={4}>
+              <Form.Item
+                name='numero_doc_referencia'
+                label="Nro/REF."
+                rules={[{ message: 'Por favor  ingrese el numero' }]}
+              >
+                <Input
+                  size={'small'}
+                  placeholder="Ej:000001"
+                />
+              </Form.Item>
+            </Col>
+            <Col xs={20} sm={15} md={4}>
+              <Form.Item
+                name='fecha_doc_referencia'
+                label='F/REF'
+                rules={[{  message: 'Por favor seleccione la fecha de referencia' }]}
+                initialValue={fecha}
+              >
+                <DatePicker
+                  size={'small'}
+                  style={{ width: '100%' }}
+                  format={'YYYY-MM-DD'}
                 />
               </Form.Item>
             </Col>

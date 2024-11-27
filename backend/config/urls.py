@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
-from core.views import ListOrigen,ListUbicacion,ListProveedor,ListDocument,ListCentroCosto,ListCuentas,TipoDeCambio
+from core.views import ListOrigen,ListUbicacion,ListProveedor,ListDocument,ListCentroCosto,ListCuentas,TipoDeCambio,VendedorView,GenericViews
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -31,4 +31,6 @@ urlpatterns = [
     path('api/v1/generics/list/centro-costo/<str:document>/',ListCentroCosto.as_view()),
     path('api/v1/generics/list/cuentas/<str:document>/',ListCuentas.as_view()),
     path('api/v1/tipo/cambio/<str:document>/',TipoDeCambio.as_view()),
+    path('api/v1/vendedor/list/<str:document>/',VendedorView.as_view()),
+    path('api/v1/generic/<str:document>/',GenericViews.as_view())
 ]

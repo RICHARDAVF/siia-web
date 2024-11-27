@@ -1,4 +1,3 @@
-
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
@@ -63,14 +62,11 @@ class SaveComporasView(GenericAPIView,DataBase):
             ) VALUES """
             correlativo = self.correlativo()
             for item in datos['items']:
-  
                 tipo_documento = datos["tipo_documento"].split("-")[0]
                 suma_total = self.sum_total()
-
                 params = ("53",str(self.fecha.month).zfill(2),datos['origen'],datos['ubicacion'],correlativo,self.fecha.strftime("%Y-%m-%d"),item['observacion'],item['cuenta'],auxiliar.codigo_cliente,tipo_documento,datos['numero_serie'],datos['numero_documento'],item['debe_soles'],item['haber_soles'],item['debe_dolares'],item['haber_dolares'],datos['tipo_cambio'],datos['observacion'],datos['codigo_usuario'],datos['codigo_vendedor'],datos['tipo_asiento'],suma_total,datos["fecha_emision"],item["moneda"],datos["fecha_vencimiento"],datos["dias"])
                 sql1 = sql+f"({','.join('?' for i in params)})"
                 self.query(document,sql1,params,'POST')
-
             return Response({'success':"Los datos se guardaron correctamente"},status=status.HTTP_200_OK)
         except Exception as e:
             print(str(e))
@@ -79,7 +75,6 @@ class SaveComporasView(GenericAPIView,DataBase):
         pass
     def sum_total(self):
         try:
-           
             return sum([float(item["haber_soles"]) for item in self.request.data["items"]])
         except Exception as e:
             raise ValueError(str(e))
@@ -108,11 +103,8 @@ class EditComprasView(GenericAPIView,DataBase):
             """
             headers = res[0]
             data = {
-
             }
-        
             params = (mes,origen,comporbante)
             res = self.query(document,sql,params,"GET",1)
-
         except Exception as e:
             return Response({"error":f"Ocurrio un error al recuperar la data:{str(e)}"})

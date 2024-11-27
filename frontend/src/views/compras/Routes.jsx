@@ -1,8 +1,8 @@
-import ListComprobates from "./movimientos/ListComprobantes"
+import ListComprobantes from "./movimientos/ListComprobantes"
 import RegistroComprobantes from "./movimientos/RegistroComprobantes"
 export const ComprasView =[
     {
-        "view":ListComprobates,
+        "view":ListComprobantes,
         "route":"/list/comprobantes",
     },
     {

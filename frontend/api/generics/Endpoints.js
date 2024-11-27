@@ -1,3 +1,5 @@
+import { json } from "react-router-dom"
+
 const endpointsGenerics = {
     Ubicacion:{
         get:async(url,token)=>{
@@ -124,6 +126,25 @@ const endpointsGenerics = {
                 return response
             }catch(erro){
                 return {"error":`Hubo problemas con conectarse con el servidor:${erro.toString()}`}
+            }
+        }
+    },
+    Vendedor:{
+        get:async(url,token)=>{
+            try{
+                const res = await fetch(url,{
+                    method:'GET',
+                    headers:{
+                        "Content-Type":'application/json',
+                        "Authorization":`Bearer ${token}`
+                    }
+                })
+                if(!res.ok){
+                    throw new Error("No se pudo procesar la respues")
+                }
+                return res.json()
+            }catch(erro){
+                return {"error":`Error:${erro.toString()}`}
             }
         }
     }
