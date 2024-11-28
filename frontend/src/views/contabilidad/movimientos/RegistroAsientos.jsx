@@ -1,11 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Space, Modal, Button, Table,  Form, Input, DatePicker, InputNumber, Row, Col, message, Select, Spin, Popconfirm } from 'antd';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Modal, Button, Table,  Form, Input, DatePicker, InputNumber, Row, Col, message, Select, Spin, Popconfirm } from 'antd';
+import { useLocation } from 'react-router-dom';
 import config from '../../../config';
 import { Context } from '../../../components/GlobalContext';
 import dayjs from 'dayjs'
 import endpointsGenerics from '../../../../api/generics/Endpoints';
-import { FaTrash } from 'react-icons/fa';
+import { FaEdit, FaTrash } from 'react-icons/fa';
+import Loading from '../../../components/Loading';
+import EndPointContabilidad from '../../../../api/contabilidad/apiAsientos';
 
 
 
@@ -15,9 +17,12 @@ const RegistroAsientos = () => {
   const [loading, setLoading] = useState(false)
   const [open, setOpen] = useState(false)
   const [auxiliar, setAuxiliar] = useState([])
+  const [itemEdit,setItemEdit] = useState(false)
+  const [indexItem,setIndexItem] = useState(null)
   const [data, setData] = useState([])
   const [cuentas,setCuentas] = useState([])
   const [ubicacion,setUbicacion] = useState([])
+  const [origen,setOrigen] = useState([])
   const [tipoAsiento,setTipoAsiento] = useState([])
   const [tipoCambio,setTipoCambio] = useState()
   const { BASE_URL } = config
@@ -33,7 +38,9 @@ const RegistroAsientos = () => {
   const [MyForm2] = Form.useForm()
   const fecha = dayjs()
   const {Cuentas,Proveedor,TipoCambio} = endpointsGenerics
+  const {Asientos} = EndPointContabilidad
   const location = useLocation()
+
   const { params } = location.state || {}
   const openModal = () => {
     setOpen(!open)
@@ -51,8 +58,8 @@ const RegistroAsientos = () => {
       const url = `${BASE_URL}/api/v1/generic/${document}/`
       const datos = {
         "query_string":"",
-        "tipo_origen":2,
-        "dates":['vendedor',"ubicacion","tipo-documento","tipo-asiento"]
+        "tipo_origen":3,
+        "dates":['vendedor',"ubicacion","tipo-documento","tipo-asiento","origen"]
       }
       const response = await fetch(url,{
         method:'POST',
@@ -68,6 +75,7 @@ const RegistroAsientos = () => {
       setVendedor(res.vendedor)
       setTipoDocumento(res.tipo_documento)
       setTipoAsiento(res.tipo_asiento)
+      setOrigen(res.origen)
     }catch(err){
       console.log(err)
     }finally{
@@ -91,14 +99,13 @@ const RegistroAsientos = () => {
       }
   
       const res = await TipoCambio.post(url, token, datos)
-      console.log(res)
       if(res.compra){
         setTipoCambio(res.compra)
         const newdata = procces_data(data)
         setData(newdata)
       }
     }catch(err){
-      console.log(err)
+      message.error(err.toString())
     }finally{
       setLoading(false)
     }
@@ -160,14 +167,24 @@ const RegistroAsientos = () => {
   }
   const add_row=(values)=>{
     const values1 = MyForm1.getFieldsValue()
-
-    const newdata = {
+    const new_values = {
       ...values,"fecha_vencimiento":values.fecha_vencimiento.format("YYYY-MM-DD"),
       "fecha_emision":values1.fecha_emision.format("YYYY-MM-DD"),
       "tipo_cambio":tipoCambio
       
     }
-    setData([...data,newdata])
+    var newdata  = []
+    if(itemEdit && indexItem){
+      const new_array = [...data]
+      new_array[indexItem] = new_values
+       newdata = procces_data(new_array)
+    }else{
+      const new_array = [...data,new_values]
+       newdata = procces_data(new_array)
+    }
+    setData(newdata)
+    setItemEdit(false)
+    setIndexItem(null)
     MyForm2.resetFields()
   }
   const procces_data=(data)=>{
@@ -198,23 +215,44 @@ const RegistroAsientos = () => {
     const data_new = procces_data(newdata)
     setData(data_new)
   }
+  const editItem=(index,row)=>{
+    var dates = data[index]
+    setItemEdit(true)
+    dates.fecha_vencimiento = dayjs(dates.fecha_vencimiento)
+    MyForm2.setFieldsValue(dates)
+    setIndexItem(index)
+    openModal()
+      
+  }
   const columns = [
     {
       title:"Opcion",
       dataIndex:"opcion",
       key:"opcion",
       render:(_,row,index)=>(
-        <Popconfirm
-        title="Eliminar item"
-        description= "¿Esta seguro de eliminar?"
-        okText="Si"
-        onConfirm={()=>deleteItem(index,row)}
-        cancelText="No"
-        key={index}
-        >
-          <FaTrash style={{color:"red",cursor:"pointer"}}/>
+        <Row style={{justifyContent:'space-between'}}>
+          <Popconfirm
+          title="Eliminar item"
+          description= "¿Esta seguro de eliminar?"
+          okText="Si"
+          onConfirm={()=>deleteItem(index,row)}
+          cancelText="No"
+          key={index}
+          >         
+              <FaTrash style={{color:"red",cursor:"pointer"}}/>
 
-        </Popconfirm>
+          </Popconfirm>
+          <Popconfirm
+          title="Editar item"
+          description= "¿Esta seguro de editar?"
+          okText="Si"
+          onConfirm={()=>editItem(index,row)}
+          cancelText="No"
+          key={index}
+          >
+            <FaEdit style={{color:'green',cursor:'pointer'}}/>
+          </Popconfirm>
+        </Row>
       )
     },
     {
@@ -285,14 +323,42 @@ const RegistroAsientos = () => {
       dataIndex: 'fecha_vencimiento',
     }
   ]
-
+  const saveData=async(values)=>{
+    try{
+      if(Math.abs(haberSoles-debeSoles)!=0){
+        return message.error("El haber y el debe difieren")
+      }
+      const url = `${BASE_URL}/api/v1/contabilidad/save/asientos/${document}/`
+      setLoading(true)
+      const datos = {
+        ...values,
+        items:data
+      }
+      const res = await Asientos.post(url,datos,token)
+      if(res.success){
+        MyForm1.resetFields()
+        setData([])
+        setHaberDolares(0)
+        setHaberSoles(0)
+        setDebeDolares(0)
+        setDebeSoles(0)
+        message.success("Asientos guardados exitosamente")
+      }else{
+        message.error(res.error)
+      }
+    }catch(err){
+      message.error('Ocurrio un error '+e.toString())
+    }finally{
+      setLoading(false)
+    }
+  }
   return (
-    <div>
+    <div style={{position:'relative'}}>
       <div>
         <Form
           name='form-asientas-contables'
           className='form-asientos'
-          onFinish={(values) => console.log(values)}
+          onFinish={saveData}
           layout={'horizontal'}
           form={MyForm1}
         >
@@ -316,6 +382,8 @@ const RegistroAsientos = () => {
                 initialValue={fecha}
               >
                 <DatePicker style={{ width: '100%' }}
+                  format={'YYYY-MM-DD'}
+                  onCalendarChange={(value)=>requestTipoCambio(value)}
                   size={'small'} />
               </Form.Item>
             </Col>
@@ -329,6 +397,24 @@ const RegistroAsientos = () => {
                 <Select
                 options={tipoAsiento}
                 size='small'
+                />
+              </Form.Item>
+            </Col>
+            <Col xs={20} sm={15} md={8}>
+              <Form.Item
+                name='origen'
+                label='Origen'
+                rules={[{ required: true, message: 'Por favor seleccione un origen' }]}
+              >
+                <Select
+                  size={'small'}
+                  placeholder="Buscar..."
+                  showSearch
+                  options={origen}
+                  optionRender={(row) => (
+                    <div style={{ fontSize: 10 }}>{row.value} - {row.label}</div>
+                  )}
+
                 />
               </Form.Item>
             </Col>
@@ -353,20 +439,53 @@ const RegistroAsientos = () => {
                 />
               </Form.Item>
             </Col>
+            
           </Row>
-
+          <Col xs={20} sm={15} md={10}>
+              <Form.Item
+                name='observacion'
+                label={<span>Obs/Glosa</span>}
+                rules={[{ message: 'Por favor  ingrese el numero de deposito' }]}
+              >
+                <Input
+                  size={'small'}
+                  placeholder='Observacion'
+                />
+              </Form.Item>
+            </Col>
+          <Row>
+          <Button onClick={openModal} style={{ background: 'green', color: 'white' }} >
+              Agregar
+            </Button>
+            <Button htmlType='submit' style={{ background: 'blue', color: 'white' }}>
+              Guardar
+            </Button>   
+          </Row>
         </Form>
       </div>
-      <div>
-
-      <Button size='small' onClick={openModal} style={{background:'blue',color:'white'}} >
-        AGREGAR
-      </Button>
-      <Button size='small' onClick={openModal} style={{background:'green',color:'white'}}>
-        GUARDAR
-      </Button>
-      </div>
-      <Table columns={columns} dataSource={data} rowKey={(record)=>`${record.serie}-${record.numero}-${record.vendedor}`} />
+      <Table 
+      columns={columns} 
+      dataSource={data}
+      scroll={{x:'max-content'}} 
+      rowKey={(record)=>`${record.serie}-${record.numero}-${record.vendedor}`} />
+      <Row gutter={16} style={{ justifyContent: 'center', alignContent: 'center', alignItems: 'center' }}>
+          <Col xs={24} sm={12} md={4}>
+            <label>HABER S/</label>
+            <Input value={haberSoles} />
+          </Col>
+          <Col xs={24} sm={12} md={4}>
+            <label>DEBE S/</label>
+            <Input value={debeSoles} />
+          </Col>
+          <Col xs={24} sm={12} md={4}>
+            <label>HABER $/</label>
+            <Input value={haberDolares} />
+          </Col>
+          <Col xs={24} sm={12} md={4}>
+            <label>DEBE $/</label>
+            <Input value={debeDolares} />
+          </Col>
+        </Row>
       <Modal
         title="Registros de un nuevo asiento"
         open={open}
@@ -647,6 +766,7 @@ const RegistroAsientos = () => {
           </Form>
         </div>
       </Modal>
+      <Loading status={loading}/>
     </div>
   )
 }

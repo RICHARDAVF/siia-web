@@ -80,7 +80,7 @@ const ListAsientos=()=>{
     return (
         <div style={{position:'relative'}}>
             <div>
-                <input type="button" value={"AGREGAR"} style={{background:'blue',color:'white',borderRadius:5,padding:3}} onClick={()=>navigate('/registro/asientos',{status:{params:{"action":"add"}}})}/>
+                <input type="button" value={"AGREGAR"} style={{background:'blue',color:'white',borderRadius:5,padding:3,cursor:'pointer'}} onClick={()=>navigate('/registro/asientos',{status:{params:{"action":"add"}}})}/>
             </div>
             <Table 
             dataSource={data} 

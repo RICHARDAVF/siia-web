@@ -12,7 +12,9 @@ const endpointsCompras = {
                 })
                 return response.json()
             } catch(error){
-                return {'error':error.toString}()}
+                return {'error':error.toString()}
+
+                }
         }
     }
 }
