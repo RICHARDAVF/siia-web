@@ -27,12 +27,12 @@ const RegistroComprobantes = () => {
   const [MyForm2] = Form.useForm()
   const { params } = location.state || {}
   const { BASE_URL } = config
-  const { token, document, user,updateState } = useContext(Context)
+  const { token, document, user } = useContext(Context)
 
   const fecha = dayjs()
-  const { Ubicacion, Proveedor, Document, CentroCostos, Cuentas, TipoCambio } = endpointsGenerics
+  const {  Proveedor, Cuentas, TipoCambio } = endpointsGenerics
   const { Compras } = endpointsCompras
-  const [tipoCambio, setTipoCambio] = useState()
+  const [tipoCambio, setTipoCambio] = useState(0)
   const [debeSoles,setDebeSoles] = useState(0)
   const [haberSoles,setHaberSoles] = useState(0)
   const [debeDolares,setDebeDolares] = useState(0)
@@ -94,43 +94,8 @@ const RegistroComprobantes = () => {
     }
   }
 
-  const requestOrigen = async () => {
-    setLoading(true)
-    try {
-      const datos = {
-        query_string: '',
-        tipo_origen: 1
-      }
-      const url = `${BASE_URL}/api/v1/generics/list/origen/${document}/`
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(datos)
-      })
-      const res = await response.json()
-      if (res.error) {
-        message.error(res.error)
-      } else {
-        setOrigen(res)
-      }
-    } catch (error) {
-      message.error(error)
-    } finally {
-      setLoading(false)
-    }
-  }
-  const requestUbicacion = async () => {
-    const url = `${BASE_URL}/api/v1/generics/list/ubicacion/${document}/`
-    const res = await Ubicacion.get(url, token)
-    if (res.error) {
-      message.error(res.error)
-    } else {
-      setUbicacion(res)
-    }
-  }
+
+
   const deleteItem = (index, row) => {
 
     const newdata = [...data]
@@ -248,24 +213,8 @@ const RegistroComprobantes = () => {
       setProveedor(res)
     }
   }
-  const requestTipoDocument = async () => {
-    const url = `${BASE_URL}/api/v1/generics/list/document/${document}/`
-    const res = await Document.get(url, token)
-    if (res.error) {
-      message.error(res.error)
-    } else {
-      setTipoDocument(res)
-    }
-  }
-  const requestCentroCostos = async () => {
-    const url = `${BASE_URL}/api/v1/generics/list/centro-costo/${document}/`
-    const res = await CentroCostos.get(url, token)
-    if (res.error) {
-      message.error(res.error)
-    } else {
-      setCentroCostos(res)
-    }
-  }
+
+
   const procces_data=(data)=>{
     var haber_soles = 0
     var debe_soles = 0
@@ -523,8 +472,6 @@ const RegistroComprobantes = () => {
                   style={{ width: '100%' }}
                   format={'YYYY-MM-DD'}
                 // defaultValue={fecha}
-
-
 
                 />
               </Form.Item>

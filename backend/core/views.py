@@ -149,7 +149,7 @@ class TipoDocumento:
             data = [
                 {
                     "id":index,
-                    "value":f"{value[0].strip()}",
+                    "value":f"{value[0].strip()}-{value[2].strip()}",
                     "label":value[1].strip()
                 } for index,value in enumerate(res)
             ]
@@ -174,7 +174,30 @@ class CentroCostos:
             return data
         except Exception as e:
             raise ValueError(str(e))
+class GetTipoAsiento:
+    def __init__(self,document,query):
+        self.document = document
+        self.query = query
+    def get(self):
+        try:
+            sql = f"""
+            SELECT tpa_codigo,tpa_nombre FROM t_tipoasie
 
+"""
+            res = self.query(self.document,sql,(),"GET",1)
+      
+            data = [
+                {
+                    "id":index,
+                    "value":int(value[0]),
+                    "label":value[1].strip()
+                } for index,value in enumerate(res)
+            ]
+            
+            return data
+        except Exception as e:
+            print(str(e))
+            raise ValueError(str(e))
 class ListOrigen(GenericAPIView,DataBase):
     permission_classes = [AllowAny]
     authentication_classes = [TokenAuthentication]
@@ -326,6 +349,7 @@ class ListCuentas(GenericAPIView,DataBase):
                 OR pla_nombre LIKE '%{query_string}%'
 """
             res = self.query(document,sql,(),'GET',1)
+       
             data = [
                 {
                     'id':index,
@@ -390,6 +414,10 @@ class GenericViews(GenericAPIView,DataBase):
             if 'vendedor' in request.data['dates']:
                 instance = GetVendedor(document,self.query)
                 data['vendedor'] = instance.get()
+            if "tipo-asiento" in request.data["dates"]:
+                instance = GetTipoAsiento(document,self.query)
+                data["tipo_asiento"] = instance.get()
             return Response(data,status=status.HTTP_200_OK)
         except Exception as e:
+     
             return Response({"error":f"Ocurrio un error:{str(e)}"})

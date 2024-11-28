@@ -69,7 +69,7 @@ class SaveComporasView(GenericAPIView,DataBase):
                 self.query(document,sql1,params,'POST')
             return Response({'success':"Los datos se guardaron correctamente"},status=status.HTTP_200_OK)
         except Exception as e:
-            print(str(e))
+
             return Response({"error":f"Ocurrio un error: {str(e)}"},status= status.HTTP_500_INTERNAL_SERVER_ERROR)
     def validate(self):
         pass
