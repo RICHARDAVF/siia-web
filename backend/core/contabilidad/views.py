@@ -52,13 +52,13 @@ class SaveAsientosView(GenericAPIView,DataBase):
                     ) VALUES
 """
             correlativo = self.correlativo()
+
             for item in request.data['items']:
                 tipo_documento = item['tipo_documento'].split('-')[0]
                 auxiliar = GetAuxiliar(document,self.query,item['auxiliar'])
                 suma_total = self.suma_total()
-                params = ("53",str(self.fecha.month).zfill(2),datos['origen'],datos['ubicacion'],correlativo,self.fecha.strftime("%Y-%m-%d"),item['observacion'],item['cuenta'],auxiliar.codigo_cliente,tipo_documento,item['serie'],item['numero'],item['debe_soles'],item['haber_soles'],item['debe_dolares'],item['haber_dolares'],datos['tipo_cambio'],datos['observacion'],datos['codigo_usuario'],datos['vendedor'],datos['tipo_asiento'],suma_total,datos["fecha_emision"],item["moneda"],item["fecha_vencimiento"],datos["dias"])
+                params = ("53",str(self.fecha.month).zfill(2),datos['origen'],datos['ubicacion'],correlativo,self.fecha.strftime("%Y-%m-%d"),item['glosa'],item['cuenta'],auxiliar.codigo_cliente,tipo_documento,item['serie'],item['numero'],item['debe_soles'],item['haber_soles'],item['debe_dolares'],item['haber_dolares'],item['tipo_cambio'],datos['observacion'],datos['codigo_usuario'],item['vendedor'],datos['tipo_asiento'],suma_total,datos["fecha_emision"],item["moneda"],item["fecha_vencimiento"],datos["dias"])
                 sql1 = sql+f"({','.join('?' for i in params)})"
-                params = ()
                 self.query(document,sql1,params,'POST')
             return Response({"success":f"Los datos se guardaron exitosamente"},status=status.HTTP_200_OK)
         except Exception as e:

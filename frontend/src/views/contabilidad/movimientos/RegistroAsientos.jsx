@@ -40,7 +40,7 @@ const RegistroAsientos = () => {
   const {Cuentas,Proveedor,TipoCambio} = endpointsGenerics
   const {Asientos} = EndPointContabilidad
   const location = useLocation()
-
+  const button_add_edit = itemEdit?'Editar':'Agregar'
   const { params } = location.state || {}
   const openModal = () => {
     setOpen(!open)
@@ -167,14 +167,17 @@ const RegistroAsientos = () => {
   }
   const add_row=(values)=>{
     const values1 = MyForm1.getFieldsValue()
+
     const new_values = {
+      
       ...values,"fecha_vencimiento":values.fecha_vencimiento.format("YYYY-MM-DD"),
       "fecha_emision":values1.fecha_emision.format("YYYY-MM-DD"),
-      "tipo_cambio":tipoCambio
+      "tipo_cambio":tipoCambio,
+
       
     }
     var newdata  = []
-    if(itemEdit && indexItem){
+    if(itemEdit){
       const new_array = [...data]
       new_array[indexItem] = new_values
        newdata = procces_data(new_array)
@@ -216,7 +219,7 @@ const RegistroAsientos = () => {
     setData(data_new)
   }
   const editItem=(index,row)=>{
-    var dates = data[index]
+    var dates ={...data[index]}
     setItemEdit(true)
     dates.fecha_vencimiento = dayjs(dates.fecha_vencimiento)
     MyForm2.setFieldsValue(dates)
@@ -332,7 +335,10 @@ const RegistroAsientos = () => {
       setLoading(true)
       const datos = {
         ...values,
-        items:data
+        "fecha_contable":values.fecha_contable.format("YYYY-MM-DD"),
+        "fecha_emision":values.fecha_emision.format("YYYY-MM-DD"),
+        items:data,
+        ...user
       }
       const res = await Asientos.post(url,datos,token)
       if(res.success){
@@ -757,10 +763,10 @@ const RegistroAsientos = () => {
             <Row style={{ justifyContent: 'end' }}>
 
               <Col xs={24} sm={12} md={6} style={{ justifyContent: 'end' }}>
-                <Button style={{ background: 'red', color: 'white' }} type='button' id='btn-cancelar' onClick={() => openModal()}>CANCELAR</Button>
+                <Button style={{ background: 'red', color: 'white' }} type='button' id='btn-cancelar' onClick={() => openModal()}>Cerrar</Button>
               </Col>
               <Col xs={24} sm={12} md={6} style={{ justifyContent: 'end' }}>
-                <Button style={{ background: 'blue', color: 'white' }} htmlType='submit' id='bn-agregar' type='submit'>AGREGAR</Button>
+                <Button style={{ background: 'blue', color: 'white' }} htmlType='submit' id='bn-agregar' type='submit'>{button_add_edit}</Button>
               </Col>
             </Row>
           </Form>

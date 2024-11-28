@@ -53,7 +53,8 @@ const ListAsientos=()=>{
             title:"Fecha",
             dataIndex:"fecha",
             key:'fecha',
-            render:(text)=><p>{text}</p>
+            render:(text)=><p>{text}</p>,
+            sortDirections: ['descend', 'ascend']
         },
         {
             title:'Mes',
