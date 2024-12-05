@@ -18,7 +18,8 @@ const items = [
                 children:[
                     {
                         key:"211",
-                        label:"Plan Contable"
+                        label:"Plan Contable",
+                        route:"/registro/plan/contable"
                     },
                     {
                         key:"212",
@@ -37,7 +38,8 @@ const items = [
                     },
                     {
                         key:'222',
-                        label:"Registro de Retenciones Anticipadas y Letras"
+                        label:"Registro de Retenciones Anticipadas y Letras",
+                        route:"/registro/retenciones"
                     },
                 ]
             }
@@ -68,11 +70,33 @@ const items = [
                         label:"Comprobantes",
                         route:"/list/comprobantes"
                     },
-                    // {
-                    //     key:"412",
-                    //     label:"Registro de Comprobantes",
-                    //     route:"/registro/comprobantes"
-                    // }
+                    {
+                        key:"412",
+                        label:"Recepcion de Documentos",
+                        route:"/recepcion/documentos"
+                    }
+                ]
+            },
+            {
+                key:"42",
+                label:"Mantenimientos",
+                children:[
+                    {
+                        key:"421",
+                        label:"Condicion de pago",
+                        route:"/registro/condicion-pago"
+                    }
+                ]
+            },
+            {
+                key:"43",
+                label:"Reportes",
+                children:[
+                    {
+                        key:"431",
+                        label:"Cuentas por Pagar",
+                        route:"reporte/cuentas-pagar"
+                    }
                 ]
             }
         ]

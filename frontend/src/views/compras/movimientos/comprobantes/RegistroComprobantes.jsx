@@ -1,13 +1,13 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Modal, Button, Table, Form, Input, DatePicker, Popconfirm, InputNumber, Row, Col, message, Select, Spin, Checkbox } from 'antd';
 import { useLocation } from 'react-router-dom';
-import config from '../../../config';
-import { Context } from '../../../components/GlobalContext';
-import endpointsGenerics from '../../../../api/generics/Endpoints';
-import endpointsCompras from '../../../../api/compras/apiCompras';
+import config from '../../../../config';
+import { Context } from '../../../../components/GlobalContext';
+import endpointsGenerics from '../../../../../api/generics/Endpoints';
+import endpointsCompras from '../../../../../api/compras/apiCompras';
 import dayjs from 'dayjs';
 import { FaTrash } from 'react-icons/fa'
-import Loading from '../../../components/Loading';
+import Loading from '../../../../components/Loading';
 const { TextArea } = Input;
 const { Option } = Select
 const RegistroComprobantes = () => {

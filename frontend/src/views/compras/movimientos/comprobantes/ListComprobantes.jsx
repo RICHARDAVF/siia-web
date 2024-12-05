@@ -1,8 +1,8 @@
 import { useContext, useEffect, useRef, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { Context } from "../../../components/GlobalContext"
-import config from "../../../config"
-import Loading from "../../../components/Loading"
+import { Context } from "../../../../components/GlobalContext"
+import config from "../../../../config"
+import Loading from "../../../../components/Loading"
 import { Input, Table,message } from "antd"
 import { FaCheck, FaEdit } from "react-icons/fa"
 const ListComprobantes=()=>{

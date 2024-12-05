@@ -1,13 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Modal, Button, Table,  Form, Input, DatePicker, InputNumber, Row, Col, message, Select, Spin, Popconfirm } from 'antd';
 import { useLocation } from 'react-router-dom';
-import config from '../../../config';
-import { Context } from '../../../components/GlobalContext';
+import config from '../../../../config';
+import { Context } from '../../../../components/GlobalContext';
 import dayjs from 'dayjs'
-import endpointsGenerics from '../../../../api/generics/Endpoints';
+import endpointsGenerics from '../../../../../api/generics/Endpoints';
 import { FaEdit, FaTrash } from 'react-icons/fa';
-import Loading from '../../../components/Loading';
-import EndPointContabilidad from '../../../../api/contabilidad/apiAsientos';
+import Loading from '../../../../components/Loading';
+import EndPointContabilidad from '../../../../../api/contabilidad/apiAsientos';
 
 
 

@@ -1,11 +1,9 @@
 import { Route, Routes } from "react-router-dom"
 import Home from "./Home"
-import RegistroAsientos from "../views/contabilidad/movimientos/RegistroAsientos.jsx"
 import TipoCambio from "../views/gerencial/mantenimiento/TipoCambio.jsx"
-import ListAsientos from "../views/contabilidad/movimientos/ListAsientos.jsx"
-import { ComprasView } from "../views/compras/Routes.jsx"
-import RegistroComprobantes from "../views/compras/movimientos/RegistroComprobantes.jsx"
-import { ContabilidadView } from "../views/contabilidad/Routes.js"
+import { ComprasView, CondicionPagoView, RecepcionDocumentosView, ReportesView } from "../views/compras/Routes.jsx"
+import { ContabilidadView, PlanContableView, RetencionesView } from "../views/contabilidad/Routes.js"
+
 const BuildRoutes=(views)=>{
     
     return views.map((item)=>{
@@ -26,6 +24,11 @@ const ContentViews=()=>{
                 {/* <Route path="/registro/comprobantes" element={<RegistroComprobantes/>}/> */}
                 {BuildRoutes(ComprasView)}
                 {BuildRoutes(ContabilidadView)}
+                {BuildRoutes(PlanContableView)}
+                {BuildRoutes(RetencionesView)}
+                {BuildRoutes(RecepcionDocumentosView)}
+                {BuildRoutes(CondicionPagoView)}
+                {BuildRoutes(ReportesView)}
 
             </Routes>
 

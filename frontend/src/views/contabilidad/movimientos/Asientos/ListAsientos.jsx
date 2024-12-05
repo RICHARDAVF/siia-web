@@ -1,10 +1,10 @@
 import { Table,message } from "antd"
 import { useContext, useEffect,useState } from "react"
-import config from "../../../config"
-import { Context } from "../../../components/GlobalContext"
+import config from "../../../../config"
+import { Context } from "../../../../components/GlobalContext"
 import { FaEdit } from "react-icons/fa"
 import { useNavigate } from "react-router-dom"
-import Loading from "../../../components/Loading"
+import Loading from "../../../../components/Loading"
 
 const ListAsientos=()=>{
     const [data,setData]=useState([])
