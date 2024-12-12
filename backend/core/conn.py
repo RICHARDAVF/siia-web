@@ -6,7 +6,7 @@ class DataBase:
         try:
             client = Clients.objects.get(document=docum)
             query_string = "DRIVER={SQL Server};SERVER="+client.db_host+";DATABASE="+client.db_name+";UID="+client.db_user+";PWD="+client.decrypt_password()
-            return pyodbc.connect(query_string)    
+            return pyodbc.connect(query_string)
         except Exception as e:
             raise ValueError(f"No se pudo establecer conexion a la base de datos:{str(e)}")
     @classmethod

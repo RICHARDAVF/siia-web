@@ -713,7 +713,7 @@ const RegistroAsientos = () => {
                     size='small'
                     onChange={(value) => clean_input(value, 2)}
 
-                  
+
                   />
                 </Form.Item>
               </Col>
