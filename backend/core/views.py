@@ -5,8 +5,10 @@ from core.conn import DataBase
 from config.middleware import TokenAuthentication
 from rest_framework.permissions import AllowAny
 from rest_framework import status
+
 from datetime import datetime
 import requests
+
 # Create your views here.
 class TipoCambio:
     def __init__(self,document:str,user_codigo:str,query,fecha:datetime = None ):
@@ -206,8 +208,14 @@ class ListOrigen(GenericAPIView,DataBase):
             document = kwargs["document"]
             query_string = request.data["query_string"]
             tipo_origen = request.data["tipo_origen"]
+
+            sql = f"SELECT ori_codigo,ori_nombre FROM t_origen WHERE ori_tipo=? LIKE ori_nombre '%{query_string}%' OR ori_codigo LIKE '%{query_string}%' "
+
             sql = f"SELECT ori_codigo,ori_nombre FROM t_origen WHERE ori_tipo=? AND (ori_nombre LIKE '%{query_string}%' OR ori_codigo LIKE '%{query_string}%') "
+
             res = self.query(document,sql,(tipo_origen,),"GET",1)
+
+
             data = [
                 {
                     "id":index,
@@ -217,7 +225,9 @@ class ListOrigen(GenericAPIView,DataBase):
             ]
             return Response(data,status=status.HTTP_200_OK)
         except Exception as e:
+
             return Response({"error":f"Ocurrio un error: {str(e)}"},status=status.HTTP_400_BAD_REQUEST)
+
 class ListUbicacion(GenericAPIView,DataBase):
     permission_classes = [AllowAny]
     authentication_classes = [TokenAuthentication]
@@ -364,6 +374,7 @@ class ListCuentas(GenericAPIView,DataBase):
             return Response({
                 'error':f'Ocurrio un un error :{str(e)}'
             },status = status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 class TipoDeCambio(GenericAPIView,DataBase):
     permission_classes = [AllowAny]
     authentication_classes = [TokenAuthentication]

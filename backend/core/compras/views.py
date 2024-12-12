@@ -73,6 +73,7 @@ class SaveComporasView(GenericAPIView,DataBase):
 
             return Response({"error":f"Ocurrio un error: {str(e)}"},status= status.HTTP_500_INTERNAL_SERVER_ERROR)
     def validate(self):
+<<<<<<< HEAD
         pass
     def sum_total(self):
         try:
@@ -194,3 +195,9 @@ class SaveTipoCambio(GenericAPIView,DataBase):
             return data
         except Exception as e:
             raise ValueError(str(e))
+=======
+        """
+        cambios para la rama produccion
+        """
+        pass
+>>>>>>> 462e34c56237d8935239d4ffb58c7ecacefada26
