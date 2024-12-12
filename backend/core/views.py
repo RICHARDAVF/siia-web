@@ -352,7 +352,7 @@ class ListCuentas(GenericAPIView,DataBase):
        
             data = [
                 {
-                    'id':index,
+                    'id':f"{index}-{value[-1].strip()}",
                     'value':value[0].strip(),
                     'label':value[1].strip(),
                     'moneda':value[2].strip()
@@ -360,6 +360,7 @@ class ListCuentas(GenericAPIView,DataBase):
             ]
             return Response(data,status=status.HTTP_200_OK)
         except Exception as e:
+            print(str(e))
             return Response({
                 'error':f'Ocurrio un un error :{str(e)}'
             },status = status.HTTP_500_INTERNAL_SERVER_ERROR)

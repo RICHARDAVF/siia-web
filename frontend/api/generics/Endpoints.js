@@ -1,5 +1,5 @@
-import { json } from "react-router-dom"
 
+import { MANY_DATA_LIST } from "../../service/urls"
 const endpointsGenerics = {
     Ubicacion:{
         get:async(url,token)=>{
@@ -146,6 +146,25 @@ const endpointsGenerics = {
             }catch(erro){
                 return {"error":`Error:${erro.toString()}`}
             }
+        }
+    },
+    ManyData:{
+        post:async(document,token,datos)=>{
+            try{
+                const url = MANY_DATA_LIST(document)
+                const res = await fetch(url,{
+                    method:'POST',
+                    headers:{
+                        'Content-Type':'application/json',
+                        'Authorization':`Bearer ${token}`
+                    },
+                    body:JSON.stringify(datos)
+                })
+                return await res.json()
+            }catch(error){
+                return {'error':error.toString()}
+            }
+
         }
     }
 }
