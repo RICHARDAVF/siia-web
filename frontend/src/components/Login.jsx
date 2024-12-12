@@ -27,8 +27,15 @@ function Login({ onLogin }) {
 
       if (response.ok) {
         const res = await response.json();
+<<<<<<< HEAD
 
+=======
+<<<<<<< HEAD
+        updateState({ "token": res.token, "document": values.document });
+=======
+>>>>>>> 462e34c56237d8935239d4ffb58c7ecacefada26
         updateState({ "token": res.token, "document": values.document,"user":res });
+>>>>>>> 1cb272c945efe937f26e0e9ac473a96cbaf6a71f
 
         setTimeout(() => {
           onLogin(res);

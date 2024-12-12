@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+import { Table } from "antd"
+=======
 import { Table,message } from "antd"
+>>>>>>> 1cb272c945efe937f26e0e9ac473a96cbaf6a71f
 import { useContext, useEffect,useState } from "react"
 import config from "../../../../config"
 import { Context } from "../../../../components/GlobalContext"
@@ -19,6 +23,19 @@ const ListAsientos=()=>{
         navigate("/registro/asiento",{state:{'params':item}})
     }
     const requestAsientos=async()=>{
+<<<<<<< HEAD
+        const url = `${BASE_URL}/api/v1/contabilidad/list/${document}/`
+        const response=await fetch(url,{
+            method:'POST',
+            headers:{
+                "Content-Type":'applicaion/json',
+                "Authorization":`Bearer ${token}` 
+            }
+        })
+        const res = await response.json()
+
+        setData(res.data)
+=======
         try{
             setLoading(true)
             const url = `${BASE_URL}/api/v1/contabilidad/list/${document}/`
@@ -37,6 +54,7 @@ const ListAsientos=()=>{
             setLoading(false)
         }
       
+>>>>>>> 1cb272c945efe937f26e0e9ac473a96cbaf6a71f
 
     }
     const columns = [

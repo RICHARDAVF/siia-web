@@ -5,8 +5,15 @@ from core.conn import DataBase
 from config.middleware import TokenAuthentication
 from rest_framework.permissions import AllowAny
 from rest_framework import status
+<<<<<<< HEAD
+
+=======
 from datetime import datetime
+<<<<<<< HEAD
 import requests
+=======
+>>>>>>> 1cb272c945efe937f26e0e9ac473a96cbaf6a71f
+>>>>>>> 462e34c56237d8935239d4ffb58c7ecacefada26
 # Create your views here.
 class TipoCambio:
     def __init__(self,document:str,user_codigo:str,query,fecha:datetime = None ):
@@ -206,8 +213,16 @@ class ListOrigen(GenericAPIView,DataBase):
             document = kwargs["document"]
             query_string = request.data["query_string"]
             tipo_origen = request.data["tipo_origen"]
+<<<<<<< HEAD
+            sql = f"SELECT ori_codigo,ori_nombre FROM t_origen WHERE ori_tipo=? LIKE ori_nombre '%{query_string}%' OR ori_codigo LIKE '%{query_string}%' "
+=======
             sql = f"SELECT ori_codigo,ori_nombre FROM t_origen WHERE ori_tipo=? AND (ori_nombre LIKE '%{query_string}%' OR ori_codigo LIKE '%{query_string}%') "
+<<<<<<< HEAD
             res = self.query(document,sql,(tipo_origen,),"GET",1)
+=======
+>>>>>>> 1cb272c945efe937f26e0e9ac473a96cbaf6a71f
+            res = self.query(documnet,sql,(tipo_origen,),"GET",1)
+>>>>>>> 462e34c56237d8935239d4ffb58c7ecacefada26
             data = [
                 {
                     "id":index,
@@ -217,6 +232,9 @@ class ListOrigen(GenericAPIView,DataBase):
             ]
             return Response(data,status=status.HTTP_200_OK)
         except Exception as e:
+<<<<<<< HEAD
+            return Response({"error":f"Ocurrio un error: {str(e)}"},status=status.HTTP_400_BAD_REQUEST)
+=======
             return Response({"error":f"Ocurrio un error: {str(e)}"},status=status.HTTP_400_BAD_REQUEST)
 class ListUbicacion(GenericAPIView,DataBase):
     permission_classes = [AllowAny]
@@ -364,6 +382,7 @@ class ListCuentas(GenericAPIView,DataBase):
             return Response({
                 'error':f'Ocurrio un un error :{str(e)}'
             },status = status.HTTP_500_INTERNAL_SERVER_ERROR)
+<<<<<<< HEAD
 class TipoDeCambio(GenericAPIView,DataBase):
     permission_classes = [AllowAny]
     authentication_classes = [TokenAuthentication]
@@ -422,3 +441,6 @@ class GenericViews(GenericAPIView,DataBase):
         except Exception as e:
      
             return Response({"error":f"Ocurrio un error:{str(e)}"})
+=======
+>>>>>>> 1cb272c945efe937f26e0e9ac473a96cbaf6a71f
+>>>>>>> 462e34c56237d8935239d4ffb58c7ecacefada26
