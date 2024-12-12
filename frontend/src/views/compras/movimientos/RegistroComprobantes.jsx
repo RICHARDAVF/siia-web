@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Modal, Button, Table, Form, Input, DatePicker, Popconfirm, InputNumber, Row, Col, message, Select, Spin, Checkbox } from 'antd';
 import { useLocation } from 'react-router-dom';
@@ -8,10 +9,20 @@ import endpointsCompras from '../../../../api/compras/apiCompras';
 import dayjs from 'dayjs';
 import { FaTrash } from 'react-icons/fa'
 import Loading from '../../../components/Loading';
+=======
+import React, { useContext, useEffect, useState } from 'react';
+import { Space, Modal, Button, Table, Tag, Form, Input, DatePicker, InputNumber, Row, Col, message, Select, Spin,Checkbox } from 'antd';
+import { useLocation, useNavigate } from 'react-router-dom';
+import config from '../../../config';
+import { Context } from '../../../components/GlobalContext';
+
+>>>>>>> 462e34c56237d8935239d4ffb58c7ecacefada26
 const { TextArea } = Input;
 const { Option } = Select
 const RegistroComprobantes = () => {
+  const [option, setOption] = useState([])
   const [loading, setLoading] = useState(false)
+<<<<<<< HEAD
   const [origen, setOrigen] = useState([])
   const [ubicacion, setUbicacion] = useState([])
   const [proveedor, setProveedor] = useState([])
@@ -22,11 +33,20 @@ const RegistroComprobantes = () => {
   const [detracion, setDetraccion] = useState(false)
   const [data, setData] = useState([])
   const [blockInput, setBlockInput] = useState('')
+=======
+  const [orige,setOrigen] = useState([])
+  const [ubicacion,setUbicacion] = useState([])
+  const [proveedor,setProveedor] = useState([])
+  const [tipoDocument,setTipoDocument] = useState([])
+  const [open, setOpen] = useState(false)
+  const [auxiliar, setAuxiliar] = useState([])
+  const [vendedores, setVendedores] = useState([])
+  const [data, setData] = useState([])
+>>>>>>> 462e34c56237d8935239d4ffb58c7ecacefada26
   const location = useLocation()
-  const [MyForm1] = Form.useForm()
-  const [MyForm2] = Form.useForm()
   const { params } = location.state || {}
   const { BASE_URL } = config
+<<<<<<< HEAD
   const { token, document, user } = useContext(Context)
 
   const fecha = dayjs()
@@ -38,6 +58,14 @@ const RegistroComprobantes = () => {
   const [debeDolares,setDebeDolares] = useState(0)
   const [haberDolares,setHaberDolares] = useState(0)
 
+=======
+  const { token, document } = useContext(Context)
+  const fecha = new Date()
+  const [values, setValues] = useState({
+    fecha_contable: `${fecha.getFullYear()}-${(fecha.getMonth() + 1).toString().padStart(2, '0')}-${fecha.getDate().toString().padStart(2, '0')}`,
+    fecha_emision: `${fecha.getFullYear()}-${(fecha.getMonth() + 1).toString().padStart(2, '0')}-${fecha.getDate().toString().padStart(2, '0')}`,
+  });
+>>>>>>> 462e34c56237d8935239d4ffb58c7ecacefada26
   const openModal = () => {
     setOpen(!open)
   }
@@ -47,11 +75,16 @@ const RegistroComprobantes = () => {
   useEffect(() => {
     if (params.action == "edit") {
     }
+<<<<<<< HEAD
 
 
     requestGenerics()
     requestTipoCambio(false)
 
+=======
+    
+   
+>>>>>>> 462e34c56237d8935239d4ffb58c7ecacefada26
   }, [])
   const requestGenerics = async () => {
     const url = `${BASE_URL}/api/v1/generic/${document}/`
@@ -82,6 +115,7 @@ const RegistroComprobantes = () => {
     }
   }
   const requestCuentas = async (params) => {
+<<<<<<< HEAD
     const url = `${BASE_URL}/api/v1/generics/list/cuentas/${document}/`
     const datos = {
       'query_string': params
@@ -150,22 +184,79 @@ const RegistroComprobantes = () => {
       )
     },
     {
+=======
+    const url = `${BASE_URL}/api/v1/list/cuenta/${document}/`
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(params)
+      })
+      const res = await response.json()
+      setData(res.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  const requestAuxiliar = async (value) => {
+    const url = ''
+    if (!value) {
+      setOption([])
+      return
+    }
+    setLoading(true)
+    try {
+      const response = data.filter(item => item.name.includes(value))
+      setAuxiliar(response.map(item => ({
+        value: item.key,
+        label: item.name
+      })))
+    } catch (error) {
+      console.log(error)
+    } finally { setLoading(false) }
+  }
+  const columns = [
+    {
+>>>>>>> 462e34c56237d8935239d4ffb58c7ecacefada26
       title: 'Cuenta',
       dataIndex: 'cuenta',
-      key: 'cuenta',
     },
     {
+<<<<<<< HEAD
       title: 'CC',
       dataIndex: 'centro_costo',
       key: 'centro_costo'
+=======
+      title: 'Cliente',
+      dataIndex: 'cliente',
+    },
+    {
+      title: "Vendedor",
+      dataIndex: "vendedor",
+    },
+    {
+      title: "F. Emision",
+      dataIndex: "fecha_emision",
+    },
+    {
+      title: 'T.D',
+      dataIndex: 'td',
+    },
+    {
+      title: 'Serie y Numero',
+      dataIndex: 'serie_numero',
+>>>>>>> 462e34c56237d8935239d4ffb58c7ecacefada26
     },
     {
       title: "Moneda",
       dataIndex: "moneda",
-      key: "moneda",
     },
     {
       title: "Haber S/",
+<<<<<<< HEAD
       dataIndex: "haber_soles",
       key: 'haber_soles'
     },
@@ -193,10 +284,30 @@ const RegistroComprobantes = () => {
       title: 'Glosa',
       dataIndex: 'observacion',
       key: 'observacion'
+=======
+      dataIndex: "haber_s",
+    },
+    {
+      title: 'Debe S/',
+      dataIndex: 'debe_s',
+    },
+    {
+      title: 'Haber $',
+      dataIndex: 'haber_d',
+    },
+    {
+      title: 'Debe $',
+      dataIndex: 'debe_d',
+    },
+    {
+      title: 'Glosa',
+      dataIndex: 'glosa',
+>>>>>>> 462e34c56237d8935239d4ffb58c7ecacefada26
     },
     {
       title: 'F. Venc.',
       dataIndex: 'fecha_vencimiento',
+<<<<<<< HEAD
       key: 'fecha_vencimiento'
     }
   ]
@@ -327,15 +438,25 @@ const RegistroComprobantes = () => {
     }
 
   }
+=======
+    }
+  ]
+
+>>>>>>> 462e34c56237d8935239d4ffb58c7ecacefada26
   return (
     <div style={{ position: 'relative' }}>
       <div>
         <Form
           name='form-asientas-contables'
           className='form-asientos'
+<<<<<<< HEAD
           form={MyForm1}
           layout={"horizontal"}
           onFinish={saveData}
+=======
+          onFinish={(values) => console.log(values)}
+          layout={"vertical"}
+>>>>>>> 462e34c56237d8935239d4ffb58c7ecacefada26
         >
           <Row gutter={6}>
             <Col xs={20} sm={15} md={4}>
@@ -343,6 +464,7 @@ const RegistroComprobantes = () => {
                 name='fecha_contable'
                 label='Fecha Contable'
                 rules={[{ required: true, message: 'Por favor seleccione una fecha' }]}
+<<<<<<< HEAD
                 initialValue={fecha}
               // format={'YYYY-MM-DD'}
               >
@@ -351,6 +473,11 @@ const RegistroComprobantes = () => {
                   format={'YYYY-MM-DD'}
                 // defaultValue={fecha}
                 />
+=======
+              >
+                <DatePicker style={{ width: '100%' }}
+                  size={'small'} />
+>>>>>>> 462e34c56237d8935239d4ffb58c7ecacefada26
               </Form.Item>
             </Col>
             <Col xs={20} sm={15} md={4}>
@@ -358,6 +485,7 @@ const RegistroComprobantes = () => {
                 name='fecha_emision'
                 label='Fecha Emision'
                 rules={[{ required: true, message: 'Por favor seleccione una fecha' }]}
+<<<<<<< HEAD
                 initialValue={fecha}
               // format={'YYYY-MM-DD'}
 
@@ -370,6 +498,11 @@ const RegistroComprobantes = () => {
 
                 />
 
+=======
+              >
+                <DatePicker style={{ width: '100%' }}
+                  size={'small'} />
+>>>>>>> 462e34c56237d8935239d4ffb58c7ecacefada26
               </Form.Item>
             </Col>
             <Col xs={20} sm={15} md={4}>
@@ -386,6 +519,7 @@ const RegistroComprobantes = () => {
                 name='fecha_vencimiento'
                 label='Fecha Vencimiento'
                 rules={[{ required: true, message: 'Por favor seleccione una fecha' }]}
+<<<<<<< HEAD
                 initialValue={fecha}
               // format={'YYYY-MM-DD'}
 
@@ -397,10 +531,16 @@ const RegistroComprobantes = () => {
                 // defaultValue={fecha}
 
 
+=======
+              >
+                <DatePicker
+                  size={'small'}
+                  style={{width:'100%'}}
+>>>>>>> 462e34c56237d8935239d4ffb58c7ecacefada26
                 />
               </Form.Item>
             </Col>
-            <Col xs={20} sm={15} md={8}>
+            <Col xs={20} sm={15} md={4}>
               <Form.Item
                 name='origen'
                 label='Origen'
@@ -409,12 +549,15 @@ const RegistroComprobantes = () => {
                 <Select
                   size={'small'}
                   placeholder="Buscar..."
+<<<<<<< HEAD
                   showSearch
                   options={origen}
                   optionRender={(row) => (
                     <div style={{ fontSize: 10 }}>{row.value} - {row.label}</div>
                   )}
 
+=======
+>>>>>>> 462e34c56237d8935239d4ffb58c7ecacefada26
                 />
               </Form.Item>
             </Col>
@@ -427,11 +570,14 @@ const RegistroComprobantes = () => {
                 <Select
                   size={'small'}
                   placeholder="Buscar..."
+<<<<<<< HEAD
                   showSearch
                   options={ubicacion}
                   optionRender={(row) => (
                     <div style={{ fontSize: 10 }}>{row.value} - {row.label}</div>
                   )}
+=======
+>>>>>>> 462e34c56237d8935239d4ffb58c7ecacefada26
                 />
               </Form.Item>
             </Col>
@@ -443,8 +589,12 @@ const RegistroComprobantes = () => {
               >
                 <Checkbox
                   size={'small'}
+<<<<<<< HEAD
                   checked={detracion}
                   onChange={() => setDetraccion(!detracion)}
+=======
+                  // checked={true}
+>>>>>>> 462e34c56237d8935239d4ffb58c7ecacefada26
                 />
               </Form.Item>
             </Col>
@@ -464,6 +614,7 @@ const RegistroComprobantes = () => {
               <Form.Item
                 name='fecha_deposito'
                 label='F/Dep'
+<<<<<<< HEAD
                 rules={[{ required: true, message: 'Por favor seleccione la fecha de deposito' }]}
                 initialValue={fecha}
               >
@@ -473,6 +624,14 @@ const RegistroComprobantes = () => {
                   format={'YYYY-MM-DD'}
                 // defaultValue={fecha}
 
+=======
+                rules={[{ required:true, message: 'Por favor seleccione lfa fecha de deposito' }]}
+              >
+                <DatePicker
+                  size={'small'}
+                  style={{width:'100%'}}
+                  
+>>>>>>> 462e34c56237d8935239d4ffb58c7ecacefada26
                 />
               </Form.Item>
             </Col>
@@ -500,7 +659,7 @@ const RegistroComprobantes = () => {
                 />
               </Form.Item>
             </Col>
-            <Col xs={20} sm={15} md={8}>
+            <Col xs={20} sm={15} md={4}>
               <Form.Item
                 name='proveedor'
                 label="Proveedor"
@@ -509,6 +668,7 @@ const RegistroComprobantes = () => {
                 <Select
                   size={'small'}
                   placeholder="Proveedor"
+<<<<<<< HEAD
                   showSearch
                   onSearch={requestProveedor}
                   allowClear
@@ -525,9 +685,12 @@ const RegistroComprobantes = () => {
                     ))
                   }
                 </Select>
+=======
+                />
+>>>>>>> 462e34c56237d8935239d4ffb58c7ecacefada26
               </Form.Item>
             </Col>
-            <Col xs={20} sm={15} md={8}>
+            <Col xs={20} sm={15} md={4}>
               <Form.Item
                 name='tipo_documento'
                 label="Tipo Doc."
@@ -536,11 +699,14 @@ const RegistroComprobantes = () => {
                 <Select
                   size={'small'}
                   placeholder="Tipo documento"
+<<<<<<< HEAD
                   options={tipoDocument}
                   optionRender={(row) => (
                     <div style={{ fontSize: 10 }}>{row.value} - {row.label}</div>
                   )}
                   showSearch
+=======
+>>>>>>> 462e34c56237d8935239d4ffb58c7ecacefada26
                 />
               </Form.Item>
             </Col>
@@ -624,6 +790,7 @@ const RegistroComprobantes = () => {
               </Form.Item>
             </Col>
           </Row>
+<<<<<<< HEAD
           <Row>
             <Button onClick={openModal} style={{ background: 'green', color: 'white' }} >
               Agregar
@@ -657,25 +824,47 @@ const RegistroComprobantes = () => {
         </Row>
       </div>
 
+=======
+
+        </Form>
+      </div>
+      <Button onClick={openModal} type='primary'>
+        Agregar
+      </Button>
+      <Table columns={columns} dataSource={data} scroll={{x:"max-content"}}  />
+>>>>>>> 462e34c56237d8935239d4ffb58c7ecacefada26
       <Modal
       animation={false}
         title="Registros un nuevo asiento"
         open={open}
+        onOk={openModal}
         onCancel={openModal}
+<<<<<<< HEAD
         footer={null}
 
+=======
+        footer={
+          [
+            <Button type='primary' danger onClick={openModal}>
+              Cancelar
+            </Button>,
+            <Button type="primary" loading={loading} onClick={openModal}>
+              Guardar
+            </Button>,
+          ]
+        }
+>>>>>>> 462e34c56237d8935239d4ffb58c7ecacefada26
         width={1000}
       >
         <div>
           <Form
             name='form-asientos'
             className='registrar-asientos'
-            form={MyForm2}
+            onFinish={(values) => console.log(values)}
             layout="vertical"
-            onFinish={add_rows}
           >
             <Row gutter={16}>
-              <Col xs={24} sm={12} md={8}>
+              <Col xs={24} sm={12} md={6}>
                 <Form.Item
                   name="cuenta"
                   label="Cuenta"
@@ -688,6 +877,7 @@ const RegistroComprobantes = () => {
                     filterOption={false}
                     placeholder='Buscar...'
                     notFoundContent={loading ? <Spin size='small' /> : null}
+<<<<<<< HEAD
                     onChange={(_, option) => {
 
                       if (option == undefined) {
@@ -703,6 +893,49 @@ const RegistroComprobantes = () => {
                         <div key={item.label} style={{ fontSize: 10 }}>
                           {item.value} - {item.label}
                         </div>
+=======
+                  >
+                    {option.map(item => (
+                      <Option key={item.value} value={item.value}>
+                        {item.label}
+                      </Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Col xs={24} sm={12} md={6}>
+                <Form.Item
+                  name="auxiliar"
+                  label="Auxiliar"
+                  rules={[{ required: true, message: "Por favor seleccione un auxiliar" }]}
+                >
+                  <Select
+                    showSearch
+                    onSearch={requestAuxiliar}
+                    allowClear
+                    filterOption={false}
+                    placeholder='Buscar...'
+                    notFoundContent={loading ? <Spin size='small' /> : null}
+                  >
+                    {auxiliar.map(item => (
+                      <Option key={item.value} value={item.value}>
+                        {item.label}
+                      </Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Col xs={24} sm={12} md={6}>
+                <Form.Item
+                  name="vendedor"
+                  label="Vendedor"
+                  rules={[{ required: true, message: "Por favor seleccione un vendedor" }]}
+                >
+                  <Select placeholder="Seleccionar vendedor">
+                    {vendedores.map((vendedor) => (
+                      <Option key={vendedor.value} value={vendedor.value}>
+                        {vendedor.label}
+>>>>>>> 462e34c56237d8935239d4ffb58c7ecacefada26
                       </Option>
                     ))}
                   </Select>
@@ -713,8 +946,8 @@ const RegistroComprobantes = () => {
                   name="moneda"
                   label="Moneda"
                   rules={[{ required: true, message: "Por favor ingrese la moneda" }]}
-                  initialValue={'S'}
                 >
+<<<<<<< HEAD
                   <Select
                     size='small'
                     placeholder='Seleccione una moneda'
@@ -739,6 +972,9 @@ const RegistroComprobantes = () => {
                     notFoundContent={loading ? <Spin size='small' /> : null}
                   />
 
+=======
+                  <Input maxLength={3} placeholder="Ej: PEN" />
+>>>>>>> 462e34c56237d8935239d4ffb58c7ecacefada26
                 </Form.Item>
               </Col>
             </Row>
@@ -751,6 +987,7 @@ const RegistroComprobantes = () => {
                   label="Debe en soles"
                   rules={[{ required: true, message: "Por favor ingrese el monto en soles" }]}
                 >
+<<<<<<< HEAD
                   <InputNumber
                     style={{ width: '100%' }}
                     min={0}
@@ -758,6 +995,9 @@ const RegistroComprobantes = () => {
                     onChange={(value) => clean_input(value, 0)}
 
                   />
+=======
+                  <InputNumber style={{ width: '100%' }} min={0} />
+>>>>>>> 462e34c56237d8935239d4ffb58c7ecacefada26
                 </Form.Item>
               </Col>
               <Col xs={24} sm={12} md={6}>
@@ -766,6 +1006,7 @@ const RegistroComprobantes = () => {
                   label="Haber en soles"
                   rules={[{ required: true, message: "Por favor ingrese el monto en soles" }]}
                 >
+<<<<<<< HEAD
                   <InputNumber
                     style={{ width: '100%' }}
                     min={0}
@@ -773,6 +1014,9 @@ const RegistroComprobantes = () => {
                     onChange={(value) => clean_input(value, 1)}
 
                   />
+=======
+                  <InputNumber style={{ width: '100%' }} min={0} />
+>>>>>>> 462e34c56237d8935239d4ffb58c7ecacefada26
                 </Form.Item>
               </Col>
               <Col xs={24} sm={12} md={6}>
@@ -781,6 +1025,7 @@ const RegistroComprobantes = () => {
                   label="Debe en dólares"
                   rules={[{ required: true, message: "Por favor ingrese el monto en dólares" }]}
                 >
+<<<<<<< HEAD
                   <InputNumber
                     style={{ width: '100%' }}
                     min={0}
@@ -788,6 +1033,9 @@ const RegistroComprobantes = () => {
                     onChange={(value) => clean_input(value, 2)}
 
                   />
+=======
+                  <InputNumber style={{ width: '100%' }} min={0} />
+>>>>>>> 462e34c56237d8935239d4ffb58c7ecacefada26
                 </Form.Item>
               </Col>
               <Col xs={24} sm={12} md={6}>
@@ -796,6 +1044,7 @@ const RegistroComprobantes = () => {
                   label="Haber en dólares"
                   rules={[{ required: true, message: "Por favor ingrese el monto en dólares" }]}
                 >
+<<<<<<< HEAD
                   <InputNumber
                     style={{ width: '100%' }}
                     min={0}
@@ -814,6 +1063,12 @@ const RegistroComprobantes = () => {
                 <Button style={{ background: 'blue', color: 'white' }} htmlType='submit' id='bn-agregar' type='submit'>AGREGAR</Button>
               </Col>
             </Row>
+=======
+                  <InputNumber style={{ width: '100%' }} min={0} />
+                </Form.Item>
+              </Col>
+            </Row>
+>>>>>>> 462e34c56237d8935239d4ffb58c7ecacefada26
           </Form>
         </div>
       </Modal>
