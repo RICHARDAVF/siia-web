@@ -200,6 +200,30 @@ class GetTipoAsiento:
         except Exception as e:
             print(str(e))
             raise ValueError(str(e))
+class GetTablas:
+    def __init__(self,document,query_string,query):
+        self.document = document
+        self.query_string = query_string
+        self.query = query
+    def get(self):
+        try:
+            sql = f"""
+                SELECT t01_codigo,t01_nombre FROM t_tabla1 WHERE t01_codigo LIKE '%{self.query_string}%' OR t01_nombre LIKE '%{self.query_string}%'
+        """
+           
+            
+            result = self.query(self.document,sql,(),'GET',1)
+            data = [
+                {
+                    'id':f"{index}-{value[0].strip()}",
+                    'value':value[0].strip(),
+                    'label':value[1].strip()
+                } for index,value in enumerate(result)
+            ]
+  
+            return data
+        except Exception as e:
+            raise ValueError(str(e))
 class ListOrigen(GenericAPIView,DataBase):
     permission_classes = [AllowAny]
     authentication_classes = [TokenAuthentication]
@@ -396,7 +420,6 @@ class VendedorView(GenericAPIView,DataBase):
             document = kwargs['document']
             instance = GetVendedor(document,self.query)
             data = instance.get()
-            print(data)
             return Response(data,status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error":f"Ocurrio un error:{str(e)}"},status=status.HTTP_400_BAD_REQUEST)
@@ -429,6 +452,10 @@ class GenericViews(GenericAPIView,DataBase):
             if "tipo-asiento" in request.data["dates"]:
                 instance = GetTipoAsiento(document,self.query)
                 data["tipo_asiento"] = instance.get()
+            if 'tablas' in request.data['dates']:
+                instance = GetTablas(document,query_string,self.query)
+                data['tablas'] = instance.get()
+            data['success'] = True
             return Response(data,status=status.HTTP_200_OK)
         except Exception as e:
      

@@ -84,7 +84,12 @@ const items = [
                     {
                         key:"421",
                         label:"Condicion de pago",
-                        route:"/registro/condicion-pago"
+                        route:"/list/condicion-pago"
+                    },
+                    {
+                        key:"422",
+                        label:"Tipo de Servicio",
+                        route:"/list/tipo-servicio"
                     }
                 ]
             },

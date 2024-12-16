@@ -1,4 +1,7 @@
-import RegistroCondicionPago from "./mantenimientos/condicionPago/RegistroCondicionPago"
+
+import ListCondicionPago from "./mantenimientos/condicionPago/ListCondicionpago"
+import ListTipoServicio from "./mantenimientos/TipoServicio/ListTipoServicio"
+
 import ListComprobantes from "./movimientos/comprobantes/ListComprobantes"
 import RegistroComprobantes from "./movimientos/comprobantes/RegistroComprobantes"
 import RegistroDocumentos from "./movimientos/RecepcionDocumentos/Registro"
@@ -21,14 +24,22 @@ export const RecepcionDocumentosView = [
     }
 ]
 export const CondicionPagoView = [
+   
     {
-        "view":RegistroCondicionPago,
-        "route":"registro/condicion-pago"
+        "view":ListCondicionPago,
+        "route":'/list/condicion-pago'
     }
 ]
 export const ReportesView = [
     {
         "view":ReporteCuentasPagar,
         "route":"/reporte/cuentas-pagar"
+    }
+]
+
+export const TipoServicioView=[
+    {
+        'view':ListTipoServicio,
+        'route':'/list/tipo-servicio'
     }
 ]

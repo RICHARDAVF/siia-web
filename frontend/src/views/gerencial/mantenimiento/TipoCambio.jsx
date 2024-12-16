@@ -158,7 +158,7 @@ const TipoCambio = () => {
                     </Row>
                 </Col>
                 <Col style={{ width: '50%' }}>
-                    <Table style={{ width: '100%' }} columns={columns} dataSource={data} rowKey={record=>record.id} />
+                    <Table size='small' style={{ width: '100%' }} columns={columns} dataSource={data} rowKey={record=>record.id} />
                 </Col>
             </Row>
         </div>

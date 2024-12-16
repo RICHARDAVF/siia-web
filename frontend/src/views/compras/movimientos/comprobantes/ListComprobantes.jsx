@@ -15,6 +15,9 @@ const ListComprobantes=()=>{
     const searchInput = useRef(null)
     const {BASE_URL} = config
     useEffect(()=>{
+        window.document.title = 'Listado de Comprobantes'
+    },[])
+    useEffect(()=>{
         requestComprobantes()
     },[])
     const requestComprobantes=async()=>{
@@ -138,7 +141,6 @@ const ListComprobantes=()=>{
     return(
         <div  style={{ position: "relative" }}
         >
-<<<<<<< HEAD:frontend/src/views/compras/movimientos/comprobantes/ListComprobantes.jsx
         <div>
             <input type="button" value={"AGREGAR"} style={{background:'blue',color:'white',padding:3,borderRadius:5,cursor:'pointer'}} onClick={()=>navigate("/registro/comprobantes",{state:{"params":{"action":"add"}}})} />
         </div>
@@ -146,14 +148,8 @@ const ListComprobantes=()=>{
             dataSource={data}
             columns={columns}
             scroll={{x:"max-content"}}
+            size="small"
             rowKey={(record)=>`${record.serie}-${record.numero}-${record.comprobante}`}
-=======
-            <Table
-             dataSource={data}
-             columns={columns}
-             scroll={{x:"max-content"}}
-            rowKey={(record)=>`${record.mes}-${record.comprobante}`}
->>>>>>> 462e34c56237d8935239d4ffb58c7ecacefada26:frontend/src/views/compras/movimientos/ListComprobantes.jsx
 
             />
             

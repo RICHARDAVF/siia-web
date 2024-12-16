@@ -4,7 +4,7 @@ import { useLocation } from 'react-router-dom';
 import config from '../../../../config';
 import { Context } from '../../../../components/GlobalContext';
 import endpointsGenerics from '../../../../../api/generics/Endpoints';
-import endpointsCompras from '../../../../../api/compras/apiCompras';
+import {endpointsCompras} from '../../../../../api/compras/apiCompras';
 import dayjs from 'dayjs';
 import { FaTrash } from 'react-icons/fa'
 import Loading from '../../../../components/Loading';
@@ -37,7 +37,9 @@ const RegistroComprobantes = () => {
   const [haberSoles,setHaberSoles] = useState(0)
   const [debeDolares,setDebeDolares] = useState(0)
   const [haberDolares,setHaberDolares] = useState(0)
-
+  useEffect(()=>{
+    window.document.title = 'Registro de comprobantes'
+  })
   const openModal = () => {
     setOpen(!open)
   }
@@ -338,7 +340,7 @@ const RegistroComprobantes = () => {
           onFinish={saveData}
         >
           <Row gutter={6}>
-            <Col xs={20} sm={15} md={4}>
+            <Col xs={20} sm={15} md={6}>
               <Form.Item
                 name='fecha_contable'
                 label='Fecha Contable'
@@ -353,7 +355,7 @@ const RegistroComprobantes = () => {
                 />
               </Form.Item>
             </Col>
-            <Col xs={20} sm={15} md={4}>
+            <Col xs={20} sm={15} md={6}>
               <Form.Item
                 name='fecha_emision'
                 label='Fecha Emision'
@@ -372,7 +374,7 @@ const RegistroComprobantes = () => {
 
               </Form.Item>
             </Col>
-            <Col xs={20} sm={15} md={4}>
+            <Col xs={20} sm={15} md={2}>
               <Form.Item
                 name='dias'
                 label='Dias'
@@ -381,7 +383,7 @@ const RegistroComprobantes = () => {
                 <Input placeholder='Ej:' size='small' />
               </Form.Item>
             </Col>
-            <Col xs={20} sm={15} md={4}>
+            <Col xs={20} sm={15} md={6}>
               <Form.Item
                 name='fecha_vencimiento'
                 label='Fecha Vencimiento'
@@ -400,7 +402,7 @@ const RegistroComprobantes = () => {
                 />
               </Form.Item>
             </Col>
-            <Col xs={20} sm={15} md={8}>
+            <Col xs={20} sm={15} md={6}>
               <Form.Item
                 name='origen'
                 label='Origen'

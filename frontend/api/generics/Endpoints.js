@@ -166,6 +166,7 @@ const endpointsGenerics = {
             }
 
         }
-    }
+    },
+
 }
 export default endpointsGenerics

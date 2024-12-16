@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 import { Table } from "antd"
-=======
-import { Table,message } from "antd"
->>>>>>> 1cb272c945efe937f26e0e9ac473a96cbaf6a71f
 import { useContext, useEffect,useState } from "react"
 import config from "../../../../config"
 import { Context } from "../../../../components/GlobalContext"
@@ -18,12 +14,12 @@ const ListAsientos=()=>{
     const navigate = useNavigate()
     useEffect(()=>{
         requestAsientos()
+        window.document.title = 'Listado de Asientos'
     },[])
     const onEditAsiento=(item)=>{
-        navigate("/registro/asiento",{state:{'params':item}})
+        navigate("/registro/asientos",{state:{'params':{'data':item,'action':'edit'}}})
     }
     const requestAsientos=async()=>{
-<<<<<<< HEAD
         const url = `${BASE_URL}/api/v1/contabilidad/list/${document}/`
         const response=await fetch(url,{
             method:'POST',
@@ -35,26 +31,6 @@ const ListAsientos=()=>{
         const res = await response.json()
 
         setData(res.data)
-=======
-        try{
-            setLoading(true)
-            const url = `${BASE_URL}/api/v1/contabilidad/list/${document}/`
-            const response=await fetch(url,{
-                method:'POST',
-                headers:{
-                    "Content-Type":'applicaion/json',
-                    "Authorization":`Bearer ${token}` 
-                }
-            })
-            const res = await response.json()
-            setData(res.data)
-        }catch(error){
-            message.error(res.message)
-        }finally{
-            setLoading(false)
-        }
-      
->>>>>>> 1cb272c945efe937f26e0e9ac473a96cbaf6a71f
 
     }
     const columns = [
@@ -105,6 +81,7 @@ const ListAsientos=()=>{
             dataSource={data} 
             columns={columns}
             rowKey={(record)=>`${record.mes}-${record.comprobante}`}
+            size="small"
             />
             <Loading status={loading}/>
         </div>

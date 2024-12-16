@@ -14,6 +14,19 @@ const EndPointContabilidad = {
             }catch(error){
                 return {"error":error.toString()}
             }
+        },
+        get:async(url,token)=>{
+            try{
+                const res = await fetch(url,{
+                    headers:{
+                        "Authorization":`Bearer ${token}`
+                    },
+                    method:'GET'
+                })
+                return await res.json()
+            }catch(err){
+                return {"error":err.toString()}
+            }
         }
     }
 }

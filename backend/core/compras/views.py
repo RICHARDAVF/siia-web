@@ -147,7 +147,7 @@ class SaveTipoCambio(GenericAPIView,DataBase):
             url="https://api.apis.net.pe/v1/tipo-cambio-sunat?fecha="+fecha
             result=requests.get(url)
             if result.status_code==200:
-                print(result.json())
+               
                 return result.json()
         except Exception as e:
             raise ValueError(str(e))

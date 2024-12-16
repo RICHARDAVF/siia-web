@@ -4,76 +4,96 @@ import config from "../../../../config"
 import { Context } from "../../../../components/GlobalContext"
 import endpointsGenerics from "../../../../../api/generics/Endpoints"
 const { TextArea } = Input
-const {Option} = Select
+const { Option } = Select
 const ModalFormComponent = (props) => {
     const [blockInput, setBlockInput] = useState(false)
-    const [cuentas,setCuentas] = useState([])
-    const [auxiliar,setAuixiliar] = useState([])
-    const [vendedor,setVendedor] = useState([])
-    const { openModal, onCancel, tipoDocumento } = props
+    const [cuentas, setCuentas] = useState([])
+    const [auxiliar, setAuixiliar] = useState([])
+    const { openModal, onCancel, tipoDocumento, vendedor, addItemList, MyForm2 } = props
     const button_add_edit = 'Guardar'
-    const {document,token} = useContext(Context)
-    const [MyForm] = Form.useForm()
-    const {BASE_URL} = config
-    const {Proveedor} = endpointsGenerics
-    const addItem = (values) => {
+    const { document, token } = useContext(Context)
 
+    const { BASE_URL } = config
+    const { Proveedor } = endpointsGenerics
+    const addItem = (values) => {
+        const newdata = {...values,fecha_vencimiento:values.fecha_vencimiento.format("YYYY-MM-DD")}
+        addItemList(newdata)
     }
     const requestCuentas = async (value) => {
-        try{
-         
+        try {
+
             const url = `${BASE_URL}/api/v1/generics/list/cuentas/${document}/`
 
-            const response = await fetch(url,{
-                method:'POST',
-                headers:{
-                    'Content-Type':'application/json',
-                    'Authorization':`Bearer ${token}`
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 },
-                body:JSON.stringify({'query_string':value})
+                body: JSON.stringify({ 'query_string': value })
             })
-            
+
             const result = await response.json()
-            
-            if(result.error){
+
+            if (result.error) {
                 message.error(result.error)
-            }else{
+            } else {
                 setCuentas(result)
             }
 
-        }catch(err){
+        } catch (err) {
             console.log(err)
         }
     }
-    const requestAuxiliar=async(value)=>{
-        try{
+    const requestAuxiliar = async (value) => {
+        try {
             const url = `${BASE_URL}/api/v1/generics/list/proveedor/${document}/`
             const params = {
-                'query_string':value
+                'query_string': value
             }
-            const res = await Proveedor.post(url,token,params)
-            if(res.error){
+            const res = await Proveedor.post(url, token, params)
+            if (res.error) {
                 message.error(res.error)
-            }else{
+            } else {
                 setAuixiliar(res)
             }
-    }catch(erro){
+        } catch (erro) {
 
+        }
     }
-}
-    const changeCuenta=(value)=>{
+    const clean_input = (value, opt) => {
+        if (value == undefined) return;
+        if (opt == 3) {
+            MyForm2.setFieldsValue({
+                "debe_dolares": 0
+            })
+        } else if (opt == 2) {
+            MyForm2.setFieldsValue({
+                "haber_dolares": 0
+            })
+        } else if (opt == 1) {
+            MyForm2.setFieldsValue({
+                "debe_soles": 0
+            })
+        } else if (opt == 0) {
+            MyForm2.setFieldsValue({
+                "haber_soles": 0
+            })
+        }
+    }
+    const changeCuenta = (value) => {
 
         const moneda = value.key.split("-")[1]
-       MyForm.setFieldsValue({
-        'moneda':moneda,
-        "haber_soles":0,
-        "haber_dolares":0,
-        "debe_soles":0,
-        "debe_dolares":0
-       })
-       setBlockInput(moneda)
+        MyForm2.setFieldsValue({
+            'moneda': moneda,
+            "haber_soles": 0,
+            "haber_dolares": 0,
+            "debe_soles": 0,
+            "debe_dolares": 0
+        })
+        setBlockInput(moneda)
     }
-   
+
     return (
         <Modal
             open={openModal}
@@ -88,7 +108,7 @@ const ModalFormComponent = (props) => {
                 className="registrar-asientos"
                 onFinish={addItem}
                 layout="vertical"
-                form={MyForm}
+                form={MyForm2}
             >
                 <Row gutter={16}>
                     <Col xs={24} sm={12} md={8}>

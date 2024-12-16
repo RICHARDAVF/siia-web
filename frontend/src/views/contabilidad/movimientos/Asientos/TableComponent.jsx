@@ -1,7 +1,7 @@
 import { Table,Row,Popconfirm } from "antd"
 import { FaTrash,FaEdit } from "react-icons/fa"
 const TableComponent = (props)=>{
-    const {data} = props
+    const {data,deleteItem,editItem} = props
     const columns = [
         {
           title:"Opcion",
@@ -102,7 +102,7 @@ const TableComponent = (props)=>{
         }
       ]
     return (
-        <Table dataSource={data} columns={columns}/>
+        <Table dataSource={data} columns={columns} scroll={{ x: 'max-content' }} size="small"/>
     )
 }
 export default TableComponent

@@ -2,12 +2,9 @@ import { Form,Row,Col,DatePicker,Select,Input,Button } from "antd"
 import dayjs from 'dayjs';
 const FormHeaderComponent=(props)=>{
 
-    const [MyForm1] = Form.useForm()
     const fecha  = dayjs()
-    const saveData=(values)=>{
-    console.log(values)
-  }
-  const {tipoAsiento,origen,ubicacion,onCancel} = props
+    
+  const {tipoAsiento,origen,ubicacion,onCancel,MyForm1,requestTipoCambio,saveData} = props
 
     return(
       <Form
