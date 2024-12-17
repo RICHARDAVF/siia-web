@@ -381,7 +381,17 @@ class ListCuentas(GenericAPIView,DataBase):
             WHERE 
                 pla_cuenta LIKE '%{query_string}%'
                 OR pla_nombre LIKE '%{query_string}%'
-"""
+            """
+            if 'action' in request.data and request.data['action']=='cuenta10':
+                sql = f"""
+                    SELECT
+                        pla_cuenta,
+                        pla_nombre,
+                        pla_moneda
+
+                    FROM PLAN{self.fecha.year}
+                        WHERE SUBSTRING(pla_cuenta,1,2)='10'
+                """
             res = self.query(document,sql,(),'GET',1)
        
             data = [

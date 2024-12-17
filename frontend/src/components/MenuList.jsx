@@ -25,6 +25,11 @@ const items = [
                         key:"212",
                         label:"Tipos de Auxiliares"
                     },
+                    {
+                        key:"213",
+                        label:"Origenes",
+                        route:'list/origen'
+                    },
                 ]
             },
             {

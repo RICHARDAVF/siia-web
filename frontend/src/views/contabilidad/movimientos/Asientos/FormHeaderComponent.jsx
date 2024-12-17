@@ -44,7 +44,7 @@ const FormHeaderComponent=(props)=>{
             name='tipo_asiento'
             label='Tipo de Asiento'
             rules={[{ required: true, message: 'Por favor seleccione asiento' }]}
-            initialValue={fecha}
+            
           >
             <Select
             options={tipoAsiento}
@@ -60,8 +60,7 @@ const FormHeaderComponent=(props)=>{
           >
             <Select
               size={'small'}
-              placeholder="Buscar..."
-              showSearch
+              allowClear
               options={origen}
               optionRender={(row) => (
                 <div key={row.id} style={{ fontSize: 10 }}>{row.value} - {row.label}</div>

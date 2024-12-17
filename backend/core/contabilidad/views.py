@@ -9,11 +9,12 @@ from datetime import datetime
 class ListAsientosView(GenericAPIView,DataBase):
     authentication_classes = [TokenAuthentication]
     permission_classes = [AllowAny]
+    fecha : datetime = datetime.now()
     def post(self,request,*args,**kwargs):
         document = kwargs['document']
         try:
             sql = f"""
-            SELECT distinct a.MOV_FECHA,a.MOV_MES,a.ORI_CODIGO,a.MOV_COMPRO,a.MOV_GLOSA FROM mova2024 AS a 
+            SELECT distinct a.MOV_FECHA,a.MOV_MES,a.ORI_CODIGO,a.MOV_COMPRO,a.MOV_GLOSA FROM mova{self.fecha.year} AS a 
             LEFT JOIN t_origen AS b ON a.ORI_CODIGO = b.ori_codigo 
             WHERE b.ori_tipo=3
             ORDER BY a.MOV_MES,a.ORI_CODIGO,a.MOV_COMPRO ASC
@@ -21,13 +22,14 @@ class ListAsientosView(GenericAPIView,DataBase):
             res = self.query(document,sql,(),'GET',1)
             data = [
                 {
+                    "id":index,
                     "fecha":self.processa_date(value[0]),
                     "mes":value[1],
                     "origen":value[2],
                     "comprobante":value[3],
                     "observacion":value[4].strip(),
     
-                } for value in res
+                } for index,value in enumerate(res)
             ]
             return Response({"data":data},status=status.HTTP_200_OK)
         except Exception as e:

@@ -37,51 +37,73 @@ const RegistroAsientos=()=>{
   useEffect(()=>{
     requestManyData()
     requestTipoCambio(false)
+    if(params.action=='edit' ){
+      requestAsientos(params)
+     
+    }
   },[])
   const onCancel=()=>{
     setOpenModal(!openModal)
   }
-  useEffect(()=>{
-    if(params.action=='edit' ){
-      requestAsientos(params)
-    }
-  },[])
+
   const requestAsientos=async(params)=>{
     try{
       setLoading(true)
   
-      const {comprobante,mes,origen} = params.data
-      const query_string = `${comprobante}-${mes}-${origen}`
+      const {comprobante,mes} = params.data
+      const query_string = `${comprobante}-${mes}-${params.data.origen}`
       const url = EDIT_ASIENTOS(document).replace('codigo',query_string)
       const res = await Asientos.get(url,token)
       if(res.success){
-        console.log(res)
+        const form_header = {
+          ...res.data.form_header,
+          'fecha_contable':dayjs(res.data.form_header.fecha_contable),
+          'fecha_emision':dayjs(res.data.form_header.fecha_contable),
+        }
+        
+        
+        MyForm1.setFieldsValue(form_header)
+        setTimeout(()=>{
+          const newdata = process_data(res.data.list_table)
+          setData(newdata)
+        },500)
+         
+        
       }
       if(res.error){
         message.error(res.error)
+       
       }
     }catch(err){
       message.error(err.toString())
+      
     }finally{
       setLoading(false)
     }
   }
   const requestManyData=async()=>{
-    
-    const datos = {
-      'query_string':'',
-      'tipo_origen':3,
-      'dates':['tipo-documento','tipo-asiento','origen','ubicacion','vendedor']
+    try{
+      setLoading(true)
+      const datos = {
+        'query_string':'',
+        'tipo_origen':3,
+        'dates':['tipo-documento','tipo-asiento','origen','ubicacion','vendedor']
+      }
+      const response = await endpointsGenerics.ManyData.post(document,token,datos)
+      if(response.error){
+        message.error(response.error)
+      }
+      setTipoAsiento(response.tipo_asiento)
+      setOrigen(response.origen)
+      setTipoDocumento(response.tipo_documento)
+      setUbicacion(response.ubicacion)
+      setVendedor(response.vendedor)
+      
+    }catch(err){
+      message.error(true)
+    }finally{
+      setLoading(false)
     }
-    const response = await endpointsGenerics.ManyData.post(document,token,datos)
-    if(response.error){
-      message.error(response.error)
-    }
-    setTipoAsiento(response.tipo_asiento)
-    setOrigen(response.origen)
-    setTipoDocumento(response.tipo_documento)
-    setUbicacion(response.ubicacion)
-    setVendedor(response.vendedor)
   }
   const requestTipoCambio=async(date)=>{
   
@@ -98,8 +120,14 @@ const RegistroAsientos=()=>{
       const res = await TipoCambio.post(url,token,datos)
       if(res.compra){
         setTipoCambio(res.compra)
-        const newdata = process_data(data)
-        setData(newdata)
+        const newdata = data.map(item=>{
+          return{
+            ...item,
+            tipo_cambio:res.compra
+          }
+        })
+        const new_data = process_data(newdata)
+        setData(new_data)
       }
     }catch(erro){
       message.error(erro.toString())
@@ -116,9 +144,9 @@ const RegistroAsientos=()=>{
     const newdata = data.map(item=>item.moneda=='D'?
       {
         ...item,
-        haber_soles:(parseFloat(item.haber_dolares)*parseFloat(tipoCambio)).toFixed(2),
-        debe_soles:(parseFloat(item.debe_dolares)*parseFloat(tipoCambio)).toFixed(2),tipo_cambio:tipoCambio
-      }:{...item,tipo_cambio:tipoCambio}
+        haber_soles:(parseFloat(item.haber_dolares)*parseFloat(item.tipo_cambio)).toFixed(2),
+        debe_soles:(parseFloat(item.debe_dolares)*parseFloat(item.tipo_cambio)).toFixed(2),
+      }:{...item}
     )
     for (var item of newdata){
       haber_soles+=parseFloat(item.haber_soles)
@@ -134,7 +162,9 @@ const RegistroAsientos=()=>{
   }
   const addItemList=(values)=>{
     const dates = MyForm1.getFieldsValue()
+    const id = data.length
     const newValues = {
+      'id':id,
       ...values,
       "fecha_emision":dates.fecha_emision.format("YYYY-MM-DD"),
       "tipo_cambio":tipoCambio
@@ -143,13 +173,17 @@ const RegistroAsientos=()=>{
     setData(data_process)
     MyForm2.resetFields()
   }
-  const deleteItem=(index,row)=>{
+  const deleteItem=(row)=>{
+    const index = data.findIndex(item=>item.id==row.id)
   const newdata = [...data]
   newdata.splice(index,1)
   const data_new = process_data(newdata)
   setData(data_new)
   }
-  const editItem=(index,row)=>{
+  const editItem=(row)=>{
+
+    const index = data.findIndex(item=>item.id==row.id)
+    console.log(index)
     const dataEdit = data[index]
     MyForm2.setFieldsValue({
       ...dataEdit,
@@ -187,7 +221,7 @@ const RegistroAsientos=()=>{
     }catch(err){
       message.error('Ocurrio un error '+err.toString())
     }finally{
-      console.log('pass')
+      setLoading(false)
     }
   }
   const context1 = {

@@ -15,6 +15,13 @@ export const DELETE_TIPO_SERVICIO = (document)=>`${BASE_URL}/api/v1/compras/dele
 // ASIENTOS
 export const EDIT_ASIENTOS = (document)=>`${BASE_URL}/api/v1/compras/edit/asientos/${document}/codigo/`
 
+// ORIGENES
+export const LIST_ORIGENES = (document)=>`${BASE_URL}/api/v1/contabilidad/list/origen/${document}/`
+export const SAVE_ORIGENES = (document)=>`${BASE_URL}/api/v1/contabilidad/save/origen/${document}/`
+export const DELETE_ORIGENES = (document)=>`${BASE_URL}/api/v1/contabilidad/delete/origen/${document}/`
+export const EDIT_ORIGENES = (document)=>`${BASE_URL}/api/v1/contabilidad/edit/origen/${document}/codigo/`
 
+// CUENTAS
+export const LIST_CUENTAS = (document)=>`${BASE_URL}/api/v1/generics/list/cuentas/${document}/`
 
 

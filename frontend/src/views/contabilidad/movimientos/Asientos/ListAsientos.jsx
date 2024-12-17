@@ -75,12 +75,12 @@ const ListAsientos=()=>{
     return (
         <div style={{position:'relative'}}>
             <div>
-                <input type="button" value={"AGREGAR"} style={{background:'blue',color:'white',borderRadius:5,padding:3,cursor:'pointer'}} onClick={()=>navigate('/registro/asientos',{status:{params:{"action":"add"}}})}/>
+                <input type="button" value={"AGREGAR"} style={{background:'blue',color:'white',borderRadius:5,padding:3,cursor:'pointer'}} onClick={()=>navigate('/registro/asientos',{state:{params:{"action":"add"}}})}/>
             </div>
             <Table 
             dataSource={data} 
             columns={columns}
-            rowKey={(record)=>`${record.mes}-${record.comprobante}`}
+            rowKey={(record)=>`${record.id}`}
             size="small"
             />
             <Loading status={loading}/>

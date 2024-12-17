@@ -1,3 +1,4 @@
+import ListOrigenes from "./mantenimientos/origenes/ListOrigen";
 import PlanContable from "./mantenimientos/PlanContable";
 import ListAsientos from "./movimientos/Asientos/ListAsientos";
 import RegistroAsientos from "./movimientos/Asientos/RegistroAsientos";
@@ -22,5 +23,12 @@ export const RetencionesView = [
     {
         "view":RegistroRetenciones,
         "route":"registro/retenciones"
+    }
+]
+
+export const OrigenesView=[
+    {
+        'view':ListOrigenes,
+        'route':'list/origen'
     }
 ]

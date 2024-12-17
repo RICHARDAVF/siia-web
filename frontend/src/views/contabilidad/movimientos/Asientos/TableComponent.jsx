@@ -1,35 +1,43 @@
 import { Table,Row,Popconfirm } from "antd"
 import { FaTrash,FaEdit } from "react-icons/fa"
+import { forwardRef,useRef } from "react";
+const CustomPopconfirm = forwardRef((props, ref) => ( <Popconfirm ref={ref} {...props}> {props.children} </Popconfirm> ));
+
 const TableComponent = (props)=>{
+    const popconfirmRef=useRef(null)
+  
     const {data,deleteItem,editItem} = props
     const columns = [
         {
           title:"Opcion",
           dataIndex:"opcion",
           key:"opcion",
-          render:(_,row,index)=>(
+          render:(_,row)=>(
             <Row style={{justifyContent:'space-between'}}>
-              <Popconfirm
+              <CustomPopconfirm
+              ref={popconfirmRef}
               title="Eliminar item"
               description= "¿Esta seguro de eliminar?"
               okText="Si"
-              onConfirm={()=>deleteItem(index,row)}
+              onConfirm={()=>deleteItem(row)}
               cancelText="No"
-              key={index}
+              
               >         
                   <FaTrash style={{color:"red",cursor:"pointer"}}/>
     
-              </Popconfirm>
-              <Popconfirm
+              </CustomPopconfirm>
+              <CustomPopconfirm
+              ref={popconfirmRef}
+              
               title="Editar item"
               description= "¿Esta seguro de editar?"
               okText="Si"
-              onConfirm={()=>editItem(index,row)}
+              onConfirm={()=>editItem(row)}
               cancelText="No"
-              key={index}
+             
               >
                 <FaEdit style={{color:'green',cursor:'pointer'}}/>
-              </Popconfirm>
+              </CustomPopconfirm>
             </Row>
           )
         },
@@ -102,7 +110,7 @@ const TableComponent = (props)=>{
         }
       ]
     return (
-        <Table dataSource={data} columns={columns} scroll={{ x: 'max-content' }} size="small"/>
+        <Table dataSource={data} columns={columns} scroll={{ x: 'max-content' }} size="small" rowKey={record=>record.id}/>
     )
 }
 export default TableComponent
