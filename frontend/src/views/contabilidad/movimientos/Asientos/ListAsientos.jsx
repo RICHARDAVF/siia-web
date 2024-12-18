@@ -1,10 +1,12 @@
-import { Table } from "antd"
+import { message, Table } from "antd"
 import { useContext, useEffect,useState } from "react"
 import config from "../../../../config"
 import { Context } from "../../../../components/GlobalContext"
-import { FaEdit } from "react-icons/fa"
+import { FaEdit, FaTrash } from "react-icons/fa"
 import { useNavigate } from "react-router-dom"
 import Loading from "../../../../components/Loading"
+import EndPointContabilidad from "../../../../../api/contabilidad/apiAsientos"
+import { DELETE_ASIENTOS } from "../../../../../service/urls"
 
 const ListAsientos=()=>{
     const [data,setData]=useState([])
@@ -33,13 +35,37 @@ const ListAsientos=()=>{
         setData(res.data)
 
     }
+    const onDelete=async(item)=>{
+        try{
+            setLoading(true)
+            const {comprobante,origen,mes} = item
+            const datos = {
+                'comprobante':comprobante,
+                'origen':origen,
+                'mes':mes
+            }
+            const url = DELETE_ASIENTOS(document)
+            const res = await EndPointContabilidad.Asientos.post(url,datos,token)
+            if(res.success){
+                message.success(res.message)
+                requestAsientos()
+            }else{
+                message.error(res.error)
+            }
+        }catch(error){
+            message.error(error.toString())
+        }finally{
+            setLoading(false)
+        }
+    }
     const columns = [
         {
             title:"Acciones",
             key: 'acciones',
             render: (row) => (
-                <div style={{ justifyContent: 'space-between', display: 'flex' }}>
+                <div style={{ justifyContent: 'space-around', display: 'flex' }}>
                     <FaEdit style={{ color: 'green',cursor:'pointer' }} onClick={()=>onEditAsiento(row)} />
+                    <FaTrash style={{ color: 'red',cursor:'pointer' }} onClick={()=>onDelete(row)} />
                 </div>
             )
         },

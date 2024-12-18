@@ -121,15 +121,17 @@ const RegistroAsientos=()=>{
       const res = await TipoCambio.post(url,token,datos)
       if(res.compra){
         setTipoCambio(res.compra)
-        const newdata = data.map(item=>{
-          return{
-            ...item,
-            tipo_cambio:res.compra
-          }
-        })
-        const newdata1 = change_tipo_cambio(newdata)
-        const newdata2 = suma_haber_debe(newdata1)
-        setData(newdata2)
+        if(data.length>0){
+          const newdata = data.map(item=>{
+            return{
+              ...item,
+              tipo_cambio:res.compra
+            }
+          })
+          const newdata1 = change_tipo_cambio(newdata)
+          suma_haber_debe(newdata1)
+          setData(newdata1)
+        }
       }
     }catch(erro){
       message.error(erro.toString())
@@ -168,7 +170,13 @@ const RegistroAsientos=()=>{
   const addItemList=(values)=>{
 
     const dates = MyForm1.getFieldsValue()
-    var id =idEdit!=-1?idEdit:data.length
+    var id =idEdit
+    if(!data && idEdit==-1){
+      id = 0
+    }else{
+      id = data.length
+    }
+   
     if(idEdit!=-1){
       var newdata = [...data]
       var newValues = {
@@ -180,7 +188,7 @@ const RegistroAsientos=()=>{
       newdata[idEdit]=newValues
       const newdata1 = change_tipo_cambio(newdata)
       suma_haber_debe(newdata1)
-      setData(newdata)
+      setData(newdata1)
 
     }else{
       var newValues = {

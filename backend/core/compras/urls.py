@@ -3,7 +3,7 @@ from django.urls import path
 from .views import ListComprasView,SaveComporasView,SaveTipoCambio
 from .CondicionPago.views import CondicionPagoList,EditCondicionPago,SaveCondicionPago,DeleteCondicionPago 
 from .TipoServicio.views import ListTipoServicio,SaveTipoServicio,EditTipoServicio,DeleteTipoServicio
-from .Asientos.views import EditAsientos
+
 urlpatterns = [
     path(route="list/comprobantes/<str:document>/",view=ListComprasView.as_view()),
     path(route="save/comprobantes/<str:document>/",view=SaveComporasView.as_view()), 
@@ -18,7 +18,6 @@ urlpatterns = [
     path(route="save/tipo-servicio/<str:document>/",view=SaveTipoServicio.as_view()),
     path(route="edit/tipo-servicio/<str:document>/<str:codigo>/",view=EditTipoServicio.as_view()),
     path(route="delete/tipo-servicio/<str:document>/<str:codigo>/",view=DeleteTipoServicio.as_view()),
-    #ASIENTOS
-    path(route="edit/asientos/<str:document>/<str:query_string>/",view=EditAsientos.as_view()),
+
 
 ]

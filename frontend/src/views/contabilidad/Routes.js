@@ -1,5 +1,6 @@
 import ListOrigenes from "./mantenimientos/origenes/ListOrigen";
 import PlanContable from "./mantenimientos/PlanContable";
+import ListMedioPago from "./MedioPago/ListMediopago";
 import ListAsientos from "./movimientos/Asientos/ListAsientos";
 import RegistroAsientos from "./movimientos/Asientos/RegistroAsientos";
 import RegistroRetenciones from "./movimientos/Retenciones/RegistroRetenciones";
@@ -30,5 +31,11 @@ export const OrigenesView=[
     {
         'view':ListOrigenes,
         'route':'list/origen'
+    }
+]
+export const MedioPagoView=[
+    {
+        'view':ListMedioPago,
+        'route':'list/medio-pago'
     }
 ]

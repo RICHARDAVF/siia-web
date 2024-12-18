@@ -1,7 +1,6 @@
 import config from '../src/config'
 const {BASE_URL} = config
 export const MANY_DATA_LIST =(document)=> `${BASE_URL}/api/v1/generic/${document}/`
-export const LIST_ASIENTOS =(document)=> `${BASE_URL}/api/v1/contabilidad/${document}/`
 // CONDICION DE PAGO
 export const LIST_CONDICION_PAGO = (document)=>`${BASE_URL}/api/v1/compras/list/condicion-pago/${document}/`
 export const EDIT_CONDICION_PAGO = (document)=>`${BASE_URL}/api/v1/compras/edit/condicion-pago/${document}/codigo/`
@@ -13,7 +12,9 @@ export const SAVE_TIPO_SERVICIO = (document)=>`${BASE_URL}/api/v1/compras/save/t
 export const EDIT_TIPO_SERVICIO = (document)=>`${BASE_URL}/api/v1/compras/edit/tipo-servicio/${document}/codigo/`
 export const DELETE_TIPO_SERVICIO = (document)=>`${BASE_URL}/api/v1/compras/delete/tipo-servicio/${document}/codigo/`
 // ASIENTOS
-export const EDIT_ASIENTOS = (document)=>`${BASE_URL}/api/v1/compras/edit/asientos/${document}/codigo/`
+export const LIST_ASIENTOS =(document)=> `${BASE_URL}/api/v1/contabilidad/${document}/`
+export const EDIT_ASIENTOS = (document)=>`${BASE_URL}/api/v1/contabilidad/edit/asientos/${document}/codigo/`
+export const DELETE_ASIENTOS = (document)=>`${BASE_URL}/api/v1/contabilidad/delete/asientos/${document}/`
 
 // ORIGENES
 export const LIST_ORIGENES = (document)=>`${BASE_URL}/api/v1/contabilidad/list/origen/${document}/`
@@ -25,3 +26,5 @@ export const EDIT_ORIGENES = (document)=>`${BASE_URL}/api/v1/contabilidad/edit/o
 export const LIST_CUENTAS = (document)=>`${BASE_URL}/api/v1/generics/list/cuentas/${document}/`
 
 
+// MEDIO DE PAGO
+export const LIST_MEDIO_PAGO = (document)=>`${BASE_URL}/api/v1/contabilidad/list/medio-pago/${document}/`
