@@ -10,13 +10,14 @@ const TipoCambio = () => {
     const [venta, setVenta] = useState(0)
     const [cierreCompra, setCierreCompra] = useState(0)
     const [cierreVenta, setCierreVenta] = useState(0)
-    const [data,setData]=useState([])
+    const [fechaFiltro, setFechaFiltro] = useState()
+    const [data, setData] = useState([])
     const { token, document, user } = useContext(Context)
     const { BASE_URL } = config
 
     useEffect(() => {
         getTipoCambio(2)
-    },[])
+    }, [])
 
     const onChangeFecha = (e) => {
         setFecha(e)
@@ -33,10 +34,34 @@ const TipoCambio = () => {
     const onChangeCierreVenta = (e) => {
         setCierreVenta(e)
     }
+    const onChangeFechaFiltro = async (fechaFiltro) => {
+        try {
+            var nfecha = 'null'
+            if (fechaFiltro) {
+                nfecha = fechaFiltro.format('YYYY-MM-DD')
+            }
+            const url = `${BASE_URL}/api/v1/compras/save/tipo-cambio/${document}/${nfecha}/0/`
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+            const result = await response.json()
+            setData(result.tipo_cambio)
+        } catch (error) {
+            message.error(error.toString())
+        }
+    }
 
     const getTipoCambio = async (option) => {
         try {
-            const nfecha = fecha.format('YYYY-MM-DD')
+            var nfecha = 'null'
+            if (option == 1) {
+                nfecha = fecha.format('YYYY-MM-DD')
+            }
+
+
             const url = `${BASE_URL}/api/v1/compras/save/tipo-cambio/${document}/${nfecha}/${option}/`
             const response = await fetch(url, {
                 method: 'GET',
@@ -45,10 +70,10 @@ const TipoCambio = () => {
                 }
             })
             const result = await response.json()
-            if(option==1){
+            if (option == 1) {
                 setCompra(('compra' in result) ? result.compra : '0')
                 setVenta(('venta' in result) ? result.venta : '0')
-            }else{
+            } else {
                 setData(result.tipo_cambio)
             }
         } catch (e) {
@@ -60,13 +85,13 @@ const TipoCambio = () => {
         try {
             const nfecha = fecha.format('YYYY-MM-DD')
             const url = `${BASE_URL}/api/v1/compras/save/tipo-cambio/${document}/${nfecha}/0/`
-            const datos = { 
-                "fecha": nfecha, 
-                "venta": venta, 
-                "compra": compra, 
-                "cierreCompra": cierreCompra, 
-                "cierreVenta": cierreVenta, 
-                "usuario": user.codigo_usuario 
+            const datos = {
+                "fecha": nfecha,
+                "venta": venta,
+                "compra": compra,
+                "cierreCompra": cierreCompra,
+                "cierreVenta": cierreVenta,
+                "usuario": user.codigo_usuario
             }
             const response = await fetch(url, {
                 method: 'POST',
@@ -78,15 +103,15 @@ const TipoCambio = () => {
             })
             const result = await response.json()
 
-            if(result.tipo_cambio){
+            if (result.tipo_cambio) {
                 setData(result.tipo_cambio)
             }
 
-            if(result.success){
+            if (result.success) {
                 message.success(result.success)
             }
 
-            if(result.error){
+            if (result.error) {
                 message.error(result.error)
             }
         } catch (e) {
@@ -158,7 +183,9 @@ const TipoCambio = () => {
                     </Row>
                 </Col>
                 <Col style={{ width: '50%' }}>
-                    <Table size='small' style={{ width: '100%' }} columns={columns} dataSource={data} rowKey={record=>record.id} />
+                    <label style={{ marginRight: 20 }}>Fecha</label>
+                    <DatePicker onChange={onChangeFechaFiltro} />
+                    <Table size='small' style={{ width: '100%' }} columns={columns} dataSource={data} rowKey={record => record.id} />
                 </Col>
             </Row>
         </div>

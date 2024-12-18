@@ -1,3 +1,4 @@
+import ListCentroCostos from "./mantenimientos/centroCostos/ListCentroCostos";
 import ListOrigenes from "./mantenimientos/origenes/ListOrigen";
 import PlanContable from "./mantenimientos/PlanContable";
 import ListAsientos from "./movimientos/Asientos/ListAsientos";
@@ -30,5 +31,12 @@ export const OrigenesView=[
     {
         'view':ListOrigenes,
         'route':'list/origen'
+    }
+]
+
+export const CentroCostoView = [
+    {
+        'view': ListCentroCostos,
+        'route': '/list/centro-costos'
     }
 ]
