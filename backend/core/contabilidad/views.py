@@ -46,6 +46,8 @@ class SaveAsientosView(GenericAPIView,DataBase):
     fecha:datetime = datetime.now()
     def post(self,request,*args,**kwargs):
         try:
+        
+            self.validar_cuenta()
             document = kwargs['document']
             datos = request.data
             sql = f"""
@@ -56,10 +58,11 @@ class SaveAsientosView(GenericAPIView,DataBase):
             correlativo = self.correlativo()
 
             for item in request.data['items']:
-                tipo_documento = item['tipo_documento'].split('-')[0]
+    
+           
                 auxiliar = GetAuxiliar(document,self.query,item['auxiliar'])
                 suma_total = self.suma_total()
-                params = ("53",str(self.fecha.month).zfill(2),datos['origen'],datos['ubicacion'],correlativo,self.fecha.strftime("%Y-%m-%d"),item['glosa'],item['cuenta'],auxiliar.codigo_cliente,tipo_documento,item['serie'],item['numero'],item['debe_soles'],item['haber_soles'],item['debe_dolares'],item['haber_dolares'],item['tipo_cambio'],datos['observacion'],datos['codigo_usuario'],item['vendedor'],datos['tipo_asiento'],suma_total,datos["fecha_emision"],item["moneda"],item["fecha_vencimiento"],datos["dias"])
+                params = ("53",str(self.fecha.month).zfill(2),datos['origen'],datos['ubicacion'],correlativo,self.fecha.strftime("%Y-%m-%d"),item['glosa'],item['cuenta'],auxiliar.codigo_cliente,item['tipo_documento'],item['serie'],item['numero'],item['debe_soles'],item['haber_soles'],item['debe_dolares'],item['haber_dolares'],item['tipo_cambio'],datos['observacion'],datos['codigo_usuario'],item['vendedor'],datos['tipo_asiento'],suma_total,datos["fecha_emision"],item["moneda"],item["fecha_vencimiento"],datos["dias"])
                 sql1 = sql+f"({','.join('?' for i in params)})"
                 self.query(document,sql1,params,'POST')
             return Response({"success":f"Los datos se guardaron exitosamente"},status=status.HTTP_200_OK)
@@ -73,9 +76,24 @@ class SaveAsientosView(GenericAPIView,DataBase):
     def correlativo(self):
         
         try:
-            params = (str(self.fecha.month).zfill(2),self.request.data["codigo_origen"])
+            one_item = self.request.data['items'][0]
+            mes = one_item['mes']
+            origen = one_item['origen']
+    
+            params = (mes,origen)
             sql = f"SELECT MAX(mov_compro) FROM mova{self.fecha.year} WHERE mov_mes=? AND ori_codigo=?"
             res = self.query(self.kwargs["document"],sql,params,"GET",0)
             return int(res[0])+1
-        except:
+        except Exception as e:
+            print(str(e))
             return 1
+    def validar_cuenta(self):
+        try:
+            for item in self.request.data['items']:
+                cuenta = item['cuenta']
+                sql = f"SELECT pla_aux FROM PLAN{self.fecha.year} WHERE pla_cuenta=?"
+                res = self.query(self.kwargs['document'],sql,(cuenta,),'GET',0)
+                if int(res[0])==1 and item['auxiliar']=='':
+                   raise ValueError(f'La cuenta {cuenta} require un auxiliar')
+        except Exception as e:
+            raise ValueError(str(e))  

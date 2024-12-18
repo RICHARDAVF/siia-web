@@ -1,6 +1,7 @@
 import ListCentroCostos from "./mantenimientos/centroCostos/ListCentroCostos";
 import ListOrigenes from "./mantenimientos/origenes/ListOrigen";
 import PlanContable from "./mantenimientos/PlanContable";
+import ListMedioPago from "./MedioPago/ListMediopago";
 import ListAsientos from "./movimientos/Asientos/ListAsientos";
 import RegistroAsientos from "./movimientos/Asientos/RegistroAsientos";
 import RegistroRetenciones from "./movimientos/Retenciones/RegistroRetenciones";

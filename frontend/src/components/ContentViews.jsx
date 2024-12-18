@@ -1,6 +1,6 @@
 import { Route, Routes } from "react-router-dom"
 import Home from "./Home"
-import TipoCambio from "../views/configuracion/tipoCambio/TipoCambio.jsx"
+
 import { ComprasView, CondicionPagoView, RecepcionDocumentosView, ReportesView, TipoServicioView } from "../views/compras/Routes.jsx"
 import { CentroCostoView, ContabilidadView, OrigenesView, PlanContableView, RetencionesView } from "../views/contabilidad/Routes.js"
 import { TipoCambioView } from "../views/configuracion/Routes.js"

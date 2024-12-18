@@ -65,19 +65,27 @@ const ModalFormComponent = (props) => {
         if (value == undefined) return;
         if (opt == 3) {
             MyForm2.setFieldsValue({
-                "debe_dolares": 0
+                "debe_dolares": 0,
+                "debe_soles":0,
+                "haber_soles":0
             })
         } else if (opt == 2) {
             MyForm2.setFieldsValue({
-                "haber_dolares": 0
+                "haber_dolares": 0,
+                "haber_soles":0,
+                "debe_soles":0
             })
         } else if (opt == 1) {
             MyForm2.setFieldsValue({
-                "debe_soles": 0
+                "debe_soles": 0,
+                "debe_dolares":0,
+                "haber_dolares":0
             })
         } else if (opt == 0) {
             MyForm2.setFieldsValue({
-                "haber_soles": 0
+                "haber_soles": 0,
+                "debe_dolares":0,
+                "haber_dolares":0
             })
         }
     }
@@ -149,7 +157,7 @@ const ModalFormComponent = (props) => {
                         <Form.Item
                             name="auxiliar"
                             label="Auxiliar"
-                            rules={[{ required: true, message: "Por favor seleccione un auxiliar" }]}
+                            initialValue={''}
                         >
                             <Select
                                 showSearch
@@ -158,8 +166,6 @@ const ModalFormComponent = (props) => {
                                 filterOption={false}
                                 placeholder='Buscar...'
                                 size='small'
-
-
                             >
                                 {
                                     auxiliar.map(item => (
@@ -201,16 +207,21 @@ const ModalFormComponent = (props) => {
                             label="Tipo de documento"
                             rules={[{ required: true, message: "Por favor ingrese el tipo de documento" }]}
                         >
-
                             <Select
-                                size='small'
+                                size="small"
                                 placeholder='Seleccione un documento'
-                                options={tipoDocumento}
-                                optionRender={(row) => (
-                                    <div style={{ fontSize: 10 }}>{row.value} - {row.label}</div>
-                                )}
-                                showSearch
-                            />
+                                filterOption
+                            >
+                                {
+                                    tipoDocumento.map((item)=>(
+                                        <Option key={item.id} value={item.value} style={{fontSize:10}}>
+                                            {item.value}-{item.label}
+                                        </Option>
+                                    ))
+                                }
+
+                            </Select>
+                            
                         </Form.Item>
                     </Col>
                     <Col xs={12} sm={6} md={4}>
@@ -339,6 +350,7 @@ const ModalFormComponent = (props) => {
                         <Form.Item
                             name="glosa"
                             label="Glosa"
+                            initialValue={'.'}
                             rules={[{ required: true, message: "Por favor ingrese la glosa" }]}
                         >
                             <TextArea rows={2} placeholder="Descripción..."

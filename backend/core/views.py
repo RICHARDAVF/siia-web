@@ -66,8 +66,10 @@ class GetAuxiliar:
         self.get()
     def get(self):
         try:
-            sql = "SELECT aux_clave,aux_razon FROM t_auxiliar WHERE aux_docum=?"
-            res = self.query(self.document,sql,(self.query_string,),"GET",0)
+            if self.query_string=='':
+                return
+            sql = "SELECT aux_clave,aux_razon FROM t_auxiliar WHERE aux_docum=?  OR AUX_CLAVE=?"
+            res = self.query(self.document,sql,(self.query_string,self.query_string),"GET",0)
             self.codigo_cliente = res[0].strip()
             self.razon_social = res[1].strip()
         except Exception as e:
@@ -141,7 +143,8 @@ class TipoDocumento:
                 SELECT 
                     DOC_CODIGO,
                     DOC_NOMBRE,
-                    DOC_SERIE 
+                    DOC_SERIE,
+                    identi 
                 FROM t_documento 
                 WHERE   
                     elimini=0
@@ -150,10 +153,10 @@ class TipoDocumento:
             res = self.query(self.document,sql,(),'GET',1)
             data = [
                 {
-                    "id":index,
-                    "value":f"{value[0].strip()}-{value[2].strip()}",
+                    "id":value[-1],
+                    "value":value[0].strip(),
                     "label":value[1].strip()
-                } for index,value in enumerate(res)
+                } for value in res
             ]
             return data
         except Exception as e:
@@ -292,6 +295,7 @@ class ListProveedor(GenericAPIView,DataBase):
                             AND (
                                 AUX_DOCUM LIKE '%{query_string}%'
                                 OR AUX_RAZON LIKE '%{query_string}%'
+                                OR AUX_CLAVE LIKE '%{query_string}%'
                             )"""
             res = self.query(document,sql,(),'GET',1)
             data = [

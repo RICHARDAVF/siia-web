@@ -38,7 +38,7 @@ class EditAsientos(GenericAPIView,DataBase):
                 {
                     'id':index,
                     'cuenta':value[7].strip(),
-                    'cliente':value[8].strip(),
+                    'auxiliar':value[8].strip(),
                     'vendedor':value[9].strip(),
                     'tipo_document':value[10].strip(),
                     'serie':value[11].strip(),
@@ -49,7 +49,7 @@ class EditAsientos(GenericAPIView,DataBase):
                     'haber_dolares':value[16],
                     'debe_dolares':value[17],
                     'tipo_cambio':value[18],
-                    'observacion':value[19].strip(),
+                    'glosa':value[19].strip(),
                     'fecha_vencimiento':value[20].strftime('%Y-%m-%d'),
 
                 } for index,value in enumerate(result)
@@ -106,3 +106,26 @@ class EditAsientos(GenericAPIView,DataBase):
             return res==-1
         except:
             raise ValueError('No se puede eactulizar los asientos')
+class DeleteAsientos(GenericAPIView,DataBase):
+    permission_classes = [AllowAny]
+    authentication_classes = [TokenAuthentication]
+    fecha : datetime = datetime.now()
+    def post(self,request,*args,**kwargs):
+        try:
+            data = {}
+            document = kwargs['document']
+            datos = request.data
+            comprobante = datos['comprobante']
+            origen = datos['origen']
+            mes = datos['mes']
+            params = (origen,mes,comprobante)
+  
+            sql = f"DELETE FROM mova{self.fecha.year} WHERE ori_codigo=? AND mov_mes=? AND mov_compro=?"
+            res = self.query(document,sql,params,'POST')
+
+            if res==-1:
+                data['success'] = True
+                data['message'] = "Se eliminaron los asientos"
+            return Response(data,status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error':f'Ocurrio un error: {str(e)}'})

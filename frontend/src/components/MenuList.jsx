@@ -30,6 +30,11 @@ const items = [
                         label:"Origenes",
                         route:'list/origen'
                     },
+                    {
+                        key:"214",
+                        label:"Medio de pago",
+                        route:'list/medio-pago'
+                    },
                 ]
             },
             {
