@@ -283,12 +283,12 @@ class ListProveedor(GenericAPIView,DataBase):
             document = kwargs['document']
             query_string = request.data['query_string']
             sql =f""" SELECT TOP 10
-                            AUX_DOCUM,
-                            AUX_RAZON
+                            AUX_CLAVE,
+                            AUX_RAZON,
+                            AUX_DOCUM
                         FROM t_auxiliar 
                         WHERE 
-                            MAA_CODIGO='PR' 
-                            AND ELIMINI=0 
+                            ELIMINI=0 
                             AND (
                                 AUX_DOCUM LIKE '%{query_string}%'
                                 OR AUX_RAZON LIKE '%{query_string}%'
@@ -298,7 +298,8 @@ class ListProveedor(GenericAPIView,DataBase):
                 {
                     "id":index,
                     "value":value[0].strip(),
-                    "label":value[1].strip()
+                    "label":value[1].strip(),
+                    "document":value[2].strip()
                 } for index,value in enumerate(res)
                 
             ]

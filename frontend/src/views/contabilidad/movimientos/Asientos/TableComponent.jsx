@@ -47,7 +47,7 @@ const TableComponent = (props)=>{
           key:"cuenta"
         },
         {
-          title: 'Cliente',
+          title: 'Auxiliar',
           dataIndex: 'auxiliar',
           key:"auxiliar"
         },

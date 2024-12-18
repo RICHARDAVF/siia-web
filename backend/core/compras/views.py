@@ -72,8 +72,6 @@ class SaveComporasView(GenericAPIView,DataBase):
         except Exception as e:
 
             return Response({"error":f"Ocurrio un error: {str(e)}"},status= status.HTTP_500_INTERNAL_SERVER_ERROR)
-    def validate(self):
-        pass
     def sum_total(self):
         try:
             return sum([float(item["haber_soles"]) for item in self.request.data["items"]])

@@ -25,6 +25,7 @@ const RegistroAsientos=()=>{
   const [debeSoles,setDebeSoles] = useState(0)
   const [debeDolares,setDebeDolares] = useState(0)
   const [tipoCambio,setTipoCambio] = useState(0)
+  const [idEdit,setIdEdit] = useState(-1)
   const [data,setData] = useState([])
   const [MyForm1] = Form.useForm()
   const [MyForm2] = Form.useForm()
@@ -64,8 +65,8 @@ const RegistroAsientos=()=>{
         
         MyForm1.setFieldsValue(form_header)
         setTimeout(()=>{
-          const newdata = process_data(res.data.list_table)
-          setData(newdata)
+        suma_haber_debe(res.data.list_table)
+        setData(res.data.list_table)
         },500)
          
         
@@ -126,8 +127,9 @@ const RegistroAsientos=()=>{
             tipo_cambio:res.compra
           }
         })
-        const new_data = process_data(newdata)
-        setData(new_data)
+        const newdata1 = change_tipo_cambio(newdata)
+        const newdata2 = suma_haber_debe(newdata1)
+        setData(newdata2)
       }
     }catch(erro){
       message.error(erro.toString())
@@ -135,20 +137,12 @@ const RegistroAsientos=()=>{
       setLoading(false)
     }
   }
-
-  const process_data=(data)=>{
-    var haber_dolares = 0
-    var debe_dolares = 0
+  const suma_haber_debe=(data)=>{
     var haber_soles = 0
+    var haber_dolares = 0
     var debe_soles = 0
-    const newdata = data.map(item=>item.moneda=='D'?
-      {
-        ...item,
-        haber_soles:(parseFloat(item.haber_dolares)*parseFloat(item.tipo_cambio)).toFixed(2),
-        debe_soles:(parseFloat(item.debe_dolares)*parseFloat(item.tipo_cambio)).toFixed(2),
-      }:{...item}
-    )
-    for (var item of newdata){
+    var debe_dolares = 0
+    for(var item of data){
       haber_soles+=parseFloat(item.haber_soles)
       haber_dolares+=parseFloat(item.haber_dolares)
       debe_soles+=parseFloat(item.debe_soles)
@@ -158,32 +152,62 @@ const RegistroAsientos=()=>{
     setDebeSoles(debe_soles.toFixed(2))
     setHaberDolares(haber_dolares.toFixed(2))
     setHaberSoles(haber_soles.toFixed(2))
+  }
+  const change_tipo_cambio=(data)=>{
+
+    const newdata = data.map(item=>item.moneda=='D'?
+      {
+        ...item,
+        haber_soles:(parseFloat(item.haber_dolares)*parseFloat(item.tipo_cambio)).toFixed(2),
+        debe_soles:(parseFloat(item.debe_dolares)*parseFloat(item.tipo_cambio)).toFixed(2),
+      }:{...item}
+    )
+   
     return newdata
   }
   const addItemList=(values)=>{
+
     const dates = MyForm1.getFieldsValue()
-    const id = data.length
-    const newValues = {
-      'id':id,
-      ...values,
-      "fecha_emision":dates.fecha_emision.format("YYYY-MM-DD"),
-      "tipo_cambio":tipoCambio
+    var id =idEdit!=-1?idEdit:data.length
+    if(idEdit!=1){
+      var newdata = [...data]
+      var newValues = {
+        'id':'id',
+       ...values,
+       "fecha_emision":dates.fecha_emision.format("YYYY-MM-DD"),
+        "tipo_cambio":tipoCambio
+      }
+      newdata[idEdit]=newValues
+      const newdata1 = change_tipo_cambio(newdata)
+      suma_haber_debe(newdata1)
+      setData(newdata)
+
+    }else{
+      var newValues = {
+        'id':id,
+        ...values,
+        "fecha_emision":dates.fecha_emision.format("YYYY-MM-DD"),
+        "tipo_cambio":tipoCambio
+      }
+      var newdata = [...data,newValues]
+      const newdata1 = change_tipo_cambio(newdata)
+      suma_haber_debe(newdata1)
+      setData(newdata1)
     }
-    const data_process = process_data([...data,newValues])
-    setData(data_process)
+    setIdEdit(-1)
     MyForm2.resetFields()
   }
   const deleteItem=(row)=>{
     const index = data.findIndex(item=>item.id==row.id)
   const newdata = [...data]
   newdata.splice(index,1)
-  const data_new = process_data(newdata)
-  setData(data_new)
+  suma_haber_debe(newdata)
+  setData(newdata)
   }
   const editItem=(row)=>{
 
     const index = data.findIndex(item=>item.id==row.id)
-    console.log(index)
+    setIdEdit(index)
     const dataEdit = data[index]
     MyForm2.setFieldsValue({
       ...dataEdit,
