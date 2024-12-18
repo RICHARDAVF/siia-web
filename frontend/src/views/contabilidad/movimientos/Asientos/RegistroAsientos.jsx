@@ -169,7 +169,7 @@ const RegistroAsientos=()=>{
 
     const dates = MyForm1.getFieldsValue()
     var id =idEdit!=-1?idEdit:data.length
-    if(idEdit!=1){
+    if(idEdit!=-1){
       var newdata = [...data]
       var newValues = {
         'id':'id',
