@@ -106,8 +106,8 @@ const items = [
                 children:[
                     {
                         key:"431",
-                        label:"Cuentas por Pagar",
-                        route:"reporte/cuentas-pagar"
+                        label:"Libro Diario",
+                        route:"reporte/libro-diario"
                     }
                 ]
             }

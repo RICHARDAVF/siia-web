@@ -31,3 +31,6 @@ export const SAVE_CENTRO_COSTO = (document) => `${BASE_URL}/api/v1/contabilidad/
 
 // MEDIO DE PAGO
 export const LIST_MEDIO_PAGO = (document)=>`${BASE_URL}/api/v1/contabilidad/list/medio-pago/${document}/`
+export const SAVE_MEDIO_PAGO = (document)=>`${BASE_URL}/api/v1/contabilidad/save/medio-pago/${document}/`
+export const EDIT_MEDIO_PAGO = (document)=>`${BASE_URL}/api/v1/contabilidad/edit/medio-pago/${document}/codigo/`
+export const DELETE_MEDIO_PAGO = (document)=>`${BASE_URL}/api/v1/contabilidad/delete/medio-pago/${document}/codigo/`
