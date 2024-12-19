@@ -41,3 +41,9 @@ export const CentroCostoView = [
         'route': '/list/centro-costos'
     }
 ]
+export const MedioPagosView=[
+    {
+        'view':ListMedioPago,
+        'route':'list/medio-pago'
+    }
+]
