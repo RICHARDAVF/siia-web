@@ -27,6 +27,7 @@ export const LIST_CUENTAS = (document) => `${BASE_URL}/api/v1/generics/list/cuen
 
 // CENTRO COSTO
 export const LIST_CENTRO_COSTO = (document) => `${BASE_URL}/api/v1/contabilidad/list/centro-costos/${document}/`
+export const SAVE_CENTRO_COSTO = (document) => `${BASE_URL}/api/v1/contabilidad/save/centro-costos/${document}/`
 
 // MEDIO DE PAGO
 export const LIST_MEDIO_PAGO = (document)=>`${BASE_URL}/api/v1/contabilidad/list/medio-pago/${document}/`

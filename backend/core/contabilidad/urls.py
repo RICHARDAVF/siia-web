@@ -2,6 +2,7 @@ from django.urls import path
 from core.contabilidad.views import ListAsientosView,SaveAsientosView
 from .origen.views import Listorigen,SaveOrigen,DeleteOrigen,EditOrigen
 from .centroCostos.views import ListCentroCostos
+from .centroCostos.views import SaveCentroCostos 
 from .Asientos.views import EditAsientos,DeleteAsientos
 urlpatterns = [
     path(route="list/<str:document>/",view=ListAsientosView.as_view()),
@@ -16,7 +17,8 @@ urlpatterns = [
     path(route="delete/origen/<str:document>/",view=DeleteOrigen.as_view()),
     path(route="edit/origen/<str:document>/<str:codigo>/",view=EditOrigen.as_view()),
     #CENTRO DE COSTOS
-    path(route="list/centro-costos/<str:document>/",view=ListCentroCostos.as_view()),
+    path(route="list/centro-costos/<str:document>/<str:codigo>",view=ListCentroCostos.as_view()),
+    path(route="save/centro-costos/<str:document>/",view=SaveCentroCostos.as_view()),
     #MEDIO DE PAGO
     path(route="list/medio-pago/<str:document>/",view=ListCentroCostos.as_view()),
 ]
