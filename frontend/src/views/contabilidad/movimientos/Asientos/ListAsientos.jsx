@@ -1,10 +1,12 @@
-import { Table,message } from "antd"
+import { message, Table } from "antd"
 import { useContext, useEffect,useState } from "react"
 import config from "../../../../config"
 import { Context } from "../../../../components/GlobalContext"
-import { FaEdit } from "react-icons/fa"
+import { FaEdit, FaTrash } from "react-icons/fa"
 import { useNavigate } from "react-router-dom"
 import Loading from "../../../../components/Loading"
+import EndPointContabilidad from "../../../../../api/contabilidad/apiAsientos"
+import { DELETE_ASIENTOS } from "../../../../../service/urls"
 
 const ListAsientos=()=>{
     const [data,setData]=useState([])
@@ -14,38 +16,56 @@ const ListAsientos=()=>{
     const navigate = useNavigate()
     useEffect(()=>{
         requestAsientos()
+        window.document.title = 'Listado de Asientos'
     },[])
     const onEditAsiento=(item)=>{
-        navigate("/registro/asiento",{state:{'params':item}})
+        navigate("/registro/asientos",{state:{'params':{'data':item,'action':'edit'}}})
     }
     const requestAsientos=async()=>{
+        const url = `${BASE_URL}/api/v1/contabilidad/list/${document}/`
+        const response=await fetch(url,{
+            method:'POST',
+            headers:{
+                "Content-Type":'applicaion/json',
+                "Authorization":`Bearer ${token}` 
+            }
+        })
+        const res = await response.json()
+
+        setData(res.data)
+
+    }
+    const onDelete=async(item)=>{
         try{
             setLoading(true)
-            const url = `${BASE_URL}/api/v1/contabilidad/list/${document}/`
-            const response=await fetch(url,{
-                method:'POST',
-                headers:{
-                    "Content-Type":'applicaion/json',
-                    "Authorization":`Bearer ${token}` 
-                }
-            })
-            const res = await response.json()
-            setData(res.data)
+            const {comprobante,origen,mes} = item
+            const datos = {
+                'comprobante':comprobante,
+                'origen':origen,
+                'mes':mes
+            }
+            const url = DELETE_ASIENTOS(document)
+            const res = await EndPointContabilidad.Asientos.post(url,datos,token)
+            if(res.success){
+                message.success(res.message)
+                requestAsientos()
+            }else{
+                message.error(res.error)
+            }
         }catch(error){
-            message.error(res.message)
+            message.error(error.toString())
         }finally{
             setLoading(false)
         }
-      
-
     }
     const columns = [
         {
             title:"Acciones",
             key: 'acciones',
             render: (row) => (
-                <div style={{ justifyContent: 'space-between', display: 'flex' }}>
+                <div style={{ justifyContent: 'space-around', display: 'flex' }}>
                     <FaEdit style={{ color: 'green',cursor:'pointer' }} onClick={()=>onEditAsiento(row)} />
+                    <FaTrash style={{ color: 'red',cursor:'pointer' }} onClick={()=>onDelete(row)} />
                 </div>
             )
         },
@@ -81,12 +101,13 @@ const ListAsientos=()=>{
     return (
         <div style={{position:'relative'}}>
             <div>
-                <input type="button" value={"AGREGAR"} style={{background:'blue',color:'white',borderRadius:5,padding:3,cursor:'pointer'}} onClick={()=>navigate('/registro/asientos',{status:{params:{"action":"add"}}})}/>
+                <input type="button" value={"AGREGAR"} style={{background:'blue',color:'white',borderRadius:5,padding:3,cursor:'pointer'}} onClick={()=>navigate('/registro/asientos',{state:{params:{"action":"add"}}})}/>
             </div>
             <Table 
             dataSource={data} 
             columns={columns}
-            rowKey={(record)=>`${record.mes}-${record.comprobante}`}
+            rowKey={(record)=>`${record.id}`}
+            size="small"
             />
             <Loading status={loading}/>
         </div>

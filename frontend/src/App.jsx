@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 import './index.css';
-import { Button, Layout, theme } from 'antd';
+import { Button, Layout, Row, theme } from 'antd';
 import Logo from './components/Logo.jsx';
 import MenuList from './components/MenuList.jsx';
 import { MenuUnfoldOutlined, MenuFoldOutlined, LogoutOutlined } from "@ant-design/icons";
@@ -15,8 +15,9 @@ const { Header, Sider, Content } = Layout;
 
 function App() {
   const [darkMode, setDarkMode] = useState(true);
-  const [collapsed, setCollapsed] = useState(true);
+  const [collapsed, setCollapsed] = useState(false);
   const [isAuthenticate, setIsAuthenticate] = useState(false);
+  const [username,setUsername] = useState('')
   const {updateState} = useContext(Context)
   useEffect(() => {
     const token = localStorage.getItem("authToken");
@@ -25,7 +26,9 @@ function App() {
 
     if (token) {
       setIsAuthenticate(true);
-      updateState({"token":token,"document":document,"user":JSON.parse(user)})
+      const userData = JSON.parse(user)
+      setUsername(userData.username)
+      updateState({"token":token,"document":document,"user":userData})
     }
   }, []);
 
@@ -55,13 +58,14 @@ function App() {
           setCollapsed={setCollapsed}
           toggleTheme={toggleTheme}
           setIsAuthenticate={setIsAuthenticate}
+          username = {username}
         />
       )}
     </BrowserRouter>
   );
 }
 
-function AuthenticatedLayout({ darkMode, collapsed, setCollapsed, toggleTheme, setIsAuthenticate }) {
+function AuthenticatedLayout({ darkMode, collapsed, setCollapsed, toggleTheme, setIsAuthenticate,username }) {
   const navigate = useNavigate(); 
 
   const onLogout = () => {
@@ -79,13 +83,16 @@ function AuthenticatedLayout({ darkMode, collapsed, setCollapsed, toggleTheme, s
           style={{ color: darkMode ? '#ffffff' : '#001529' }}
           icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
         />
-        <Button
-          onClick={onLogout}
-          danger
-          style={{ marginRight: '16px' }}
-          icon={<LogoutOutlined />}
-        >
-        </Button>
+        <Row style={{justifyContent:'center',alignContent:'center',alignItems:'center'}} gutter={20}>
+          <strong style={{color:'white'}}>{username}</strong>  
+          <Button
+            onClick={onLogout}
+            danger
+            style={{ marginRight: '16px',marginLeft:'16px' }}
+            icon={<LogoutOutlined />}
+          >
+          </Button>
+        </Row>
       </Header>
       <Content>
         <Layout>

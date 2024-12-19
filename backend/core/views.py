@@ -5,8 +5,10 @@ from core.conn import DataBase
 from config.middleware import TokenAuthentication
 from rest_framework.permissions import AllowAny
 from rest_framework import status
+
 from datetime import datetime
 import requests
+
 # Create your views here.
 class TipoCambio:
     def __init__(self,document:str,user_codigo:str,query,fecha:datetime = None ):
@@ -64,8 +66,10 @@ class GetAuxiliar:
         self.get()
     def get(self):
         try:
-            sql = "SELECT aux_clave,aux_razon FROM t_auxiliar WHERE aux_docum=?"
-            res = self.query(self.document,sql,(self.query_string,),"GET",0)
+            if self.query_string=='':
+                return
+            sql = "SELECT aux_clave,aux_razon FROM t_auxiliar WHERE aux_docum=?  OR AUX_CLAVE=?"
+            res = self.query(self.document,sql,(self.query_string,self.query_string),"GET",0)
             self.codigo_cliente = res[0].strip()
             self.razon_social = res[1].strip()
         except Exception as e:
@@ -139,7 +143,8 @@ class TipoDocumento:
                 SELECT 
                     DOC_CODIGO,
                     DOC_NOMBRE,
-                    DOC_SERIE 
+                    DOC_SERIE,
+                    identi 
                 FROM t_documento 
                 WHERE   
                     elimini=0
@@ -148,10 +153,10 @@ class TipoDocumento:
             res = self.query(self.document,sql,(),'GET',1)
             data = [
                 {
-                    "id":index,
-                    "value":f"{value[0].strip()}-{value[2].strip()}",
+                    "id":value[-1],
+                    "value":value[0].strip(),
                     "label":value[1].strip()
-                } for index,value in enumerate(res)
+                } for value in res
             ]
             return data
         except Exception as e:
@@ -198,6 +203,30 @@ class GetTipoAsiento:
         except Exception as e:
             print(str(e))
             raise ValueError(str(e))
+class GetTablas:
+    def __init__(self,document,query_string,query):
+        self.document = document
+        self.query_string = query_string
+        self.query = query
+    def get(self):
+        try:
+            sql = f"""
+                SELECT t01_codigo,t01_nombre FROM t_tabla1 WHERE t01_codigo LIKE '%{self.query_string}%' OR t01_nombre LIKE '%{self.query_string}%'
+        """
+           
+            
+            result = self.query(self.document,sql,(),'GET',1)
+            data = [
+                {
+                    'id':f"{index}-{value[0].strip()}",
+                    'value':value[0].strip(),
+                    'label':value[1].strip()
+                } for index,value in enumerate(result)
+            ]
+  
+            return data
+        except Exception as e:
+            raise ValueError(str(e))
 class ListOrigen(GenericAPIView,DataBase):
     permission_classes = [AllowAny]
     authentication_classes = [TokenAuthentication]
@@ -206,8 +235,14 @@ class ListOrigen(GenericAPIView,DataBase):
             document = kwargs["document"]
             query_string = request.data["query_string"]
             tipo_origen = request.data["tipo_origen"]
+
+            sql = f"SELECT ori_codigo,ori_nombre FROM t_origen WHERE ori_tipo=? LIKE ori_nombre '%{query_string}%' OR ori_codigo LIKE '%{query_string}%' "
+
             sql = f"SELECT ori_codigo,ori_nombre FROM t_origen WHERE ori_tipo=? AND (ori_nombre LIKE '%{query_string}%' OR ori_codigo LIKE '%{query_string}%') "
+
             res = self.query(document,sql,(tipo_origen,),"GET",1)
+
+
             data = [
                 {
                     "id":index,
@@ -217,7 +252,9 @@ class ListOrigen(GenericAPIView,DataBase):
             ]
             return Response(data,status=status.HTTP_200_OK)
         except Exception as e:
+
             return Response({"error":f"Ocurrio un error: {str(e)}"},status=status.HTTP_400_BAD_REQUEST)
+
 class ListUbicacion(GenericAPIView,DataBase):
     permission_classes = [AllowAny]
     authentication_classes = [TokenAuthentication]
@@ -249,22 +286,24 @@ class ListProveedor(GenericAPIView,DataBase):
             document = kwargs['document']
             query_string = request.data['query_string']
             sql =f""" SELECT TOP 10
-                            AUX_DOCUM,
-                            AUX_RAZON
+                            AUX_CLAVE,
+                            AUX_RAZON,
+                            AUX_DOCUM
                         FROM t_auxiliar 
                         WHERE 
-                            MAA_CODIGO='PR' 
-                            AND ELIMINI=0 
+                            ELIMINI=0 
                             AND (
                                 AUX_DOCUM LIKE '%{query_string}%'
                                 OR AUX_RAZON LIKE '%{query_string}%'
+                                OR AUX_CLAVE LIKE '%{query_string}%'
                             )"""
             res = self.query(document,sql,(),'GET',1)
             data = [
                 {
                     "id":index,
                     "value":value[0].strip(),
-                    "label":value[1].strip()
+                    "label":value[1].strip(),
+                    "document":value[2].strip()
                 } for index,value in enumerate(res)
                 
             ]
@@ -347,12 +386,22 @@ class ListCuentas(GenericAPIView,DataBase):
             WHERE 
                 pla_cuenta LIKE '%{query_string}%'
                 OR pla_nombre LIKE '%{query_string}%'
-"""
+            """
+            if 'action' in request.data and request.data['action']=='cuenta10':
+                sql = f"""
+                    SELECT
+                        pla_cuenta,
+                        pla_nombre,
+                        pla_moneda
+
+                    FROM PLAN{self.fecha.year}
+                        WHERE SUBSTRING(pla_cuenta,1,2)='10'
+                """
             res = self.query(document,sql,(),'GET',1)
        
             data = [
                 {
-                    'id':index,
+                    'id':f"{index}-{value[-1].strip()}",
                     'value':value[0].strip(),
                     'label':value[1].strip(),
                     'moneda':value[2].strip()
@@ -360,9 +409,11 @@ class ListCuentas(GenericAPIView,DataBase):
             ]
             return Response(data,status=status.HTTP_200_OK)
         except Exception as e:
+            print(str(e))
             return Response({
                 'error':f'Ocurrio un un error :{str(e)}'
             },status = status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 class TipoDeCambio(GenericAPIView,DataBase):
     permission_classes = [AllowAny]
     authentication_classes = [TokenAuthentication]
@@ -384,7 +435,6 @@ class VendedorView(GenericAPIView,DataBase):
             document = kwargs['document']
             instance = GetVendedor(document,self.query)
             data = instance.get()
-            print(data)
             return Response(data,status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error":f"Ocurrio un error:{str(e)}"},status=status.HTTP_400_BAD_REQUEST)
@@ -417,6 +467,10 @@ class GenericViews(GenericAPIView,DataBase):
             if "tipo-asiento" in request.data["dates"]:
                 instance = GetTipoAsiento(document,self.query)
                 data["tipo_asiento"] = instance.get()
+            if 'tablas' in request.data['dates']:
+                instance = GetTablas(document,query_string,self.query)
+                data['tablas'] = instance.get()
+            data['success'] = True
             return Response(data,status=status.HTTP_200_OK)
         except Exception as e:
      

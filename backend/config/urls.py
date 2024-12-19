@@ -18,6 +18,9 @@ from django.contrib import admin
 from django.urls import path,include
 from core.views import ListOrigen,ListUbicacion,ListProveedor,ListDocument,ListCentroCosto,ListCuentas,TipoDeCambio,VendedorView,GenericViews
 
+from django.contrib.staticfiles.urls import static
+from django.conf import settings
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/users/',include('core.login.urls')),
@@ -34,3 +37,5 @@ urlpatterns = [
     path('api/v1/vendedor/list/<str:document>/',VendedorView.as_view()),
     path('api/v1/generic/<str:document>/',GenericViews.as_view())
 ]
+
+urlpatterns+= static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

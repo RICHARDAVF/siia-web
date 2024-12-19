@@ -6,6 +6,7 @@ from rest_framework import status
 from core.conn import DataBase
 from datetime import datetime
 from core.views import GetAuxiliar
+import requests
 class ListComprasView(GenericAPIView,DataBase):
     permission_classes = [AllowAny]
     authentication_classes = [TokenAuthentication]
@@ -71,8 +72,6 @@ class SaveComporasView(GenericAPIView,DataBase):
         except Exception as e:
 
             return Response({"error":f"Ocurrio un error: {str(e)}"},status= status.HTTP_500_INTERNAL_SERVER_ERROR)
-    def validate(self):
-        pass
     def sum_total(self):
         try:
             return sum([float(item["haber_soles"]) for item in self.request.data["items"]])
@@ -108,3 +107,96 @@ class EditComprasView(GenericAPIView,DataBase):
             res = self.query(document,sql,params,"GET",1)
         except Exception as e:
             return Response({"error":f"Ocurrio un error al recuperar la data:{str(e)}"})
+class SaveTipoCambio(GenericAPIView,DataBase):
+    permission_classes = [AllowAny]
+    authentication_classes = [TokenAuthentication]
+    fecha = datetime.now()
+    def post(self,request,*args,**kwargs):
+        try:
+            data={}
+            documento = kwargs["document"]
+            fecha=request.data["fecha"]
+            compra=request.data["compra"]
+            venta=request.data["venta"]
+            cierreCompra=request.data["cierreCompra"]
+            cierreVenta=request.data["cierreVenta"]
+            usuario=request.data["usuario"]
+
+            if not self.validarTipoCambio(fecha):
+                raise ValueError('Ya existe tipo de cambio para esta fecha')
+
+            sql = """INSERT T_TCAMBIO(tc_fecha,tc_compra,tc_venta,tc_cierrc,tc_cierrv,tc_euro,usuario,fechausu)
+            values (?,?,?,?,?,?,?,?)
+            """
+            params=(fecha,compra,venta,cierreCompra,cierreVenta,0,usuario,self.fecha)
+            res=self.query(documento,sql,params,"POST")
+
+            if res==-1:
+                data['tipo_cambio']=self.getTipoCambioBD()
+                data['success']='Se guardo con exito'
+            else:
+                data['error']='No se puedo guardar los datos'
+            return Response(data)
+        except Exception as e:
+            return Response({"error":f"Ocurrio un error al guardar la data:{str(e)}"})
+    
+    def getTipoCambioSunat(self,fecha):
+        try:
+            url="https://api.apis.net.pe/v1/tipo-cambio-sunat?fecha="+fecha
+            result=requests.get(url)
+            if result.status_code==200:
+               
+                return result.json()
+        except Exception as e:
+            raise ValueError(str(e))
+        
+    def get(self,request,*args,**kwargs):
+        try:
+            data={}
+            option=kwargs["option"]
+            if option==1:
+                url="https://api.apis.net.pe/v1/tipo-cambio-sunat?fecha="+kwargs["fecha"]
+                result=requests.get(url)
+                if result.status_code==200:
+                    data=result.json()
+                else:
+                    data['error']='Error en la consulta'
+            else:
+                data['tipo_cambio']=self.getTipoCambioBD()
+            return Response(data)
+        except Exception as e:
+            return Response({'error':str(e)})
+    def validarTipoCambio(self,fecha):
+        try:
+            sql = "select tc_fecha from t_tcambio where tc_fecha=?"
+            params=(fecha,)
+            result=self.query(self.kwargs['document'],sql,params,"GET",0)
+            return result is None
+        except Exception as e:
+            raise ValueError(str(e))
+    def getTipoCambioBD(self):
+        try:
+            fechafiltro = self.kwargs["fecha"]
+            print(fechafiltro)
+            if fechafiltro=='null' :
+                sql = "select top 200 tc_fecha,tc_compra,tc_venta,tc_cierrc,tc_cierrv from t_tcambio order by tc_fecha desc"
+                params=()
+            else :
+                sql = "select tc_fecha,tc_compra,tc_venta,tc_cierrc,tc_cierrv from t_tcambio where tc_fecha=? order by tc_fecha desc"
+                params=(fechafiltro,)
+            
+            result=self.query(self.kwargs['document'],sql,params,"GET",1)
+            data=[
+                {
+                    'id':index,
+                    'fecha':value[0].strftime('%Y-%m-%d'),
+                    'compra':value[1],
+                    'venta':value[2],
+                    'cierreCompra':value[3],
+                    'cierreVenta':value[4],
+                }for index,value in enumerate(result)
+            ]
+
+            return data
+        except Exception as e:
+            raise ValueError(str(e))

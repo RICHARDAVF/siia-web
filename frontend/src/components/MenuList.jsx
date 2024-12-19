@@ -25,6 +25,16 @@ const items = [
                         key:"212",
                         label:"Tipos de Auxiliares"
                     },
+                    {
+                        key:"213",
+                        label:"Origenes",
+                        route:'list/origen'
+                    },
+                    {
+                        key:"214",
+                        label:"Medio de pago",
+                        route:'list/medio-pago'
+                    },
                 ]
             },
             {
@@ -41,6 +51,11 @@ const items = [
                         label:"Registro de Retenciones Anticipadas y Letras",
                         route:"/registro/retenciones"
                     },
+                    {
+                        key:"223",
+                        label:"Centro de costos",
+                        route:"/list/centro-costos"
+                    }
                 ]
             }
         ]
@@ -48,14 +63,6 @@ const items = [
     {
         key:"3",
         label:"Gerencial",
-        children:[
-            {
-                key:"31",
-                label:"Tipo de Cambio",
-                route:"/tipo-cambio"
-            }
-
-        ]
     },
     {
         key:"4",
@@ -84,7 +91,12 @@ const items = [
                     {
                         key:"421",
                         label:"Condicion de pago",
-                        route:"/registro/condicion-pago"
+                        route:"/list/condicion-pago"
+                    },
+                    {
+                        key:"422",
+                        label:"Tipo de Servicio",
+                        route:"/list/tipo-servicio"
                     }
                 ]
             },
@@ -98,6 +110,17 @@ const items = [
                         route:"reporte/cuentas-pagar"
                     }
                 ]
+            }
+        ]
+    },
+    {
+        key:"5",
+        label:"Configuración",
+        children:[
+            {
+                key:"51",
+                label:"Tipo de Cambio",
+                route:"/tipo-cambio"
             }
         ]
     }

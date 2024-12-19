@@ -1,9 +1,17 @@
 
+from django.shortcuts import render
+
+import requests
+
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 from rest_framework import status
 from core.views import TipoCambio
 from core.conn import DataBase
+
+# Create your views here.
+
+from datetime import datetime
 
 # Create your views here.
 

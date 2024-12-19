@@ -30,6 +30,7 @@ function Login({ onLogin }) {
 
         updateState({ "token": res.token, "document": values.document,"user":res });
 
+
         setTimeout(() => {
           onLogin(res);
           message.success('Se inició sesión exitosamente');

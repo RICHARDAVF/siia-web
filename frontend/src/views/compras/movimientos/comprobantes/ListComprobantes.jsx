@@ -15,6 +15,9 @@ const ListComprobantes=()=>{
     const searchInput = useRef(null)
     const {BASE_URL} = config
     useEffect(()=>{
+        window.document.title = 'Listado de Comprobantes'
+    },[])
+    useEffect(()=>{
         requestComprobantes()
     },[])
     const requestComprobantes=async()=>{
@@ -145,6 +148,7 @@ const ListComprobantes=()=>{
             dataSource={data}
             columns={columns}
             scroll={{x:"max-content"}}
+            size="small"
             rowKey={(record)=>`${record.serie}-${record.numero}-${record.comprobante}`}
 
             />
