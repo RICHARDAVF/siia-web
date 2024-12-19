@@ -13,7 +13,8 @@ export const SAVE_TIPO_SERVICIO = (document) => `${BASE_URL}/api/v1/compras/save
 export const EDIT_TIPO_SERVICIO = (document) => `${BASE_URL}/api/v1/compras/edit/tipo-servicio/${document}/codigo/`
 export const DELETE_TIPO_SERVICIO = (document) => `${BASE_URL}/api/v1/compras/delete/tipo-servicio/${document}/codigo/`
 // ASIENTOS
-export const EDIT_ASIENTOS = (document) => `${BASE_URL}/api/v1/compras/edit/asientos/${document}/codigo/`
+export const EDIT_ASIENTOS = (document) => `${BASE_URL}/api/v1/contabilidad/edit/asientos/${document}/codigo/`
+export const DELETE_ASIENTOS = (document) => `${BASE_URL}/api/v1/contabilidad/delete/asientos/${document}/codigo/`
 
 // ORIGENES
 export const LIST_ORIGENES = (document) => `${BASE_URL}/api/v1/contabilidad/list/origen/${document}/`

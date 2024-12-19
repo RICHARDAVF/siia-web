@@ -24,8 +24,8 @@ class ListAsientosView(GenericAPIView,DataBase):
                 {
                     "id":index,
                     "fecha":self.processa_date(value[0]),
-                    "mes":value[1],
-                    "origen":value[2],
+                    "mes":value[1].strip(),
+                    "origen":value[2].strip(),
                     "comprobante":value[3],
                     "observacion":value[4].strip(),
     
