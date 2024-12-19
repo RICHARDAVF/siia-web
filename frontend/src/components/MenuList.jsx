@@ -51,6 +51,11 @@ const items = [
                         label:"Registro de Retenciones Anticipadas y Letras",
                         route:"/registro/retenciones"
                     },
+                    {
+                        key:"223",
+                        label:"Centro de costos",
+                        route:"/list/centro-costos"
+                    }
                 ]
             }
         ]
@@ -58,14 +63,6 @@ const items = [
     {
         key:"3",
         label:"Gerencial",
-        children:[
-            {
-                key:"31",
-                label:"Tipo de Cambio",
-                route:"/tipo-cambio"
-            }
-
-        ]
     },
     {
         key:"4",
@@ -113,6 +110,17 @@ const items = [
                         route:"reporte/cuentas-pagar"
                     }
                 ]
+            }
+        ]
+    },
+    {
+        key:"5",
+        label:"Configuración",
+        children:[
+            {
+                key:"51",
+                label:"Tipo de Cambio",
+                route:"/tipo-cambio"
             }
         ]
     }

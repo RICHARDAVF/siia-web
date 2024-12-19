@@ -6,40 +6,40 @@ import ListComprobantes from "./movimientos/comprobantes/ListComprobantes"
 import RegistroComprobantes from "./movimientos/comprobantes/RegistroComprobantes"
 import RegistroDocumentos from "./movimientos/RecepcionDocumentos/Registro"
 import ReporteCuentasPagar from "./reporte/CuentasPagar"
-export const ComprasView =[
+export const ComprasView = [
     {
-        "view":ListComprobantes,
-        "route":"/list/comprobantes",
+        "view": ListComprobantes,
+        "route": "/list/comprobantes",
     },
     {
-        "view":RegistroComprobantes,
-        "route":"/registro/comprobantes",
+        "view": RegistroComprobantes,
+        "route": "/registro/comprobantes",
     }
 ]
 
 export const RecepcionDocumentosView = [
     {
-        "view":RegistroDocumentos,
-        "route":"/recepcion/documentos"
+        "view": RegistroDocumentos,
+        "route": "/recepcion/documentos"
     }
 ]
 export const CondicionPagoView = [
-   
+
     {
-        "view":ListCondicionPago,
-        "route":'/list/condicion-pago'
+        "view": ListCondicionPago,
+        "route": '/list/condicion-pago'
     }
 ]
 export const ReportesView = [
     {
-        "view":ReporteCuentasPagar,
-        "route":"/reporte/cuentas-pagar"
+        "view": ReporteCuentasPagar,
+        "route": "/reporte/cuentas-pagar"
     }
 ]
 
-export const TipoServicioView=[
+export const TipoServicioView = [
     {
-        'view':ListTipoServicio,
-        'route':'/list/tipo-servicio'
+        'view': ListTipoServicio,
+        'route': '/list/tipo-servicio'
     }
 ]

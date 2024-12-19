@@ -176,8 +176,16 @@ class SaveTipoCambio(GenericAPIView,DataBase):
             raise ValueError(str(e))
     def getTipoCambioBD(self):
         try:
-            sql = "select top 200 tc_fecha,tc_compra,tc_venta,tc_cierrc,tc_cierrv from t_tcambio order by tc_fecha desc"
-            result=self.query(self.kwargs['document'],sql,(),"GET",1)
+            fechafiltro = self.kwargs["fecha"]
+            print(fechafiltro)
+            if fechafiltro=='null' :
+                sql = "select top 200 tc_fecha,tc_compra,tc_venta,tc_cierrc,tc_cierrv from t_tcambio order by tc_fecha desc"
+                params=()
+            else :
+                sql = "select tc_fecha,tc_compra,tc_venta,tc_cierrc,tc_cierrv from t_tcambio where tc_fecha=? order by tc_fecha desc"
+                params=(fechafiltro,)
+            
+            result=self.query(self.kwargs['document'],sql,params,"GET",1)
             data=[
                 {
                     'id':index,

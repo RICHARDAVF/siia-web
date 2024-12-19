@@ -1,3 +1,4 @@
+import ListCentroCostos from "./mantenimientos/centroCostos/ListCentroCostos";
 import ListOrigenes from "./mantenimientos/origenes/ListOrigen";
 import PlanContable from "./mantenimientos/PlanContable";
 import ListMedioPago from "./MedioPago/ListMediopago";
@@ -33,9 +34,10 @@ export const OrigenesView=[
         'route':'list/origen'
     }
 ]
-export const MedioPagoView=[
+
+export const CentroCostoView = [
     {
-        'view':ListMedioPago,
-        'route':'list/medio-pago'
+        'view': ListCentroCostos,
+        'route': '/list/centro-costos'
     }
 ]
