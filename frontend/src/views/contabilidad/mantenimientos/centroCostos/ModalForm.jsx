@@ -37,7 +37,6 @@ const ModalForm = (props) => {
                     </Col>
                 </Row>
 
-<<<<<<< HEAD
                 <Row style={{ marginTop: '-10px' }}>
                     <Checkbox>Aplica a Gastos de Venta</Checkbox>
                 </Row>
@@ -66,60 +65,6 @@ const ModalForm = (props) => {
                     <Checkbox>Varios</Checkbox>
                     <Checkbox>Desactivado</Checkbox>
                 </Row>
-=======
-
-                <Form.Item style={{ marginTop: '-30px' }} name={"cco_aplica"} valuePropName="checked" initialValue={0}>
-                    <Checkbox>Aplica a Gastos de Venta</Checkbox>
-                </Form.Item>
-
-                <Row>Estado de GG y PP por flujo de Caja:</Row>
-
-                <Form.Item initialValue={0} name={"cco_eegg01"}>
-                    <Radio.Group style={{ display: 'flex', flexDirection: "column" }}>
-                        <Radio value={1}>Gastos Directos</Radio>
-                        <Radio value={2}>Gastos Indirectos</Radio>
-                        <Radio value={3}>Gastos Flujos</Radio>
-                    </Radio.Group>
-                </Form.Item>
-
-                <Row>
-                    <Form.Item name={"cco_incigv"} valuePropName="checked" initialValue={0}>
-                        <Checkbox>Incluye IGV</Checkbox>
-                    </Form.Item>
-
-                    <Form.Item name={"cco_servi"} valuePropName="checked" initialValue={0}>
-                        <Checkbox>Servicio</Checkbox>
-                    </Form.Item>
-                </Row>
-
-                <Row>
-                    <Col>
-                        <Form.Item name={"pre_scta"} label={"Cuenta Prosupuestal"} initialValue={''}>
-                            <Input />
-                        </Form.Item>
-                    </Col>
-                </Row>
-
-                <Row>
-                    <Form.Item name={"cco_presup"} valuePropName="checked" initialValue={0}>
-                        <Checkbox>Aplica a Presupuesto</Checkbox>
-                    </Form.Item>
-
-                    <Form.Item name={"cco_activo"} valuePropName="checked" initialValue={0}>
-                        <Checkbox>Descuento</Checkbox>
-                    </Form.Item>
-
-                    <Form.Item name={"cco_varios"} valuePropName="checked" initialValue={0}>
-                        <Checkbox>Varios</Checkbox>
-                    </Form.Item>
-                </Row>
-
-                <Row>
-                    <Button onClick={onCancel}>Cancelar</Button>
-                    <Button htmlType="submit">Guardar</Button>
-                </Row>
-
->>>>>>> main
             </Form>
 
         </Modal >

@@ -82,3 +82,35 @@ class SaveCentroCostos(GenericAPIView,DataBase):
             return Response(data)
         except Exception as e:
             return Response({"error":f"Ocurrio un error al guardar la data:{str(e)}"})
+class EditCentroCostos(GenericAPIView,DataBase):
+    permission_classes = [AllowAny]
+    authentication_classes = [TokenAuthentication]
+    def getÑ(self,request,*args,**kwargs):
+        try:
+            data = {}
+            document = kwargs['document']
+
+            sql = "SELECT cco_codigo,cco_nombre,pla_cuenta,cco_aplica,cco_eegg01,cco_incigv,cco_servi,canterior,pre_scta,cco_presup,cco_activo,cco_varios,identi FROM t_ccosto ORDER BY cco_nombre ASC"
+            
+            res = self.query(document,sql,(),'GET')
+            data['data'] = [
+                {
+                    'identi':value[-1],
+                    'cco_codigo':value[0].strip(),
+                    'cco_nombre':value[1].strip(),
+                    'pla_cuenta':value[2].strip(),
+                    'cco_aplica':value[3],
+                    'cco_eegg01':value[4],
+                    'cco_incigv':value[5],
+                    'cco_servi':value[6],
+                    'canterior':value[7].strip(),
+                    'pre_scta':value[8].strip(),
+                    'cco_presup':value[9],
+                    'cco_activo':value[10],
+                    'cco_varios':value[11]
+                } for value in res
+            ]
+            data['success'] = True
+            return Response(data)
+        except Exception as e:
+            return Response({'error':f'Ocurrio un error:{str(e)}'})
