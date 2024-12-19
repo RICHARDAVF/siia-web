@@ -17,4 +17,6 @@ urlpatterns = [
     path(route="edit/origen/<str:document>/<str:codigo>/",view=EditOrigen.as_view()),
     #CENTRO DE COSTOS
     path(route="list/centro-costos/<str:document>/",view=ListCentroCostos.as_view()),
+    #MEDIO DE PAGO
+    path(route="list/medio-pago/<str:document>/",view=ListCentroCostos.as_view()),
 ]

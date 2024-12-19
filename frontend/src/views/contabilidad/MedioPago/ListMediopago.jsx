@@ -1,15 +1,19 @@
 import { Button, Form, message } from "antd"
 import ModalForm from "./ModalForm"
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import TableComponent from "./TableComponent"
 import { LIST_MEDIO_PAGO } from "../../../../service/urls"
 import apiMedioPago from "../../../../api/contabilidad/apiMedioPago"
+import Loading from "../../../components/Loading"
+import { Context } from "../../../components/GlobalContext"
 
 const ListMedioPago=()=>{
     const [openModal,setOpenModal] = useState(false)
     const [modalMode,setModalMode] = useState(0)
     const [data,setData] = useState([])
     const [MyForm] = Form.useForm()
+    const [loading,setLoading] = useState(false)
+    const {document,token} = useContext(Context)
     useEffect(()=>{
         requestMediopago()
     })
@@ -46,6 +50,7 @@ const ListMedioPago=()=>{
             </Button>
             <TableComponent data={data}/>
             <ModalForm  {...modalContext}/>
+            <Loading status={loading}/>
         </div>
     )
 }
