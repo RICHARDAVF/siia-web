@@ -1,10 +1,12 @@
 import ListCentroCostos from "./mantenimientos/centroCostos/ListCentroCostos";
 import ListOrigenes from "./mantenimientos/origenes/ListOrigen";
 import PlanContable from "./mantenimientos/PlanContable";
-import ListMedioPago from "./MedioPago/ListMediopago";
+import ListMedioPago from "./mantenimientos/MedioPago/ListMediopago";
 import ListAsientos from "./movimientos/Asientos/ListAsientos";
 import RegistroAsientos from "./movimientos/Asientos/RegistroAsientos";
 import RegistroRetenciones from "./movimientos/Retenciones/RegistroRetenciones";
+
+import Reporte from "./reportes/LibroDiario";
 export const ContabilidadView = [
     {
         "view":ListAsientos,
@@ -45,5 +47,11 @@ export const MedioPagosView=[
     {
         'view':ListMedioPago,
         'route':'list/medio-pago'
+    }
+]
+export const ReportesView=[
+    {
+        'view':Reporte,
+        'route':'/reporte/libro-diario'
     }
 ]

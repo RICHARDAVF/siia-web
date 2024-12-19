@@ -35,7 +35,9 @@ class Listorigen(GenericAPIView,DataBase):
         except Exception as e:
             return Response({'error':f'Ocurrio un error:{str(e)}'})
     def get_origen(self,value1,value2):
-        if int(value1)==1:
+        if int(value1)==1 and int(value2)==1:
+            return 'VENTAS/R.H'
+        elif int(value1)==1:
             return 'VENTAS'
         elif int(value2)==1:
             return 'R.H'
