@@ -2,7 +2,7 @@ import { Route, Routes } from "react-router-dom"
 import Home from "./Home"
 
 import { ComprasView, CondicionPagoView, RecepcionDocumentosView, TipoServicioView } from "../views/compras/Routes.jsx"
-import { CentroCostoView, ContabilidadView, MedioPagosView, OrigenesView, PlanContableView, ReportesView, RetencionesView } from "../views/contabilidad/Routes.js"
+import { CentroCostoView, ContabilidadView, MedioPagosView, OrigenesView, PlanContableView, ReportesView, RetencionesView, TipoAuxiliarView } from "../views/contabilidad/Routes.js"
 import { TipoCambioView } from "../views/configuracion/Routes.js"
 
 const BuildRoutes = (views) => {
@@ -34,6 +34,7 @@ const ContentViews = () => {
                 {BuildRoutes(CentroCostoView)}
                 {BuildRoutes(MedioPagosView)}
                 {BuildRoutes(ReportesView)}
+                {BuildRoutes(TipoAuxiliarView)}
 
 
             </Routes>
