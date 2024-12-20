@@ -57,11 +57,7 @@ const items = [
                         label: "Centro de costos",
                         route: "/list/centro-costos"
                     },
-                    {
-                        key: "223",
-                        label: "Centro de costos",
-                        route: "/list/centro-costos"
-                    }
+                   
                 ]
             }
         ]
@@ -117,66 +113,16 @@ const items = [
                     },
                     {
                         key: "432",
-                        label: "Registro Ventas",
+                        label: "Reporte Ventas",
                         route: "reporte/ventas"
                     }
                 ]
             }
+           
         ]
     },
-    {
-        key: "3",
-        label: "Gerencial",
-    },
-    {
-        key: "4",
-        label: "Compras",
-        children: [
-            {
-                key: "41",
-                label: "Movimientos",
-                children: [
-                    {
-                        key: "411",
-                        label: "Comprobantes",
-                        route: "/list/comprobantes"
-                    },
-                    {
-                        key: "412",
-                        label: "Recepcion de Documentos",
-                        route: "/recepcion/documentos"
-                    }
-                ]
-            },
-            {
-                key: "42",
-                label: "Mantenimientos",
-                children: [
-                    {
-                        key: "421",
-                        label: "Condicion de pago",
-                        route: "/list/condicion-pago"
-                    },
-                    {
-                        key: "422",
-                        label: "Tipo de Servicio",
-                        route: "/list/tipo-servicio"
-                    }
-                ]
-            },
-            {
-                key: "43",
-                label: "Reportes",
-                children: [
-                    {
-                        key: "431",
-                        label: "Libro Diario",
-                        route: "reporte/libro-diario"
-                    }
-                ]
-            }
-        ]
-    },
+
+    
     {
         key: "5",
         label: "Configuración",
