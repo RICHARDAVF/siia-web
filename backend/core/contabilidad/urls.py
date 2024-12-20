@@ -4,11 +4,7 @@ from .origen.views import Listorigen,SaveOrigen,DeleteOrigen,EditOrigen
 from .centroCostos.views import ListCentroCostos,SaveCentroCostos,DeleteCentroCostos,EditCentroCostos
 from .Asientos.views import EditAsientos,DeleteAsientos
 from .MedioPago.views import ListMedioPago,SaveMedioPago,EditMedioPago,DeleteMedioPago
-<<<<<<< HEAD
 from .tipoAuxiliar.views import ListTipoAuxiliarView,SaveTipoAuxiliarView
-=======
-from .reports.views import RegistroVentas
->>>>>>> main
 urlpatterns = [
     path(route="list/<str:document>/",view=ListAsientosView.as_view()),
     path(route="list/<str:document>/<str:mes>/<str:origen>/<str:compro>/",view=ListAsientosView.as_view()),
@@ -31,13 +27,7 @@ urlpatterns = [
     path(route="save/medio-pago/<str:document>/",view=SaveMedioPago.as_view()),
     path(route="edit/medio-pago/<str:document>/<str:codigo>/",view=EditMedioPago.as_view()),
     path(route="delete/medio-pago/<str:document>/<str:codigo>/",view=DeleteMedioPago.as_view()),
-<<<<<<< HEAD
     #TIPO DE AUXILIAR
     path(route="list/tipo-auxiliar/<str:document>/",view=ListTipoAuxiliarView.as_view()),
     path(route="save/tipo-auxiliar/<str:document>/",view=SaveTipoAuxiliarView.as_view())
-=======
-    #REPORTES
-    path(route="reporte/registro-ventas/<str:document>/",view=RegistroVentas.as_view()),
-
->>>>>>> main
 ]

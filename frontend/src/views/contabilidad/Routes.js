@@ -7,11 +7,7 @@ import RegistroAsientos from "./movimientos/Asientos/RegistroAsientos";
 import RegistroRetenciones from "./movimientos/Retenciones/RegistroRetenciones";
 
 import Reporte from "./reportes/LibroDiario";
-<<<<<<< HEAD
 import TipoAuxiliar from "./mantenimientos/tipoAuxiliar/TipoAuxiliar";
-=======
-import RegistroVentas from "./reportes/RegistroVentas";
->>>>>>> main
 export const ContabilidadView = [
     {
         "view": ListAsientos,
@@ -56,7 +52,6 @@ export const MedioPagosView = [
 ]
 export const ReportesView = [
     {
-<<<<<<< HEAD
         'view': Reporte,
         'route': '/reporte/libro-diario'
     }
@@ -65,13 +60,5 @@ export const TipoAuxiliarView = [
     {
         'view': TipoAuxiliar,
         'route': '/tipo-auxiliar'
-=======
-        'view':Reporte,
-        'route':'/reporte/libro-diario'
-    },
-    {
-        "view":RegistroVentas,
-        "route":'reporte/ventas'
->>>>>>> main
     }
 ]
