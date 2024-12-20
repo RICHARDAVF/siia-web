@@ -31,7 +31,6 @@ export const SAVE_CENTRO_COSTO = (document) => `${BASE_URL}/api/v1/contabilidad/
 export const DELETE_CENTRO_COSTO = (document) => `${BASE_URL}/api/v1/contabilidad/delete/centro-costos/${document}/`
 export const UPDATE_CENTRO_COSTO = (document) => `${BASE_URL}/api/v1/contabilidad/edit/centro-costos/${document}/codigo/`
 
-
 // MEDIO DE PAGO
 export const LIST_MEDIO_PAGO = (document)=>`${BASE_URL}/api/v1/contabilidad/list/medio-pago/${document}/`
 export const SAVE_MEDIO_PAGO = (document)=>`${BASE_URL}/api/v1/contabilidad/save/medio-pago/${document}/`
@@ -41,3 +40,6 @@ export const DELETE_MEDIO_PAGO = (document)=>`${BASE_URL}/api/v1/contabilidad/de
 //TIPO DE AUXILIAR
 export const LIST_TIPO_AUXILIAR = (document)=>`${BASE_URL}/api/v1/contabilidad/list/tipo-auxiliar/${document}/`
 export const SAVE_TIPO_AUXILIAR = (document)=>`${BASE_URL}/api/v1/contabilidad/save/tipo-auxiliar/${document}/`
+
+//REPORTES
+export const REPORTE_REGISTRO_VENTAS=(document)=>`${BASE_URL}/api/v1/contabilidad/reporte/registro-ventas/${document}/`

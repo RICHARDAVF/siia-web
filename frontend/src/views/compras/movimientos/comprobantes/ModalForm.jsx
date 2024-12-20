@@ -1,13 +1,78 @@
-import { Modal,InputNumber,Form,Select,Row,Col } from "antd"
-import { useState } from "react"
-const ModalForm=({openModal,addItem,MyForm2,requestCuentas,cuentas,centroCostos})=>{
+import { Modal,InputNumber,Form,Select,Row,Col,Button, message } from "antd"
+import { useContext, useState } from "react"
+import config from "../../../../config"
+import { Context } from "../../../../components/GlobalContext"
+
+const ModalForm=({openModal,addItem,MyForm2,centroCostos,onCancel})=>{
     const [blockInput,setBlockInput] = useState('')
+    const [cuentas,setCuentas] = useState([])
+    const {token,document} = useContext(Context)
+    const {BASE_URL} = config
+    const requestCuentas = async (value) => {
+      try {
+
+          const url = `${BASE_URL}/api/v1/generics/list/cuentas/${document}/`
+
+          const response = await fetch(url, {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${token}`
+              },
+              body: JSON.stringify({ 'query_string': value })
+          })
+
+          const result = await response.json()
+
+          if (result.error) {
+              message.error(result.error)
+          } else {
+              setCuentas(result)
+          }
+
+      } catch (err) {
+          message.error(err.toString())
+      }
+  }
+    const clean_input = (value, opt) => {
+      if (value == undefined) return;
+      if (opt == 3) {
+        MyForm2.setFieldsValue({
+          "debe_dolares": 0
+        })
+      } else if (opt == 2) {
+        MyForm2.setFieldsValue({
+          "haber_dolares": 0
+        })
+      } else if (opt == 1) {
+        MyForm2.setFieldsValue({
+          "debe_soles": 0
+        })
+      } else if (opt == 0) {
+        MyForm2.setFieldsValue({
+          "haber_soles": 0
+        })
+      }
+    }
+  const changeCuenta = (value) => {
+
+    const moneda = value.key.split("-")[1]
+    MyForm2.setFieldsValue({
+        'moneda': moneda,
+        "haber_soles": 0,
+        "haber_dolares": 0,
+        "debe_soles": 0,
+        "debe_dolares": 0
+    })
+    setBlockInput(moneda)
+}
+  
     return(
         <Modal
         animation={false}
           title="Registros un nuevo asiento"
-          open={open}
-          onCancel={openModal}
+          open={openModal}
+          onCancel={onCancel}
           footer={null}
   
           width={1000}
@@ -65,7 +130,6 @@ const ModalForm=({openModal,addItem,MyForm2,requestCuentas,cuentas,centroCostos}
                       size='small'
                       placeholder='Seleccione una moneda'
                       options={[{ id: '1', value: "S", label: "S" }, { id: '2', value: 'D', label: 'D' }]}
-                      // defaultValue={'S'}
                       disabled={blockInput != ''}
                       onChange={(e) => setBlockInput(e)}
                     />
@@ -82,7 +146,6 @@ const ModalForm=({openModal,addItem,MyForm2,requestCuentas,cuentas,centroCostos}
                       allowClear
                       placeholder='Buscar...'
                       options={centroCostos}
-                      notFoundContent={loading ? <Spin size='small' /> : null}
                     />
   
                   </Form.Item>
@@ -154,7 +217,7 @@ const ModalForm=({openModal,addItem,MyForm2,requestCuentas,cuentas,centroCostos}
               <Row style={{ justifyContent: 'end' }}>
   
                 <Col xs={24} sm={12} md={6} style={{ justifyContent: 'end' }}>
-                  <Button style={{ background: 'red', color: 'white' }} type='button' id='btn-cancelar' onClick={() => openModal()}>CANCELAR</Button>
+                  <Button style={{ background: 'red', color: 'white' }} type='button' id='btn-cancelar' onClick={() => onCancel()}>CANCELAR</Button>
                 </Col>
                 <Col xs={24} sm={12} md={6} style={{ justifyContent: 'end' }}>
                   <Button style={{ background: 'blue', color: 'white' }} htmlType='submit' id='bn-agregar' type='submit'>AGREGAR</Button>
