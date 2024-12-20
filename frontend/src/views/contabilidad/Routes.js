@@ -7,11 +7,8 @@ import RegistroAsientos from "./movimientos/Asientos/RegistroAsientos";
 import RegistroRetenciones from "./movimientos/Retenciones/RegistroRetenciones";
 
 import Reporte from "./reportes/LibroDiario";
-<<<<<<< HEAD
 import TipoAuxiliar from "./mantenimientos/tipoAuxiliar/TipoAuxiliar";
-=======
 import RegistroVentas from "./reportes/RegistroVentas";
->>>>>>> 415b1883ed90628422f495bf077b1cd8dbb56c8f
 export const ContabilidadView = [
     {
         "view": ListAsientos,
@@ -56,7 +53,6 @@ export const MedioPagosView = [
 ]
 export const ReportesView = [
     {
-<<<<<<< HEAD
         'view': Reporte,
         'route': '/reporte/libro-diario'
     }
@@ -64,14 +60,14 @@ export const ReportesView = [
 export const TipoAuxiliarView = [
     {
         'view': TipoAuxiliar,
-        'route': '/tipo-auxiliar'
-=======
-        'view':Reporte,
-        'route':'/reporte/libro-diario'
+        'route': '/tipo-auxiliar',
     },
     {
-        "view":RegistroVentas,
-        "route":'reporte/ventas'
->>>>>>> 415b1883ed90628422f495bf077b1cd8dbb56c8f
+        'view': Reporte,
+        'route': '/reporte/libro-diario'
+    },
+    {
+        "view": RegistroVentas,
+        "route": 'reporte/ventas'
     }
 ]
