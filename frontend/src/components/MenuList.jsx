@@ -108,7 +108,13 @@ const items = [
                         key:"431",
                         label:"Libro Diario",
                         route:"reporte/libro-diario"
-                    }
+                    },
+                    {
+                        key:"432",
+                        label:"Registro Ventas",
+                        route:"reporte/ventas"
+                    },
+
                 ]
             }
         ]

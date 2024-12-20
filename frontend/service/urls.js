@@ -34,3 +34,6 @@ export const LIST_MEDIO_PAGO = (document)=>`${BASE_URL}/api/v1/contabilidad/list
 export const SAVE_MEDIO_PAGO = (document)=>`${BASE_URL}/api/v1/contabilidad/save/medio-pago/${document}/`
 export const EDIT_MEDIO_PAGO = (document)=>`${BASE_URL}/api/v1/contabilidad/edit/medio-pago/${document}/codigo/`
 export const DELETE_MEDIO_PAGO = (document)=>`${BASE_URL}/api/v1/contabilidad/delete/medio-pago/${document}/codigo/`
+
+//REPORTES
+export const REPORTE_REGISTRO_VENTAS=(document)=>`${BASE_URL}/api/v1/contabilidad/reporte/registro-ventas/${document}/`
