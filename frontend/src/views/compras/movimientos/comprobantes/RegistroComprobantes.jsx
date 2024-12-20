@@ -8,6 +8,7 @@ import {endpointsCompras} from '../../../../../api/compras/apiCompras';
 import dayjs from 'dayjs';
 import { FaTrash } from 'react-icons/fa'
 import Loading from '../../../../components/Loading';
+import ModalForm from './ModalForm';
 const { TextArea } = Input;
 const { Option } = Select
 const RegistroComprobantes = () => {
@@ -40,9 +41,6 @@ const RegistroComprobantes = () => {
   useEffect(()=>{
     window.document.title = 'Registro de comprobantes'
   })
-  const openModal = () => {
-    setOpen(!open)
-  }
 
 
 
@@ -55,6 +53,10 @@ const RegistroComprobantes = () => {
     requestTipoCambio(false)
 
   }, [])
+  const onCancel = () => {
+    setOpen(!open)
+  }
+
   const requestGenerics = async () => {
     const url = `${BASE_URL}/api/v1/generic/${document}/`
     setLoading(true)
@@ -329,6 +331,10 @@ const RegistroComprobantes = () => {
     }
 
   }
+  const editItem=async()=>{
+    onCancel()
+  }
+ 
   return (
     <div style={{ position: 'relative' }}>
       <div>
@@ -627,7 +633,7 @@ const RegistroComprobantes = () => {
             </Col>
           </Row>
           <Row>
-            <Button onClick={openModal} style={{ background: 'green', color: 'white' }} >
+            <Button onClick={onCancel} style={{ background: 'green', color: 'white' }} >
               Agregar
             </Button>
             <Button htmlType='submit' style={{ background: 'blue', color: 'white' }}>
@@ -658,167 +664,7 @@ const RegistroComprobantes = () => {
           </Col>
         </Row>
       </div>
-
-      <Modal
-      animation={false}
-        title="Registros un nuevo asiento"
-        open={open}
-        onCancel={openModal}
-        footer={null}
-
-        width={1000}
-      >
-        <div>
-          <Form
-            name='form-asientos'
-            className='registrar-asientos'
-            form={MyForm2}
-            layout="vertical"
-            onFinish={add_rows}
-          >
-            <Row gutter={16}>
-              <Col xs={24} sm={12} md={8}>
-                <Form.Item
-                  name="cuenta"
-                  label="Cuenta"
-                  rules={[{ required: true, message: "Por favor seleccione una cuenta" }]}
-                >
-                  <Select
-                    showSearch
-                    onSearch={requestCuentas}
-                    allowClear
-                    filterOption={false}
-                    placeholder='Buscar...'
-                    notFoundContent={loading ? <Spin size='small' /> : null}
-                    onChange={(_, option) => {
-
-                      if (option == undefined) {
-                        setBlockInput('')
-                      } else {
-                        changeCuenta(option)
-                      }
-                    }}
-
-                  >
-                    {cuentas.map(item => (
-                      <Option key={item.value + '-' + item.moneda} value={item.value}>
-                        <div key={item.label} style={{ fontSize: 10 }}>
-                          {item.value} - {item.label}
-                        </div>
-                      </Option>
-                    ))}
-                  </Select>
-                </Form.Item>
-              </Col>
-              <Col xs={24} sm={12} md={6}>
-                <Form.Item
-                  name="moneda"
-                  label="Moneda"
-                  rules={[{ required: true, message: "Por favor ingrese la moneda" }]}
-                  initialValue={'S'}
-                >
-                  <Select
-                    size='small'
-                    placeholder='Seleccione una moneda'
-                    options={[{ id: '1', value: "S", label: "S" }, { id: '2', value: 'D', label: 'D' }]}
-                    // defaultValue={'S'}
-                    disabled={blockInput != ''}
-                    onChange={(e) => setBlockInput(e)}
-                  />
-                </Form.Item>
-              </Col>
-              <Col xs={24} sm={12} md={6}>
-                <Form.Item
-                  name="centro_costo"
-                  label="Centro de Costo"
-                  rules={[{ required: true, message: "Por favor seleccione una cuenta" }]}
-                >
-                  <Select
-                    showSearch
-                    allowClear
-                    placeholder='Buscar...'
-                    options={centroCostos}
-                    notFoundContent={loading ? <Spin size='small' /> : null}
-                  />
-
-                </Form.Item>
-              </Col>
-            </Row>
-
-
-            <Row gutter={16}>
-              <Col xs={24} sm={12} md={6}>
-                <Form.Item
-                  name="debe_soles"
-                  label="Debe en soles"
-                  rules={[{ required: true, message: "Por favor ingrese el monto en soles" }]}
-                >
-                  <InputNumber
-                    style={{ width: '100%' }}
-                    min={0}
-                    disabled={blockInput == '' ? false : blockInput == 'D'}
-                    onChange={(value) => clean_input(value, 0)}
-
-                  />
-                </Form.Item>
-              </Col>
-              <Col xs={24} sm={12} md={6}>
-                <Form.Item
-                  name="haber_soles"
-                  label="Haber en soles"
-                  rules={[{ required: true, message: "Por favor ingrese el monto en soles" }]}
-                >
-                  <InputNumber
-                    style={{ width: '100%' }}
-                    min={0}
-                    disabled={blockInput == '' ? false : blockInput == 'D'}
-                    onChange={(value) => clean_input(value, 1)}
-
-                  />
-                </Form.Item>
-              </Col>
-              <Col xs={24} sm={12} md={6}>
-                <Form.Item
-                  name="debe_dolares"
-                  label="Debe en dólares"
-                  rules={[{ required: true, message: "Por favor ingrese el monto en dólares" }]}
-                >
-                  <InputNumber
-                    style={{ width: '100%' }}
-                    min={0}
-                    disabled={blockInput == '' ? false : blockInput == 'S'}
-                    onChange={(value) => clean_input(value, 2)}
-
-                  />
-                </Form.Item>
-              </Col>
-              <Col xs={24} sm={12} md={6}>
-                <Form.Item
-                  name="haber_dolares"
-                  label="Haber en dólares"
-                  rules={[{ required: true, message: "Por favor ingrese el monto en dólares" }]}
-                >
-                  <InputNumber
-                    style={{ width: '100%' }}
-                    min={0}
-                    disabled={blockInput == '' ? false : blockInput == 'S'}
-                    onChange={(value) => clean_input(value, 3)}
-                  />
-                </Form.Item>
-              </Col>
-            </Row>
-            <Row style={{ justifyContent: 'end' }}>
-
-              <Col xs={24} sm={12} md={6} style={{ justifyContent: 'end' }}>
-                <Button style={{ background: 'red', color: 'white' }} type='button' id='btn-cancelar' onClick={() => openModal()}>CANCELAR</Button>
-              </Col>
-              <Col xs={24} sm={12} md={6} style={{ justifyContent: 'end' }}>
-                <Button style={{ background: 'blue', color: 'white' }} htmlType='submit' id='bn-agregar' type='submit'>AGREGAR</Button>
-              </Col>
-            </Row>
-          </Form>
-        </div>
-      </Modal>
+      {/* <ModalForm editItem={editItem} onCancel={onCancel} saveData={saveData}/> */}
       <Loading status={loading} />
     </div>
   )

@@ -1,11 +1,11 @@
 from django.urls import path
 
-from .views import ListComprasView,SaveComporasView,SaveTipoCambio
+from .views import SaveComporasView,SaveTipoCambio
 from .CondicionPago.views import CondicionPagoList,EditCondicionPago,SaveCondicionPago,DeleteCondicionPago 
 from .TipoServicio.views import ListTipoServicio,SaveTipoServicio,EditTipoServicio,DeleteTipoServicio
-
+from .comprobantes.views import ListComprobantes
 urlpatterns = [
-    path(route="list/comprobantes/<str:document>/",view=ListComprasView.as_view()),
+    path(route="list/comprobantes/<str:document>/",view=ListComprobantes.as_view()),
     path(route="save/comprobantes/<str:document>/",view=SaveComporasView.as_view()), 
     path(route="save/tipo-cambio/<str:document>/<str:fecha>/<int:option>/",view=SaveTipoCambio.as_view()), 
     #CONDICION DE PAGO

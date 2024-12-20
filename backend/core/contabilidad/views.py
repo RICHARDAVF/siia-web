@@ -24,8 +24,8 @@ class ListAsientosView(GenericAPIView,DataBase):
                 {
                     "id":index,
                     "fecha":self.processa_date(value[0]),
-                    "mes":value[1],
-                    "origen":value[2],
+                    "mes":value[1].strip(),
+                    "origen":value[2].strip(),
                     "comprobante":value[3],
                     "observacion":value[4].strip(),
     
@@ -96,4 +96,4 @@ class SaveAsientosView(GenericAPIView,DataBase):
                 if int(res[0])==1 and item['auxiliar']=='':
                    raise ValueError(f'La cuenta {cuenta} require un auxiliar')
         except Exception as e:
-            raise ValueError(str(e))  
+            raise ValueError(str(e))

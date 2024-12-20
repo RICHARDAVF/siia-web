@@ -1,17 +1,32 @@
 const apiMedioPago={
-    post:async(url,token,data)=>{
+    get:async(url,token)=>{
         try{
             const response=await fetch(url,{
-                method:'POST',
+                method:'get',
                 headers:{
-                    'Content-Type':'application/json',
+                   
                     'Authorization':`Bearer ${token}`
                     },
-                    body:JSON.stringify(data)
+                   
                     });
             return await response.json()
         }catch(err){
             return {'error':err.toString()}
+        }
+    },
+    post:async(url,token,datos)=>{
+        try{
+            const res = await fetch(url,{
+                headers:{
+                    'Content-Type': 'application/json',
+                    'Authorization':`Bearer ${token}`
+                },
+                method:'POST',
+                body:JSON.stringify(datos)
+            })
+            return await res.json()
+        }catch(err){
+            return {'error':str(e)}
         }
     }
 }
