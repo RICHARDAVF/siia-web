@@ -1,17 +1,28 @@
-import { Table } from "antd"
-import { FaCheck, FaEdit } from "react-icons/fa"
+import { Table, Popconfirm } from "antd"
+import { FaCheck, FaEdit, FaTrash } from "react-icons/fa"
+import { forwardRef, useRef } from "react";
+const CustomPopconfirm = forwardRef((props, ref) => (<Popconfirm ref={ref} {...props}> {props.children} </Popconfirm>));
 
 export const TableComponent = (props) => {
-    const { data } = props
-    const editar = () => { alert('PRUEBA') }
+    const { data, deleteItem, getCentroCostos } = props
     const columns = [
         {
             title: 'Opcion',
             key: 'editar',
             render: (row) => {
                 return (
-                    <div style={{ textAlign: 'center' }}>
-                        <FaEdit style={{ color: 'green', cursor: 'pointer' }} onClick={editar} />
+                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', width: '60px' }}>
+                        <FaEdit style={{ color: 'green', cursor: 'pointer' }}
+                            onClick={() => getCentroCostos(row, 1)} />
+
+                        <CustomPopconfirm
+                            title='¿Esta seguro de eliminar el registro?'
+                            onConfirm={() => deleteItem(row)}
+                            okText={'Si'}
+                            cancelText={'No'}
+                        >
+                            <FaTrash style={{ color: 'red', cursor: 'pointer' }} />
+                        </CustomPopconfirm>
                     </div>
                 )
             }

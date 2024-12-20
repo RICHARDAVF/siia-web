@@ -96,4 +96,4 @@ class SaveAsientosView(GenericAPIView,DataBase):
                 if int(res[0])==1 and item['auxiliar']=='':
                    raise ValueError(f'La cuenta {cuenta} require un auxiliar')
         except Exception as e:
-            raise ValueError(str(e))  
+            raise ValueError(str(e))

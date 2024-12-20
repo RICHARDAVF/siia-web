@@ -1,7 +1,7 @@
 import { Button, Checkbox, Col, Form, Input, Modal, Radio, Row } from "antd";
 
 const ModalForm = (props) => {
-    const { onCancel, openModal, saveCentroCosto } = props
+    const { onCancel, openModal, saveCentroCosto, myForm } = props
 
     return (
         <Modal title='Registro de Centro de Costo'
@@ -11,7 +11,7 @@ const ModalForm = (props) => {
             width={'60%'}
         >
 
-            <Form onFinish={saveCentroCosto}>
+            <Form onFinish={saveCentroCosto} form={myForm}>
                 <Row gutter={20}>
                     <Col>
                         <Form.Item name={"cco_codigo"} label={"Código"} initialValue={''} rules={[{ required: true, message: 'Obligatorio' }]}>

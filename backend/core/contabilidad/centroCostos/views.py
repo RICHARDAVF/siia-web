@@ -18,7 +18,7 @@ class ListCentroCostos(GenericAPIView,DataBase):
             res = self.query(document,sql,(),'GET')
             data['data'] = [
                 {
-                    'identi':value[-1],
+                    'id':value[-1],
                     'cco_codigo':value[0].strip(),
                     'cco_nombre':value[1].strip(),
                     'pla_cuenta':value[2].strip(),
