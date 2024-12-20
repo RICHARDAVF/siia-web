@@ -9,15 +9,16 @@ import dayjs from 'dayjs';
 import { FaTrash } from 'react-icons/fa'
 import Loading from '../../../../components/Loading';
 import ModalForm from './ModalForm';
-const { TextArea } = Input;
-const { Option } = Select
+import HeaderForm from './HeaderForm';
+import TableItemList from './TableItemList';
+
 const RegistroComprobantes = () => {
   const [loading, setLoading] = useState(false)
   const [origen, setOrigen] = useState([])
   const [ubicacion, setUbicacion] = useState([])
   const [proveedor, setProveedor] = useState([])
   const [tipoDocument, setTipoDocument] = useState([])
-  const [open, setOpen] = useState(false)
+  const [openModal, setOpenModal] = useState(false)
   const [centroCostos, setCentroCostos] = useState([])
   const [cuentas, setCuentas] = useState([])
   const [detracion, setDetraccion] = useState(false)
@@ -54,7 +55,7 @@ const RegistroComprobantes = () => {
 
   }, [])
   const onCancel = () => {
-    setOpen(!open)
+    setOpenModal(!openModal)
   }
 
   const requestGenerics = async () => {
@@ -64,7 +65,7 @@ const RegistroComprobantes = () => {
       const datos = {
         "query_string": "",
         "tipo_origen": 1,
-        "dates":['origen',"ubicacion","centro-constos","tipo-documento"]
+        "dates":['origen',"ubicacion","centro-costos","tipo-documento"]
       }
       const response = await fetch(url, {
         method: 'POST',
@@ -100,12 +101,14 @@ const RegistroComprobantes = () => {
 
 
 
-  const deleteItem = (index, row) => {
-
-    const newdata = [...data]
-    newdata.splice(index,1)
-    const data_new = procces_data(newdata)
-    setData(data_new)
+  const deleteItem = (id) => {
+    const index = data.findIndex(item=>item.id==id)
+    if(index!==-1){
+      const newdata = [...data]
+      newdata.splice(index,1)
+      const data_new = procces_data(newdata)
+      setData(data_new)
+    }
 
   }
   const requestTipoCambio = async (date) => {
@@ -136,74 +139,7 @@ const RegistroComprobantes = () => {
       setLoading(false)
     }
   }
-  const columns = [
-    {
-      "title": "Opcion",
-      key: 'opcion',
-      render: (_, row, index) => (
-        <Popconfirm
-          title='Eliminar asiento'
-          description='¿Esta seguro de eliminar el asiento?'
-          okText='Si'
-          onConfirm={() => deleteItem(index, row)}
-          cancelText='No'
-          key={index}
-        >
-          <FaTrash  style={{color:'red',cursor:'pointer'}} />
-        </Popconfirm>
-      )
-    },
-    {
-      title: 'Cuenta',
-      dataIndex: 'cuenta',
-      key: 'cuenta',
-    },
-    {
-      title: 'CC',
-      dataIndex: 'centro_costo',
-      key: 'centro_costo'
-    },
-    {
-      title: "Moneda",
-      dataIndex: "moneda",
-      key: "moneda",
-    },
-    {
-      title: "Haber S/",
-      dataIndex: "haber_soles",
-      key: 'haber_soles'
-    },
-    {
-      title: 'Debe S/',
-      dataIndex: 'debe_soles',
-      key: 'debe_soles'
-    },
-    {
-      title: 'T/C',
-      dataIndex: 'tipo_cambio',
-      key: 'tipo_cambio'
-    },
-    {
-      title: 'Haber $',
-      dataIndex: 'haber_dolares',
-      key: 'haber_dolares'
-    },
-    {
-      title: 'Debe $',
-      dataIndex: 'debe_dolares',
-      key: 'debe_dolares'
-    },
-    {
-      title: 'Glosa',
-      dataIndex: 'observacion',
-      key: 'observacion'
-    },
-    {
-      title: 'F. Venc.',
-      dataIndex: 'fecha_vencimiento',
-      key: 'fecha_vencimiento'
-    }
-  ]
+
   const requestProveedor = async (query) => {
 
     const url = `${BASE_URL}/api/v1/generics/list/proveedor/${document}/`
@@ -241,13 +177,18 @@ const RegistroComprobantes = () => {
     return newdata
 
   }
-  const add_rows = (values) => {
+  const addItem = (values) => {
 
     const values1 = MyForm1.getFieldsValue()
     const fecha_vencimiento = values1.fecha_vencimiento.format("YYYY-MM-DD")
     const observacion = values1.observacion || ''
-    const new_values = { ...values, observacion, fecha_vencimiento,tipo_cambio:tipoCambio }
+    const id = data.length || 0
+    const new_values = { 
+      "id":id,
+      ...values, 
+      observacion, fecha_vencimiento,tipo_cambio:tipoCambio }
     const new_array = [...data,new_values]
+
 
     const newdata = procces_data(new_array)
     setData(newdata)
@@ -267,26 +208,7 @@ const RegistroComprobantes = () => {
 
     setBlockInput(moneda)
   }
-  const clean_input = (value, opt) => {
-    if (value == undefined) return;
-    if (opt == 3) {
-      MyForm2.setFieldsValue({
-        "debe_dolares": 0
-      })
-    } else if (opt == 2) {
-      MyForm2.setFieldsValue({
-        "haber_dolares": 0
-      })
-    } else if (opt == 1) {
-      MyForm2.setFieldsValue({
-        "debe_soles": 0
-      })
-    } else if (opt == 0) {
-      MyForm2.setFieldsValue({
-        "haber_soles": 0
-      })
-    }
-  }
+
   const saveData = async (values) => {
     try{
 
@@ -334,317 +256,34 @@ const RegistroComprobantes = () => {
   const editItem=async()=>{
     onCancel()
   }
- 
+  const contextHeaderForm = {
+    MyForm1,
+    saveData,
+    origen,
+    ubicacion,
+    requestProveedor,
+    proveedor,
+    tipoDocument,
+    onCancel
+  }
+  const contextModal = {
+    openModal,
+    addItem,
+    MyForm2,
+    requestCuentas,
+    cuentas,
+    centroCostos,
+    onCancel
+  }
+  const contextTableItem={
+    data,
+    deleteItem
+  }
   return (
     <div style={{ position: 'relative' }}>
       <div>
-        <Form
-          name='form-asientas-contables'
-          className='form-asientos'
-          form={MyForm1}
-          layout={"horizontal"}
-          onFinish={saveData}
-        >
-          <Row gutter={6}>
-            <Col xs={20} sm={15} md={6}>
-              <Form.Item
-                name='fecha_contable'
-                label='Fecha Contable'
-                rules={[{ required: true, message: 'Por favor seleccione una fecha' }]}
-                initialValue={fecha}
-              // format={'YYYY-MM-DD'}
-              >
-                <DatePicker style={{ width: '100%' }}
-                  size={'small'}
-                  format={'YYYY-MM-DD'}
-                // defaultValue={fecha}
-                />
-              </Form.Item>
-            </Col>
-            <Col xs={20} sm={15} md={6}>
-              <Form.Item
-                name='fecha_emision'
-                label='Fecha Emision'
-                rules={[{ required: true, message: 'Por favor seleccione una fecha' }]}
-                initialValue={fecha}
-              // format={'YYYY-MM-DD'}
-
-              >
-                <DatePicker style={{ width: '100%' }}
-                  size={'small'}
-                  format={'YYYY-MM-DD'}
-                  // defaultValue={fecha}
-                  onCalendarChange={(value) => requestTipoCambio(value)}
-
-                />
-
-              </Form.Item>
-            </Col>
-            <Col xs={20} sm={15} md={2}>
-              <Form.Item
-                name='dias'
-                label='Dias'
-                rules={[{ required: true, message: 'Ingrese un numero de dia por favor' }]}
-              >
-                <Input placeholder='Ej:' size='small' />
-              </Form.Item>
-            </Col>
-            <Col xs={20} sm={15} md={6}>
-              <Form.Item
-                name='fecha_vencimiento'
-                label='Fecha Vencimiento'
-                rules={[{ required: true, message: 'Por favor seleccione una fecha' }]}
-                initialValue={fecha}
-              // format={'YYYY-MM-DD'}
-
-              >
-                <DatePicker
-                  size={'small'}
-                  style={{ width: '100%' }}
-                  format={'YYYY-MM-DD'}
-                // defaultValue={fecha}
-
-
-                />
-              </Form.Item>
-            </Col>
-            <Col xs={20} sm={15} md={6}>
-              <Form.Item
-                name='origen'
-                label='Origen'
-                rules={[{ required: true, message: 'Por favor seleccione un origen' }]}
-              >
-                <Select
-                  size={'small'}
-                  placeholder="Buscar..."
-                  showSearch
-                  options={origen}
-                  optionRender={(row) => (
-                    <div style={{ fontSize: 10 }}>{row.value} - {row.label}</div>
-                  )}
-
-                />
-              </Form.Item>
-            </Col>
-            <Col xs={20} sm={15} md={4}>
-              <Form.Item
-                name='ubicacion'
-                label='Ubicacion'
-                rules={[{ required: true, message: 'Por favor seleccione una ubicacion' }]}
-              >
-                <Select
-                  size={'small'}
-                  placeholder="Buscar..."
-                  showSearch
-                  options={ubicacion}
-                  optionRender={(row) => (
-                    <div style={{ fontSize: 10 }}>{row.value} - {row.label}</div>
-                  )}
-                />
-              </Form.Item>
-            </Col>
-            <Col xs={20} sm={15} md={4}>
-              <Form.Item
-                name='detraccion'
-                label='Detraccion'
-                rules={[{ message: 'Por favor seleccione una ubicacion' }]}
-              >
-                <Checkbox
-                  size={'small'}
-                  checked={detracion}
-                  onChange={() => setDetraccion(!detracion)}
-                />
-              </Form.Item>
-            </Col>
-            <Col xs={20} sm={15} md={4}>
-              <Form.Item
-                name='cuenta_detraccion'
-                label='C/Det'
-                rules={[{ message: 'Por favor ingrese una cuenta' }]}
-              >
-                <Input
-                  size={'small'}
-                  placeholder="Ej:151515"
-                />
-              </Form.Item>
-            </Col>
-            <Col xs={20} sm={15} md={4}>
-              <Form.Item
-                name='fecha_deposito'
-                label='F/Dep'
-                rules={[{ required: true, message: 'Por favor seleccione la fecha de deposito' }]}
-                initialValue={fecha}
-              >
-                <DatePicker
-                  size={'small'}
-                  style={{ width: '100%' }}
-                  format={'YYYY-MM-DD'}
-                // defaultValue={fecha}
-
-                />
-              </Form.Item>
-            </Col>
-            <Col xs={20} sm={15} md={4}>
-              <Form.Item
-                name='numero_deposito'
-                label='Nro. Dep.'
-                rules={[{ required: true, message: 'Por favor  ingrese el numero de deposito' }]}
-              >
-                <Input
-                  size={'small'}
-                  placeholder='Ej:000-153'
-                />
-              </Form.Item>
-            </Col>
-            <Col xs={20} sm={15} md={4}>
-              <Form.Item
-                name='observacion'
-                label={<span>Obs/Glosa</span>}
-                rules={[{ message: 'Por favor  ingrese el numero de deposito' }]}
-              >
-                <TextArea
-                  size={'small'}
-                  placeholder='Observacion'
-                />
-              </Form.Item>
-            </Col>
-            <Col xs={20} sm={15} md={8}>
-              <Form.Item
-                name='proveedor'
-                label="Proveedor"
-                rules={[{ message: 'Por favor  ingrese un proveedor' }]}
-              >
-                <Select
-                  size={'small'}
-                  placeholder="Proveedor"
-                  showSearch
-                  onSearch={requestProveedor}
-                  allowClear
-                  filterOption={false}
-
-                >
-                  {
-                    proveedor.map(item => (
-                      <Option key={item.label} value={item.value}>
-                        <div style={{ fontSize: 10 }}>
-                          {item.value} - {item.label}
-                        </div>
-                      </Option>
-                    ))
-                  }
-                </Select>
-              </Form.Item>
-            </Col>
-            <Col xs={20} sm={15} md={8}>
-              <Form.Item
-                name='tipo_documento'
-                label="Tipo Doc."
-                rules={[{ message: 'Por favor  seleccione un T.P' }]}
-              >
-                <Select
-                  size={'small'}
-                  placeholder="Tipo documento"
-                  options={tipoDocument}
-                  optionRender={(row) => (
-                    <div style={{ fontSize: 10 }}>{row.value} - {row.label}</div>
-                  )}
-                  showSearch
-                />
-              </Form.Item>
-            </Col>
-            <Col xs={20} sm={15} md={4}>
-              <Form.Item
-                name='numero_serie'
-                label="Serie"
-                rules={[{ message: 'Por favor  ingrese la serie' }]}
-              >
-                <Input
-                  size={'small'}
-                  placeholder="Ej:F001"
-                />
-              </Form.Item>
-            </Col>
-            <Col xs={20} sm={15} md={4}>
-              <Form.Item
-                name='numero_documento'
-                label="Nro. Doc."
-                rules={[{ message: 'Por favor  ingrese el numero' }]}
-              >
-                <Input
-                  size={'small'}
-                  placeholder="Ej:000001"
-                />
-              </Form.Item>
-            </Col>
-            <Col xs={20} sm={15} md={4}>
-              <Form.Item
-                name='tipo_doc_referencia'
-                label="T.D/REF"
-                rules={[{ message: 'Por favor  ingrese el numero' }]}
-              >
-                <Select
-                  size={'small'}
-                  placeholder="Tipo documento"
-                  options={tipoDocument}
-                  optionRender={(row) => (
-                    <div style={{ fontSize: 10 }}>{row.value} - {row.label}</div>
-                  )}
-                  showSearch
-                />
-              </Form.Item>
-            </Col>
-            <Col xs={20} sm={15} md={4}>
-              <Form.Item
-                name='serie_doc_referencia'
-                label="Serie/REF."
-                rules={[{ message: 'Por favor  ingrese el numero' }]}
-              >
-                <Input
-                  size={'small'}
-                  placeholder="Ej:000001"
-                />
-              </Form.Item>
-            </Col>
-            <Col xs={20} sm={15} md={4}>
-              <Form.Item
-                name='numero_doc_referencia'
-                label="Nro/REF."
-                rules={[{ message: 'Por favor  ingrese el numero' }]}
-              >
-                <Input
-                  size={'small'}
-                  placeholder="Ej:000001"
-                />
-              </Form.Item>
-            </Col>
-            <Col xs={20} sm={15} md={4}>
-              <Form.Item
-                name='fecha_doc_referencia'
-                label='F/REF'
-                rules={[{  message: 'Por favor seleccione la fecha de referencia' }]}
-                initialValue={fecha}
-              >
-                <DatePicker
-                  size={'small'}
-                  style={{ width: '100%' }}
-                  format={'YYYY-MM-DD'}
-                />
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row>
-            <Button onClick={onCancel} style={{ background: 'green', color: 'white' }} >
-              Agregar
-            </Button>
-            <Button htmlType='submit' style={{ background: 'blue', color: 'white' }}>
-              Guardar
-            </Button>
-          </Row>
-
-        </Form>
-        <Table 
-        columns={columns} 
-        dataSource={data} scroll={{ x: "max-content" }} rowKey={(record) => `${record.cuenta}-${record.centro_costo}`} />
+        <HeaderForm {...contextHeaderForm}/>
+        <TableItemList {...contextTableItem}/>
         <Row gutter={16} style={{ justifyContent: 'center', alignContent: 'center', alignItems: 'center' }}>
           <Col xs={24} sm={12} md={4}>
             <label>HABER S/</label>
@@ -664,7 +303,7 @@ const RegistroComprobantes = () => {
           </Col>
         </Row>
       </div>
-      {/* <ModalForm editItem={editItem} onCancel={onCancel} saveData={saveData}/> */}
+      <ModalForm {...contextModal}/>
       <Loading status={loading} />
     </div>
   )

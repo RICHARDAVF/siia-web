@@ -38,6 +38,11 @@ export const SAVE_MEDIO_PAGO = (document)=>`${BASE_URL}/api/v1/contabilidad/save
 export const EDIT_MEDIO_PAGO = (document)=>`${BASE_URL}/api/v1/contabilidad/edit/medio-pago/${document}/codigo/`
 export const DELETE_MEDIO_PAGO = (document)=>`${BASE_URL}/api/v1/contabilidad/delete/medio-pago/${document}/codigo/`
 
+<<<<<<< HEAD
 //TIPO DE AUXILIAR
 export const LIST_TIPO_AUXILIAR = (document)=>`${BASE_URL}/api/v1/contabilidad/list/tipo-auxiliar/${document}/`
 export const SAVE_TIPO_AUXILIAR = (document)=>`${BASE_URL}/api/v1/contabilidad/save/tipo-auxiliar/${document}/`
+=======
+//REPORTES
+export const REPORTE_REGISTRO_VENTAS=(document)=>`${BASE_URL}/api/v1/contabilidad/reporte/registro-ventas/${document}/`
+>>>>>>> main
