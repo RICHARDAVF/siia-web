@@ -11,6 +11,7 @@ class RegistroVentas(GenericAPIView,DataBase):
     def post(self,request,*args,**kwargs):
         try:
             data = {}
+          
             document = kwargs['document']
             sql = f"""
                         WITH data AS (
@@ -67,13 +68,16 @@ class RegistroVentas(GenericAPIView,DataBase):
                         JOIN data AS b ON f.ori_codigo = b.ori_codigo AND f.mov_compro = b.mov_compro AND f.mov_mes = b.mov_mes AND f.min_identi = b.identi
                         LEFT JOIN t_auxiliar AS c ON b.aux_clave = c.AUX_CLAVE
                         WHERE 
-                            a.mov_mes = '01'
-                            AND a.ori_codigo = '01';
+                            a.mov_mes = ?
+                            AND a.ori_codigo = '03';
 
 
                     """
-            params = ()
+            mes = str(request.data['mes']).zfill(2)
+            params = (mes,)
+ 
             res = self.query(document,sql,params,'GET',1)
+
             data['data'] = [
                 {
                     'id':value[-1],

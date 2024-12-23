@@ -3,8 +3,7 @@ import { useNavigate } from "react-router-dom"
 import { Context } from "../../../../components/GlobalContext"
 import config from "../../../../config"
 import Loading from "../../../../components/Loading"
-import { Input, Table,message } from "antd"
-import { FaEdit } from "react-icons/fa"
+import { message } from "antd"
 import TableComponent from "./TableComponent"
 const ListComprobantes=()=>{
     const navigate = useNavigate()

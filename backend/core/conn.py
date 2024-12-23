@@ -27,6 +27,7 @@ class DataBase:
                 return data
             elif method == "GET" and option == 0:
                 data = cursor.fetchone()
+                
                 conn.commit()
                 conn.close()
                 return data

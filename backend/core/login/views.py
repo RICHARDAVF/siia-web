@@ -21,6 +21,7 @@ class LoginUser(GenericAPIView,DataBase):
     def post(self,request,*args,**kwargs):
         document = kwargs["document"]
         try:
+           
             datos = request.data
             sql = "SELECT usu_abrev,usu_codigo,ven_codigo FROM t_usuario WHERE usu_abrev=? AND usu_login=?"
             params = (datos["username"],self.hash_password(datos["password"]))

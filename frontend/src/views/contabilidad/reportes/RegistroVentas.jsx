@@ -1,4 +1,4 @@
-import { message, Table } from "antd"
+import { Button, Form, message, Row, Table } from "antd"
 import { useContext, useEffect, useState } from "react"
 import { REPORTE_REGISTRO_VENTAS } from "../../../../service/urls"
 import { Context } from "../../../components/GlobalContext"
@@ -7,6 +7,9 @@ import Loading from "../../../components/Loading"
 import { FaFilePdf } from "react-icons/fa"
 import { Page,Document,Text,pdf,View } from "@react-pdf/renderer"
 import dayjs from 'dayjs'
+import ModalConfigReport from "./ModalConfigReport"
+import FormList from "antd/es/form/FormList"
+import endpointsGenerics from "../../../../api/generics/Endpoints"
 const MyPDF=({data,fecha,hora})=>{
 
     return(
@@ -20,8 +23,9 @@ const MyPDF=({data,fecha,hora})=>{
                             <Text>USUARIO:SOPORTE</Text>
                             <Text>REPORTE: VENTAS</Text>
                         </View>
-                        <View style={{fontSize:12}}>
+                        <View style={{fontSize:12,justifyContent:'center',alignItems:'center'}}>
                             <Text>REGISTRO DE VENTAS</Text>
+                            <Text render={({pageNumber,totalPages})=>(`Página ${pageNumber} de ${totalPages}` )} fixed style={{textAlign:'center'}}/>
                         </View>
                         <View style={{fontSize:12}}>
                             <Text>FECHA:{fecha}</Text>
@@ -115,20 +119,49 @@ const MyPDF=({data,fecha,hora})=>{
 const RegistroVentas=()=>{
     const [data,setData] = useState([])
     const [loading,setLoading] = useState(false)
+    const [openModal,setOpenModal] = useState(false)
+    const [origen,setOrigen] = useState([])
+    const [MyForm] = Form.useForm()
     const {document,token} = useContext(Context)
     const datetime =dayjs()
     const fecha = datetime.format("YYYY-MM-DD")
     const hora = datetime.format('HH:MM:SS')
     useEffect(()=>{
         requestRegistroVentas()
+        requestGeneric()
+
     },[])
+    const requestGeneric=async()=>{
+        try{
+            const datos = {
+                'query_string':'',
+                'tipo_origen':3,
+                "dates":['origen']
+            }
+            const response = await endpointsGenerics.ManyData.post(document,token,datos)
+    
+            if(response.success){
+                setOrigen(response.origen)
+            }
+            if(response.error){
+                message.error(response.error)
+            }
+        }catch(err){
+            message.error(err.toString())
+        }finally{
+            setLoading(false)
+        }
+    }
     const requestRegistroVentas=async()=>{
         try{
+            const form_values = MyForm.getFieldsValue()
+
             setLoading(true)
             const url = REPORTE_REGISTRO_VENTAS(document)
             const datos = {
-                "query_string":''
+                "mes":form_values.mes || 1,
             }
+       
             const res = await apiRegistroVentas.post(url,token,datos)
             if (res.success){
                 setData(res.data)
@@ -143,6 +176,10 @@ const RegistroVentas=()=>{
             setLoading(false)
         }
     }
+    const onCancel=()=>{
+        setOpenModal(!openModal)
+    }
+
     const groupData=(array)=>{
         return array.reduce((acc,obj)=>{
             const key = "'"+obj.tipo_documento+"-"+obj.serie+"'"
@@ -153,15 +190,20 @@ const RegistroVentas=()=>{
             return acc
         },{})
     }
-    const genPDF=async()=>{
+    const onRequestData=async(values)=>{
+        requestRegistroVentas()
+        onCancel()
+    }
+    const genPDF=async(data)=>{
+        setLoading(true)
         const datos = groupData(data)
-    
         const doc = <MyPDF data={datos}fecha={fecha} hora={hora}/>
         const asPDF = pdf([])
         asPDF.updateContainer(doc)
         const blob = await asPDF.toBlob()
         const url = URL.createObjectURL(blob)
         window.open(url,'_blank')
+        setLoading(false)
     }
     const columns = [
         {
@@ -226,11 +268,23 @@ const RegistroVentas=()=>{
 
         }
     ]
-
+    const contextModal={
+        open:openModal,
+        onCancel,
+        MyForm,
+        onRequestData,
+        origen
+    }
     return(
         <div style={{position:'relative'}}>
-            <FaFilePdf style={{color:'red',cursor:'pointer'}} onClick={genPDF} size={20}/>
+            <Row>
+                <FaFilePdf style={{color:'red',cursor:'pointer'}} onClick={()=>genPDF(data)} size={20}/>
+                <Button onClick={onCancel} style={{background:'blue',color:'white',fontWeight:'bold'}} size="small">
+                    Filtros
+                </Button>
+            </Row>
             <Table dataSource={data} columns={columns} rowKey={record=>record.id} size="small" scroll={{x:'max-content'}}/>
+            <ModalConfigReport {...contextModal}/>
             <Loading status={loading}/>
         </div>
     )

@@ -4,7 +4,8 @@ import ListTipoServicio from "./mantenimientos/TipoServicio/ListTipoServicio"
 
 import ListComprobantes from "./movimientos/comprobantes/ListComprobantes"
 import RegistroComprobantes from "./movimientos/comprobantes/RegistroComprobantes"
-import RegistroDocumentos from "./movimientos/RecepcionDocumentos/Registro"
+import RecepcionDocumentoList from "./movimientos/RecepcionDocumentos/RecepcionDocumentList"
+
 import ReporteCuentasPagar from "./reporte/CuentasPagar"
 export const ComprasView = [
     {
@@ -19,7 +20,7 @@ export const ComprasView = [
 
 export const RecepcionDocumentosView = [
     {
-        "view": RegistroDocumentos,
+        "view": RecepcionDocumentoList,
         "route": "/recepcion/documentos"
     }
 ]

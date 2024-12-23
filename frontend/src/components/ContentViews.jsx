@@ -37,6 +37,7 @@ const ContentViews = () => {
                 {BuildRoutes(TipoAuxiliarView)}
 
 
+
             </Routes>
 
         </>

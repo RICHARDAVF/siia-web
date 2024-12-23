@@ -4,6 +4,7 @@ from .views import SaveComporasView,SaveTipoCambio
 from .CondicionPago.views import CondicionPagoList,EditCondicionPago,SaveCondicionPago,DeleteCondicionPago 
 from .TipoServicio.views import ListTipoServicio,SaveTipoServicio,EditTipoServicio,DeleteTipoServicio
 from .comprobantes.views import ListComprobantes
+from .RecepcionDocumentos.views import ListRecepcionDocumentos
 urlpatterns = [
     path(route="list/comprobantes/<str:document>/",view=ListComprobantes.as_view()),
     path(route="save/comprobantes/<str:document>/",view=SaveComporasView.as_view()), 
@@ -18,6 +19,8 @@ urlpatterns = [
     path(route="save/tipo-servicio/<str:document>/",view=SaveTipoServicio.as_view()),
     path(route="edit/tipo-servicio/<str:document>/<str:codigo>/",view=EditTipoServicio.as_view()),
     path(route="delete/tipo-servicio/<str:document>/<str:codigo>/",view=DeleteTipoServicio.as_view()),
+    #RECEPCION DE DOCUMENTOS
+    path(route="list/recepcion-documentos/<str:document>/",view=ListRecepcionDocumentos.as_view()),
 
 
 ]
