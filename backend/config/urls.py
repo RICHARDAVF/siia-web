@@ -17,12 +17,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path,include
 from core.views import ListOrigen,ListUbicacion,ListProveedor,ListDocument,ListCentroCosto,ListCuentas,TipoDeCambio,VendedorView,GenericViews
-
+from django.views.generic import TemplateView
 from django.contrib.staticfiles.urls import static
 from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path("",TemplateView.as_view(template_name="index.html")),
     path('api/v1/users/',include('core.login.urls')),
     path('api/v1/contabilidad/',include('core.contabilidad.urls')),
     path('api/v1/compras/',include('core.compras.urls')),
