@@ -54,7 +54,12 @@ export const MedioPagosView = [
 export const ReportesView = [
     {
         'view': Reporte,
-        'route': '/reporte/libro-diario'
+        'route': '/reporte/libro-diario',
+        
+    },
+    {
+        "view": RegistroVentas,
+        "route": 'reporte/ventas'
     }
 ]
 export const TipoAuxiliarView = [
@@ -62,12 +67,6 @@ export const TipoAuxiliarView = [
         'view': TipoAuxiliar,
         'route': '/tipo-auxiliar',
     },
-    {
-        'view': Reporte,
-        'route': '/reporte/libro-diario'
-    },
-    {
-        "view": RegistroVentas,
-        "route": 'reporte/ventas'
-    }
+
+
 ]
