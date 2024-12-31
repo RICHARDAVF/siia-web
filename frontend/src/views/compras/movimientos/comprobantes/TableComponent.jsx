@@ -1,13 +1,14 @@
 import { Table } from "antd"
-import { FaEdit } from "react-icons/fa"
+import { FaEdit, FaTrash } from "react-icons/fa"
 
 const TableComponent=({data,editItem,deleteItem})=>{
     const columns = [
             {
                 title:"Opcion",
                 render:(record)=>(
-                    <div style={{justifyContent:'center',display:'flex'}}>
-                        <FaEdit color="green" size={18} style={{cursor:'pointer'}} onClick={()=>editItem(record)} />
+                    <div style={{justifyContent:'space-between',display:'flex'}}>
+                        <FaEdit color="green" size={16} style={{cursor:'pointer'}} onClick={()=>editItem(record)} />
+                        <FaTrash color="red" size={16} style={{cursor:'pointer'}} onClick={()=>editItem(record)} />
                     </div>
                 )
             },

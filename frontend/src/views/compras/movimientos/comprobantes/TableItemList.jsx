@@ -4,6 +4,7 @@ import { forwardRef } from "react";
 const CustomPopconfirm = forwardRef((props, ref) => ( <Popconfirm ref={ref} {...props}> {props.children} </Popconfirm> ));
 
 const TableItemList=({data,deleteItem})=>{
+
     const columns = [
         {
           "title": "Opcion",
@@ -75,7 +76,7 @@ const TableItemList=({data,deleteItem})=>{
     return(
         <Table 
         columns={columns} 
-        dataSource={data} scroll={{ x: "max-content" }} rowKey={(record) => `${record.id}`} />
+        dataSource={data} scroll={{ x: "max-content" }} rowKey={(record) => `${record.id}`}  size="small"/>
     )
 }
 export default TableItemList

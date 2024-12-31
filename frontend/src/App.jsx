@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 import './index.css';
-import { Button, Layout, Row, theme } from 'antd';
+import { Button, Layout, Row } from 'antd';
 import Logo from './components/Logo.jsx';
 import MenuList from './components/MenuList.jsx';
 import { MenuUnfoldOutlined, MenuFoldOutlined, LogoutOutlined } from "@ant-design/icons";
@@ -18,7 +18,9 @@ function App() {
   const [collapsed, setCollapsed] = useState(false);
   const [isAuthenticate, setIsAuthenticate] = useState(false);
   const [username,setUsername] = useState('')
-  const {updateState} = useContext(Context)
+
+  const {updateState,user} = useContext(Context)
+
   useEffect(() => {
     const token = localStorage.getItem("authToken");
     const document = localStorage.getItem('document')
@@ -26,9 +28,9 @@ function App() {
 
     if (token) {
       setIsAuthenticate(true);
-      const userData = JSON.parse(user)
-      setUsername(userData.username)
-      updateState({"token":token,"document":document,"user":userData})
+      const dataUser = JSON.parse(user)
+      setUsername(dataUser.username)
+      updateState({"token":token,"document":document,"user":dataUser})
     }
   }, []);
 
@@ -58,14 +60,14 @@ function App() {
           setCollapsed={setCollapsed}
           toggleTheme={toggleTheme}
           setIsAuthenticate={setIsAuthenticate}
-          username = {username}
+          user={user}
         />
       )}
     </BrowserRouter>
   );
 }
 
-function AuthenticatedLayout({ darkMode, collapsed, setCollapsed, toggleTheme, setIsAuthenticate,username }) {
+function AuthenticatedLayout({ darkMode, collapsed, setCollapsed, toggleTheme, setIsAuthenticate,user }) {
   const navigate = useNavigate(); 
 
   const onLogout = () => {
@@ -77,22 +79,29 @@ function AuthenticatedLayout({ darkMode, collapsed, setCollapsed, toggleTheme, s
   return (
     <Layout>
       <Header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: 0, background: darkMode ? '#001529' : '#ffffff' }}>
-        <Button
-          onClick={() => setCollapsed(!collapsed)}
-          type="text"
-          style={{ color: darkMode ? '#ffffff' : '#001529' }}
-          icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-        />
-        <Row style={{justifyContent:'center',alignContent:'center',alignItems:'center'}} gutter={20}>
-          <strong style={{color:'white'}}>{username}</strong>  
+      <Row style={{justifyContent:'space-between',width:'100%'}}>
           <Button
-            onClick={onLogout}
-            danger
-            style={{ marginRight: '16px',marginLeft:'16px' }}
-            icon={<LogoutOutlined />}
-          >
-          </Button>
-        </Row>
+            onClick={() => setCollapsed(!collapsed)}
+            type="text"
+            style={{ color: darkMode ? '#ffffff' : '#001529' }}
+            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+            />
+        
+            <p style={{color:'white',fontWeight:'bold'}}>
+              {user.razon_social}
+            </p>
+
+          <Row style={{justifyContent:'center',alignContent:'center',alignItems:'center'}} gutter={20}>
+            <strong style={{color:'white'}}>{user.username}</strong>  
+            <Button
+              onClick={onLogout}
+              danger
+              style={{ marginRight: '16px',marginLeft:'16px' }}
+              icon={<LogoutOutlined />}
+            >
+            </Button>
+          </Row>
+      </Row>
       </Header>
       <Content>
         <Layout>

@@ -1,4 +1,5 @@
 import pyodbc
+from core.login.serializer import ClientSerializer
 from core.login.models import Clients,ClientToken
 class DataBase:
     @classmethod
@@ -7,6 +8,7 @@ class DataBase:
             client = Clients.objects.get(document=docum)
             query_string = "DRIVER={SQL Server};SERVER="+client.db_host+";DATABASE="+client.db_name+";UID="+client.db_user+";PWD="+client.decrypt_password()
             return pyodbc.connect(query_string)
+        
         except Exception as e:
             raise ValueError(f"No se pudo establecer conexion a la base de datos:{str(e)}")
     @classmethod
@@ -27,7 +29,6 @@ class DataBase:
                 return data
             elif method == "GET" and option == 0:
                 data = cursor.fetchone()
-                
                 conn.commit()
                 conn.close()
                 return data
@@ -37,4 +38,9 @@ class DataBase:
     def token(cls,docum):
         client = ClientToken.objects.get(client__document=docum)
         return client.token
+    @classmethod
+    def client(cls,document):
+        cliente = Clients.objects.get(document=document)
+        serializer = ClientSerializer(cliente,many=False)
+        return serializer.data
 

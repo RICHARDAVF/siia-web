@@ -1,16 +1,16 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
-import { Modal, Button, Table, Form, Input, DatePicker, Popconfirm, InputNumber, Row, Col, message, Select, Spin, Checkbox } from 'antd';
+import React, { useContext, useEffect, useState } from 'react';
+import { Form, Input, Row, Col, message } from 'antd';
 import { useLocation } from 'react-router-dom';
 import config from '../../../../config';
 import { Context } from '../../../../components/GlobalContext';
 import endpointsGenerics from '../../../../../api/generics/Endpoints';
-import {endpointsCompras} from '../../../../../api/compras/apiCompras';
+import {endpointComprobantes, endpointsCompras} from '../../../../../api/compras/apiCompras';
 import dayjs from 'dayjs';
-import { FaTrash } from 'react-icons/fa'
 import Loading from '../../../../components/Loading';
 import ModalForm from './ModalForm';
 import HeaderForm from './HeaderForm';
 import TableItemList from './TableItemList';
+import { EDIT_COMPROBANTES } from '../../../../../service/urls';
 
 const RegistroComprobantes = () => {
   const [loading, setLoading] = useState(false)
@@ -18,12 +18,11 @@ const RegistroComprobantes = () => {
   const [ubicacion, setUbicacion] = useState([])
   const [proveedor, setProveedor] = useState([])
   const [tipoDocument, setTipoDocument] = useState([])
+  const [detraccion,setDetraccion] = useState([])
   const [openModal, setOpenModal] = useState(false)
   const [centroCostos, setCentroCostos] = useState([])
   const [cuentas, setCuentas] = useState([])
-  const [detracion, setDetraccion] = useState(false)
   const [data, setData] = useState([])
-  const [blockInput, setBlockInput] = useState('')
   const location = useLocation()
   const [MyForm1] = Form.useForm()
   const [MyForm2] = Form.useForm()
@@ -31,7 +30,6 @@ const RegistroComprobantes = () => {
   const { BASE_URL } = config
   const { token, document, user } = useContext(Context)
 
-  const fecha = dayjs()
   const {  Proveedor, Cuentas, TipoCambio } = endpointsGenerics
   const { Compras } = endpointsCompras
   const [tipoCambio, setTipoCambio] = useState(0)
@@ -46,14 +44,44 @@ const RegistroComprobantes = () => {
 
 
   useEffect(() => {
+    
+        requestGenerics()
+        requestTipoCambio(false)
     if (params.action == "edit") {
+      requestDataComprobante()
     }
 
 
-    requestGenerics()
-    requestTipoCambio(false)
-
   }, [])
+  const requestDataComprobante=async()=>{
+    try{
+      setLoading(true)
+      const {comprobante,mes,origen} = params.data
+      const query_string = `${comprobante}-${mes}-${origen}`
+      const url = EDIT_COMPROBANTES(document).replace('codigo',query_string)
+      const res = await endpointComprobantes.get(url,token)
+      if(res.success){
+        const form1 = {...res.data.form_header,
+          fecha_contable:dayjs(res.data.form_header.fecha_contable),
+          fecha_emision:dayjs(res.data.form_header.fecha_emision),
+          fecha_detraccion:dayjs(res.data.form_header.fecha_detraccion),
+          fecha_vencimiento:dayjs(res.data.form_header.fecha_vencimiento),
+          fecha_referencia:dayjs(res.data.form_header.fecha_referencia),
+
+        }
+        
+        setData(res.data.table_list)
+        MyForm1.setFieldsValue(form1)
+      }
+      if(res.error){
+        message.error(res.error)
+      }
+    }catch(erro){
+      message.error(erro)
+    }finally{
+      setLoading(false)
+    }  
+  }
   const onCancel = () => {
     setOpenModal(!openModal)
   }
@@ -65,7 +93,7 @@ const RegistroComprobantes = () => {
       const datos = {
         "query_string": "",
         "tipo_origen": 1,
-        "dates":['origen',"ubicacion","centro-costos","tipo-documento"]
+        "dates":['origen',"ubicacion","centro-costos","tipo-documento",'detraccion']
       }
       const response = await fetch(url, {
         method: 'POST',
@@ -80,8 +108,9 @@ const RegistroComprobantes = () => {
       setUbicacion(res.ubicacion)
       setCentroCostos(res.centro_costo)
       setTipoDocument(res.tipo_documento)
+      setDetraccion(res.detraccion)
     } catch (erro) {
-      console.log(erro)
+      message.error(erro.toString())
     } finally {
       setLoading(false)
     }
@@ -134,7 +163,7 @@ const RegistroComprobantes = () => {
         setData(newdata)
       }
     }catch(err){
-      console.log(err)
+      message.error(err.toString())
     }finally{
       setLoading(false)
     }
@@ -194,20 +223,6 @@ const RegistroComprobantes = () => {
     setData(newdata)
     MyForm2.resetFields()
   }
-  const changeCuenta = (option) => {
-
-
-    const moneda = option.key.split("-")[1]
-    MyForm2.setFieldsValue({
-      moneda: moneda,
-      haber_soles: 0,
-      haber_dolares: 0,
-      debe_soles: 0,
-      debe_dolares: 0
-    })
-
-    setBlockInput(moneda)
-  }
 
   const saveData = async (values) => {
     try{
@@ -218,11 +233,15 @@ const RegistroComprobantes = () => {
       if(Math.abs(haberSoles-debeSoles)!=0){
         return message.error("El haber y debe difieren")
       }
-      const url = `${BASE_URL}/api/v1/compras/save/comprobantes/${document}/`
+      var url = `${BASE_URL}/api/v1/compras/save/comprobantes/${document}/`
+      if(params.action=="edit"){
+        const {mes,comprobante,origen} = params.data
+        const query_string = `${comprobante}-${mes}-${origen}`
+        url = EDIT_COMPROBANTES(document).replace('codigo',query_string)
+      }
       setLoading(true)
       const datos = {
         ...values,
-        "detraccion": detracion,
         "codigo_usuario": user.codigo_usuario,
         "codigo_vendedor": user.codigo_vendedor,
         "tipo_asiento": 1,
@@ -247,15 +266,13 @@ const RegistroComprobantes = () => {
         message.error(res.error)
       }
     }catch(err){
-      console.log(err)
+      message.error(err.toString())
     }finally{
       setLoading(false)
     }
 
   }
-  const editItem=async()=>{
-    onCancel()
-  }
+
   const contextHeaderForm = {
     MyForm1,
     saveData,
@@ -264,7 +281,8 @@ const RegistroComprobantes = () => {
     requestProveedor,
     proveedor,
     tipoDocument,
-    onCancel
+    onCancel,
+    requestTipoCambio
   }
   const contextModal = {
     openModal,

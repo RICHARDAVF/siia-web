@@ -1,26 +1,29 @@
 import { Button, Form, message, Row, Table } from "antd"
 import { useContext, useEffect, useState } from "react"
-import { REPORTE_REGISTRO_VENTAS } from "../../../../service/urls"
-import { Context } from "../../../components/GlobalContext"
-import { apiRegistroVentas } from "../../../../api/reportes/apiRegistroVentas"
-import Loading from "../../../components/Loading"
+import { REPORTE_REGISTRO_VENTAS } from "../../../../../service/urls"
+import { Context } from "../../../../components/GlobalContext"
+import { apiRegistroVentas } from "../../../../../api/reportes/apiRegistroVentas"
+import Loading from "../../../../components/Loading"
 import { FaFilePdf } from "react-icons/fa"
 import { Page,Document,Text,pdf,View } from "@react-pdf/renderer"
 import dayjs from 'dayjs'
-import ModalConfigReport from "./ModalConfigReport"
-import FormList from "antd/es/form/FormList"
-import endpointsGenerics from "../../../../api/generics/Endpoints"
-const MyPDF=({data,fecha,hora})=>{
 
+
+import endpointsGenerics from "../../../../../api/generics/Endpoints"
+import ListMensual from "./ListMensual"
+import ModalConfigVentas from "./ModalConfigVentas"
+
+const MyPDF=({data,fecha,hora,user})=>{
+    var total_acumulado = 0
     return(
 
         <Document>
-            <Page size={'A4'} style={{paddingHorizontal:7,paddingVertical:10}}>
+            <Page size={'A4'} style={{paddingHorizontal:7,paddingVertical:10,}}>
                 <View style={{width:'100%'}} fixed>
                     <View style={{display:'flex',flexDirection:'row',justifyContent:'space-between'}}>
                         <View style={{fontSize:12}}>
-                            <Text>GRUPO KA</Text>
-                            <Text>USUARIO:SOPORTE</Text>
+                            <Text>{user.rezon_social}</Text>
+                            <Text>USUARIO:{user.username}</Text>
                             <Text>REPORTE: VENTAS</Text>
                         </View>
                         <View style={{fontSize:12,justifyContent:'center',alignItems:'center'}}>
@@ -33,17 +36,17 @@ const MyPDF=({data,fecha,hora})=>{
                         </View>
                     </View>
     
-                    <View style={{display:'flex',flexDirection:'row',fontSize:8,width:'100%',backgroundColor:'gray',color:'white',fontWeight:'bold'}} >
-                        <Text style={{width:'8%',fontWeight:'bold',textAlign:'center'}}>FECHA</Text>
-                        <Text style={{width:'4%',fontWeight:'bold',textAlign:'center'}}>T.D</Text>
-                        <Text style={{width:'7%',fontWeight:'bold',textAlign:'center'}}>SERIE-N°</Text>
-                        <Text style={{width:'28%',fontWeight:'bold',textAlign:'center'}}>RAZON SOCIAL</Text>
-                        <Text style={{width:'8%',fontWeight:'bold',textAlign:'center'}}>RUC</Text>
-                        <Text style={{width:'8%',fontWeight:'bold',textAlign:'center'}}>B/IMP.</Text>
-                        <Text style={{width:'8%',fontWeight:'bold',textAlign:'center'}}>INAFECTO</Text>
-                        <Text style={{width:'8%',fontWeight:'bold',textAlign:'center'}}>IGV</Text>
-                        <Text style={{width:'8%',fontWeight:'bold',textAlign:'center'}}>TOTAL</Text>
-                        <Text style={{width:'5%',fontWeight:'bold',textAlign:'center'}}>T.C</Text>
+                    <View style={{display:'flex',flexDirection:'row',fontSize:8,width:'100%',backgroundColor:'gray',color:'white',fontWeight:'bold',borderWidth:2}} >
+                        <Text style={{width:'8%',fontWeight:'bold',textAlign:'center',borderRightWidth:2}}>FECHA</Text>
+                        <Text style={{width:'4%',fontWeight:'bold',textAlign:'center',borderRightWidth:2}}>T.D</Text>
+                        <Text style={{width:'7%',fontWeight:'bold',textAlign:'center',borderRightWidth:2}}>SERIE-N°</Text>
+                        <Text style={{width:'28%',fontWeight:'bold',textAlign:'center',borderRightWidth:2}}>RAZON SOCIAL</Text>
+                        <Text style={{width:'8%',fontWeight:'bold',textAlign:'center',borderRightWidth:2}}>RUC</Text>
+                        <Text style={{width:'8%',fontWeight:'bold',textAlign:'center',borderRightWidth:2}}>B/IMP.</Text>
+                        <Text style={{width:'8%',fontWeight:'bold',textAlign:'center',borderRightWidth:2}}>INAFECTO</Text>
+                        <Text style={{width:'8%',fontWeight:'bold',textAlign:'center',borderRightWidth:2}}>IGV</Text>
+                        <Text style={{width:'8%',fontWeight:'bold',textAlign:'center',borderRightWidth:2}}>TOTAL</Text>
+                        <Text style={{width:'5%',fontWeight:'bold',textAlign:'center',borderRightWidth:2}}>T.C</Text>
                         <Text style={{width:'8%',fontWeight:'bold',textAlign:'center'}}>DOLARES</Text>
                     </View>
                 </View>
@@ -55,16 +58,17 @@ const MyPDF=({data,fecha,hora})=>{
                     var total = 0
                     var dolares = 0
                     return (
-                        <View key={key}>
+                        <View key={key} style={{marginTop:3}}>
                         {serie_document.map(item=>{
                             total += parseFloat(item.total)
                             igv += parseFloat(item.igv)
                             inafecto += parseFloat(item.inafecto)
                             base_imponible += parseFloat(item.base_imponible)
+                            total_acumulado += parseFloat(item.base_imponible)
                             dolares += parseFloat(item.dolares)
                              
                             return(
-                            <View key={item.id} style={{display:'flex',flexDirection:'row',fontSize:8,width:'100%',height:12}}>
+                            <View key={item.id} style={{display:'flex',flexDirection:'row',fontSize:8,width:'100%',height:12,marginTop:1,color:item.state?'red':'black'}}>
                                 <Text style={{width:'8%'}}>{item.fecha}</Text>
                                 <Text style={{width:'4%',textAlign:'center'}}>{item.tipo_documento}</Text>
                                 <Text style={{width:'7%'}}>{item.serie}-{item.numero_documento}</Text>
@@ -110,6 +114,9 @@ const MyPDF=({data,fecha,hora})=>{
                     )
                 }
                 )}
+                <View style={{justifyContent:'center',width:'100%'}}>
+                    <Text style={{fontWeight:'bold',fontSize:10,color:'blue',textAlign:'center'}}>Suma total S/: {total_acumulado.toFixed(2)}</Text>
+                </View>
             </Page>
         </Document>
     )
@@ -122,13 +129,14 @@ const RegistroVentas=()=>{
     const [openModal,setOpenModal] = useState(false)
     const [origen,setOrigen] = useState([])
     const [MyForm] = Form.useForm()
-    const {document,token} = useContext(Context)
+    const {document,token,user} = useContext(Context)
     const datetime =dayjs()
     const fecha = datetime.format("YYYY-MM-DD")
-    const hora = datetime.format('HH:MM:SS')
+    const hora = datetime.format('HH:mm:ss')
     useEffect(()=>{
-        requestRegistroVentas()
+       
         requestGeneric()
+        requestRegistroVentas(false)
 
     },[])
     const requestGeneric=async()=>{
@@ -136,6 +144,7 @@ const RegistroVentas=()=>{
             const datos = {
                 'query_string':'',
                 'tipo_origen':3,
+                'ventas':1,
                 "dates":['origen']
             }
             const response = await endpointsGenerics.ManyData.post(document,token,datos)
@@ -152,14 +161,28 @@ const RegistroVentas=()=>{
             setLoading(false)
         }
     }
-    const requestRegistroVentas=async()=>{
-        try{
-            const form_values = MyForm.getFieldsValue()
+    const requestRegistroVentas=async(values)=>{
 
+        try{
+          
+            var form_values = {
+                'mes':1,
+                'titulo_gratuito':false,
+                'origen':'',
+                'condicion':1,
+                'ventas':1,
+                'tipo_origen':3,
+            }
+            
+            if(values){
+                form_values = {...values,'ventas':1,'tipo_origen':3}
+            }
+            
             setLoading(true)
             const url = REPORTE_REGISTRO_VENTAS(document)
             const datos = {
-                "mes":form_values.mes || 1,
+                ...form_values
+
             }
        
             const res = await apiRegistroVentas.post(url,token,datos)
@@ -180,9 +203,16 @@ const RegistroVentas=()=>{
         setOpenModal(!openModal)
     }
 
-    const groupData=(array)=>{
+    const groupData=(array,values)=>{
         return array.reduce((acc,obj)=>{
-            const key = "'"+obj.tipo_documento+"-"+obj.serie+"'"
+            var key = "00"
+            if(values.ordenamiento==1){
+                key = "'"+obj.serie+"'"
+            }else if(values.ordenamiento==2){
+                key="'"+obj.tipo_documento+"'"
+            }else{
+                key="'"+obj.tipo_documento+"-"+obj.serie+"'"
+            }
             if(!acc[key]){
                 acc[key] = []
             }
@@ -191,13 +221,16 @@ const RegistroVentas=()=>{
         },{})
     }
     const onRequestData=async(values)=>{
-        requestRegistroVentas()
+        requestRegistroVentas(values)
         onCancel()
     }
     const genPDF=async(data)=>{
         setLoading(true)
-        const datos = groupData(data)
-        const doc = <MyPDF data={datos}fecha={fecha} hora={hora}/>
+        const values = MyForm.getFieldsValue()
+  
+        const datos = groupData(data,values)
+         
+        const doc = <MyPDF data={datos}fecha={fecha} hora={hora} user={user}/>
         const asPDF = pdf([])
         asPDF.updateContainer(doc)
         const blob = await asPDF.toBlob()
@@ -205,69 +238,7 @@ const RegistroVentas=()=>{
         window.open(url,'_blank')
         setLoading(false)
     }
-    const columns = [
-        {
-            title: 'Fecha',
-            dataIndex: 'fecha',
-            key: 'fecha',
-        
-        },
-        {
-            title:'T.D',
-            dataIndex:'tipo_documento',
-            key:'tipo_documento',
-        },
-        {
-            title:'Serie/Numero',
-            render:(row)=>(
-                <div>{row.serie}-{row.numero_documento}</div>
-            )
-        },
-        {
-            title:'Razon Social',
-            dataIndex:'razon_social',
-            key:'razon_social',
-        },
-        {
-            title:'RUC',
-            dataIndex:'ruc_dni',
-            key:'ruc_dni',
-        },
-        {
-            title:'B.I',
-            dataIndex:'base_imponible',
-            key:'base_imponible',
-            align:'right'
 
-        },
-        {
-            title:'Inafecto',
-            dataIndex:'inafecto',
-            key:'inafecto', 
-            align:'right'
-
-        },
-        {
-            title:'IGV',
-            dataIndex:'igv',
-            key:'igv',
-            align:'right'
-
-        },
-        {
-            title:'Total',
-            dataIndex:'total',
-            key:'total',
-            align:'right'
-        },
-        {
-            title:'T/C',
-            dataIndex:'tipo_cambio',
-            key:'tipo_cambio',
-            align:'right'
-
-        }
-    ]
     const contextModal={
         open:openModal,
         onCancel,
@@ -275,16 +246,22 @@ const RegistroVentas=()=>{
         onRequestData,
         origen
     }
+    const mensualListContext = {
+        data: data,
+
+    }
     return(
         <div style={{position:'relative'}}>
             <Row>
-                <FaFilePdf style={{color:'red',cursor:'pointer'}} onClick={()=>genPDF(data)} size={20}/>
                 <Button onClick={onCancel} style={{background:'blue',color:'white',fontWeight:'bold'}} size="small">
                     Filtros
                 </Button>
+                <Button size="small" onClick={()=>genPDF(data)} >
+                    <FaFilePdf color="red"/>
+                </Button>
             </Row>
-            <Table dataSource={data} columns={columns} rowKey={record=>record.id} size="small" scroll={{x:'max-content'}}/>
-            <ModalConfigReport {...contextModal}/>
+            <ListMensual {...mensualListContext}/>
+            <ModalConfigVentas {...contextModal}/>
             <Loading status={loading}/>
         </div>
     )

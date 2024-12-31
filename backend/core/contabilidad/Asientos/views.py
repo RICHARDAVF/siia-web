@@ -20,7 +20,7 @@ class EditAsientos(GenericAPIView,DataBase):
             sql = f"""SELECT 
 	                    MOV_FECHAC,mov_femisi,mov_tipoas,ORI_CODIGO,mov_diapag,UBI_CODIGO,MOV_GLOSA,PLA_CUENTA,AUX_CLAVE,ven_codigo,DOC_CODIGO,MOV_SERIE,MOV_DOCUM,MOV_MONED,MOV_H,MOV_D,MOV_D_D,MOV_H_D,MOV_T_C,MOV_GLOSA1,MOV_FVENC
                         FROM MOVA{self.fecha.year} 
-                    WHERE ORI_CODIGO=? AND MOV_MES=? AND MOV_COMPRO=? ORDER BY pla_cuenta asc  """
+                    WHERE ORI_CODIGO=? AND MOV_MES=? AND MOV_COMPRO=? ORDER BY pla_cuenta ASC  """
             
             params = (origen,mes,comprobante)
             result = self.query(document,sql,params,'GET')

@@ -22,17 +22,24 @@ const ListAsientos=()=>{
         navigate("/registro/asientos",{state:{'params':{'data':item,'action':'edit'}}})
     }
     const requestAsientos=async()=>{
-        const url = `${BASE_URL}/api/v1/contabilidad/list/${document}/`
-        const response=await fetch(url,{
-            method:'POST',
-            headers:{
-                "Content-Type":'applicaion/json',
-                "Authorization":`Bearer ${token}` 
-            }
-        })
-        const res = await response.json()
-
-        setData(res.data)
+        try{
+            setLoading(true)
+            const url = `${BASE_URL}/api/v1/contabilidad/list/${document}/`
+            const response=await fetch(url,{
+                method:'POST',
+                headers:{
+                    "Content-Type":'applicaion/json',
+                    "Authorization":`Bearer ${token}` 
+                }
+            })
+            const res = await response.json()
+    
+            setData(res.data)
+        }catch(error){
+            message.error(error.toString())
+        }finally{
+            setLoading(false)
+        }
 
     }
     const onDelete=async(item)=>{

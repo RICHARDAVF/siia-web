@@ -11,7 +11,6 @@ import EndPointContabilidad from "../../../../../api/contabilidad/apiAsientos";
 import Loading from "../../../../components/Loading";
 import { useLocation } from "react-router-dom";
 import { EDIT_ASIENTOS } from "../../../../../service/urls";
-import TableItemList from "../../../compras/movimientos/comprobantes/TableItemList";
 const RegistroAsientos=()=>{
   const [tipoAsiento,setTipoAsiento] = useState([])
   const [loading,setLoading] = useState(false)

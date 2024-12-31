@@ -6,7 +6,7 @@ const items = [
     {
         key: "1",
         label: "Home",
-        route: "/home"
+        route: "/"
     },
     {
         key: "2",
@@ -115,7 +115,12 @@ const items = [
                         key: "432",
                         label: "Reporte Ventas",
                         route: "reporte/ventas"
-                    }
+                    },
+                    {
+                        key: "433",
+                        label: "Reporte Compras",
+                        route: "reporte/compras"
+                    },
                 ]
             }
            

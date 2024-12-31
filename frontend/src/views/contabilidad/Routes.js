@@ -8,7 +8,9 @@ import RegistroRetenciones from "./movimientos/Retenciones/RegistroRetenciones";
 
 import Reporte from "./reportes/LibroDiario";
 import TipoAuxiliar from "./mantenimientos/tipoAuxiliar/TipoAuxiliar";
-import RegistroVentas from "./reportes/RegistroVentas";
+import RegistroVentas from "./reportes/ventas/RegistroVentas";
+import RegistroCompras from "./reportes/compras/RegistroCompras";
+
 export const ContabilidadView = [
     {
         "view": ListAsientos,
@@ -60,6 +62,10 @@ export const ReportesView = [
     {
         "view": RegistroVentas,
         "route": 'reporte/ventas'
+    },
+    {
+        "view": RegistroCompras,
+        "route": 'reporte/compras'
     }
 ]
 export const TipoAuxiliarView = [

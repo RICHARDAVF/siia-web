@@ -1,7 +1,16 @@
 import { Form,Col,Row,DatePicker,Select,Input,Checkbox,Button} from "antd"
 import dayjs from 'dayjs'
 const {TextArea} = Input
-const HeaderForm=({MyForm1,saveData,origen,ubicacion,requestProveedor,proveedor,tipoDocument,onCancel})=>{
+const HeaderForm=({MyForm1,saveData,origen,ubicacion,requestProveedor,proveedor,tipoDocument,onCancel,requestTipoCambio})=>{
+  const disabledDetracciom=true
+  const onChangeCodigoDetraccion=(value)=>{
+    if(value!=''){
+      MyForm1.setFieldsValue({"detraccion":true})
+    }else{
+      MyForm1.setFieldsValue({"detraccion":false})
+
+    }
+  }
     const fecha = dayjs()
     return(
         <Form
@@ -12,41 +21,37 @@ const HeaderForm=({MyForm1,saveData,origen,ubicacion,requestProveedor,proveedor,
         onFinish={saveData}
       >
         <Row gutter={6}>
-          <Col xs={20} sm={15} md={6}>
+          <Col xs={20} md={10} lg={8}>
             <Form.Item
               name='fecha_contable'
               label='Fecha Contable'
               rules={[{ required: true, message: 'Por favor seleccione una fecha' }]}
               initialValue={fecha}
-            // format={'YYYY-MM-DD'}
             >
               <DatePicker style={{ width: '100%' }}
                 size={'small'}
                 format={'YYYY-MM-DD'}
-              // defaultValue={fecha}
               />
             </Form.Item>
           </Col>
-          <Col xs={20} sm={15} md={6}>
+          <Col xs={20} md={10} lg={8}>
             <Form.Item
               name='fecha_emision'
               label='Fecha Emision'
               rules={[{ required: true, message: 'Por favor seleccione una fecha' }]}
               initialValue={fecha}
-            // format={'YYYY-MM-DD'}
 
             >
               <DatePicker style={{ width: '100%' }}
                 size={'small'}
                 format={'YYYY-MM-DD'}
-                // defaultValue={fecha}
                 onCalendarChange={(value) => requestTipoCambio(value)}
 
               />
 
             </Form.Item>
           </Col>
-          <Col xs={20} sm={15} md={6}>
+          <Col xs={20} md={10} lg={8}>
             <Form.Item
               name='dias'
               label='Dias'
@@ -55,7 +60,7 @@ const HeaderForm=({MyForm1,saveData,origen,ubicacion,requestProveedor,proveedor,
               <Input placeholder='Ej:' size='small' />
             </Form.Item>
           </Col>
-          <Col xs={20} sm={15} md={6}>
+          <Col xs={20} md={10} lg={8}>
             <Form.Item
               name='fecha_vencimiento'
               label='Fecha Vencimiento'
@@ -74,7 +79,7 @@ const HeaderForm=({MyForm1,saveData,origen,ubicacion,requestProveedor,proveedor,
               />
             </Form.Item>
           </Col>
-          <Col xs={20} sm={15} md={6}>
+          <Col xs={20} md={10} lg={8}>
             <Form.Item
               name='origen'
               label='Origen'
@@ -92,7 +97,7 @@ const HeaderForm=({MyForm1,saveData,origen,ubicacion,requestProveedor,proveedor,
               />
             </Form.Item>
           </Col>
-          <Col xs={20} sm={15} md={4}>
+          <Col xs={20} md={10} lg={8}>
             <Form.Item
               name='ubicacion'
               label='Ubicacion'
@@ -104,38 +109,40 @@ const HeaderForm=({MyForm1,saveData,origen,ubicacion,requestProveedor,proveedor,
                 showSearch
                 options={ubicacion}
                 optionRender={(row) => (
-                  <div style={{ fontSize: 10 }}>{row.value} - {row.label}</div>
+                  <div key={row.id} style={{ fontSize: 10 }}>{row.value} - {row.label}</div>
                 )}
               />
             </Form.Item>
           </Col>
-          <Col xs={20} sm={15} md={4}>
+          <Col xs={4} md={4} lg={4}>
             <Form.Item
               name='detraccion'
               label='Detraccion'
               valuePropName="checked"
               initialValue={false}
+              
             >
-              <Checkbox
+              <Checkbox disabled={disabledDetracciom}
                 size={'small'}
               />
             </Form.Item>
           </Col>
-          <Col xs={20} sm={15} md={4}>
+          <Col xs={20} md={10} lg={8}>
             <Form.Item
-              name='cuenta_detraccion'
+              name='codigo_detraccion'
               label='C/Det'
               rules={[{ message: 'Por favor ingrese una cuenta' }]}
             >
               <Input
                 size={'small'}
                 placeholder="Ej:151515"
+                onChange={(e)=>onChangeCodigoDetraccion(e.target.value)}
               />
             </Form.Item>
           </Col>
-          <Col xs={20} sm={15} md={4}>
+          <Col xs={20} md={10} lg={8}>
             <Form.Item
-              name='fecha_deposito'
+              name='fecha_detraccion'
               label='F/Dep'
               rules={[{ required: true, message: 'Por favor seleccione la fecha de deposito' }]}
               initialValue={fecha}
@@ -149,9 +156,9 @@ const HeaderForm=({MyForm1,saveData,origen,ubicacion,requestProveedor,proveedor,
               />
             </Form.Item>
           </Col>
-          <Col xs={20} sm={15} md={4}>
+          <Col xs={20} md={10} lg={8}>
             <Form.Item
-              name='numero_deposito'
+              name='numero_detraccion'
               label='Nro. Dep.'
               rules={[{ required: true, message: 'Por favor  ingrese el numero de deposito' }]}
             >
@@ -161,7 +168,7 @@ const HeaderForm=({MyForm1,saveData,origen,ubicacion,requestProveedor,proveedor,
               />
             </Form.Item>
           </Col>
-          <Col xs={20} sm={15} md={4}>
+          <Col xs={20} md={10} lg={8}>
             <Form.Item
               name='observacion'
               label={<span>Obs/Glosa</span>}
@@ -173,7 +180,7 @@ const HeaderForm=({MyForm1,saveData,origen,ubicacion,requestProveedor,proveedor,
               />
             </Form.Item>
           </Col>
-          <Col xs={20} sm={15} md={8}>
+          <Col xs={20} md={10} lg={8}>
             <Form.Item
               name='proveedor'
               label="Proveedor"
@@ -200,7 +207,7 @@ const HeaderForm=({MyForm1,saveData,origen,ubicacion,requestProveedor,proveedor,
               </Select>
             </Form.Item>
           </Col>
-          <Col xs={20} sm={15} md={8}>
+          <Col xs={20} md={10} lg={8}>
             <Form.Item
               name='tipo_documento'
               label="Tipo Doc."
@@ -211,13 +218,13 @@ const HeaderForm=({MyForm1,saveData,origen,ubicacion,requestProveedor,proveedor,
                 placeholder="Tipo documento"
                 options={tipoDocument}
                 optionRender={(row) => (
-                  <div style={{ fontSize: 10 }}>{row.value} - {row.label}</div>
+                  <div key={row.id} style={{ fontSize: 10 }}>{row.value} - {row.label}</div>
                 )}
                 showSearch
               />
             </Form.Item>
           </Col>
-          <Col xs={20} sm={15} md={4}>
+          <Col xs={20} md={10} lg={8}>
             <Form.Item
               name='numero_serie'
               label="Serie"
@@ -229,7 +236,7 @@ const HeaderForm=({MyForm1,saveData,origen,ubicacion,requestProveedor,proveedor,
               />
             </Form.Item>
           </Col>
-          <Col xs={20} sm={15} md={4}>
+          <Col xs={20} md={10} lg={8}>
             <Form.Item
               name='numero_documento'
               label="Nro. Doc."
@@ -241,7 +248,7 @@ const HeaderForm=({MyForm1,saveData,origen,ubicacion,requestProveedor,proveedor,
               />
             </Form.Item>
           </Col>
-          <Col xs={20} sm={15} md={4}>
+          <Col xs={20} md={10} lg={8}>
             <Form.Item
               name='tipo_doc_referencia'
               label="T.D/REF"
@@ -252,13 +259,13 @@ const HeaderForm=({MyForm1,saveData,origen,ubicacion,requestProveedor,proveedor,
                 placeholder="Tipo documento"
                 options={tipoDocument}
                 optionRender={(row) => (
-                  <div style={{ fontSize: 10 }}>{row.value} - {row.label}</div>
+                  <div key={row.id} style={{ fontSize: 10 }}>{row.value} - {row.label}</div>
                 )}
                 showSearch
               />
             </Form.Item>
           </Col>
-          <Col xs={20} sm={15} md={4}>
+          <Col xs={20} md={10} lg={8}>
             <Form.Item
               name='serie_doc_referencia'
               label="Serie/REF."
@@ -270,7 +277,7 @@ const HeaderForm=({MyForm1,saveData,origen,ubicacion,requestProveedor,proveedor,
               />
             </Form.Item>
           </Col>
-          <Col xs={20} sm={15} md={4}>
+          <Col xs={20} md={10} lg={8}>
             <Form.Item
               name='numero_doc_referencia'
               label="Nro/REF."
@@ -283,7 +290,7 @@ const HeaderForm=({MyForm1,saveData,origen,ubicacion,requestProveedor,proveedor,
             </Form.Item>
           </Col>
 
-          <Col xs={20} sm={15} md={4}>
+          <Col xs={20} md={10} lg={8}>
             <Form.Item
               name='fecha_doc_referencia'
               label='F/REF'

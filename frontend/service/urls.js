@@ -43,3 +43,6 @@ export const SAVE_TIPO_AUXILIAR = (document)=>`${BASE_URL}/api/v1/contabilidad/s
 
 //REPORTES
 export const REPORTE_REGISTRO_VENTAS=(document)=>`${BASE_URL}/api/v1/contabilidad/reporte/registro-ventas/${document}/`
+export const REPORTE_REGISTRO_COMPRAS=(document)=>`${BASE_URL}/api/v1/contabilidad/reporte/registro-compras/${document}/`
+
+export const EDIT_COMPROBANTES=(document)=>`${BASE_URL}/api/v1/compras/edit/comprobantes/${document}/codigo/`

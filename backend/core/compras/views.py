@@ -65,7 +65,7 @@ class SaveComporasView(GenericAPIView,DataBase):
             for item in datos['items']:
                 tipo_documento = datos["tipo_documento"].split("-")[0]
                 suma_total = self.sum_total()
-                params = ("53",str(self.fecha.month).zfill(2),datos['origen'],datos['ubicacion'],correlativo,self.fecha.strftime("%Y-%m-%d"),item['observacion'],item['cuenta'],auxiliar.codigo_cliente,tipo_documento,datos['numero_serie'],datos['numero_documento'],item['debe_soles'],item['haber_soles'],item['debe_dolares'],item['haber_dolares'],datos['tipo_cambio'],datos['observacion'],datos['codigo_usuario'],datos['codigo_vendedor'],datos['tipo_asiento'],suma_total,datos["fecha_emision"],item["moneda"],datos["fecha_vencimiento"],datos["dias"])
+                params = ("53",str(self.fecha.month).zfill(2),datos['origen'],datos['ubicacion'],correlativo,datos['fecha_contable'],item['observacion'],item['cuenta'],auxiliar.codigo_cliente,tipo_documento,datos['numero_serie'],datos['numero_documento'],item['debe_soles'],item['haber_soles'],item['debe_dolares'],item['haber_dolares'],datos['tipo_cambio'],datos['observacion'],datos['codigo_usuario'],datos['codigo_vendedor'],datos['tipo_asiento'],suma_total,datos["fecha_emision"],item["moneda"],datos["fecha_vencimiento"],datos["dias"])
                 sql1 = sql+f"({','.join('?' for i in params)})"
                 self.query(document,sql1,params,'POST')
             return Response({'success':"Los datos se guardaron correctamente"},status=status.HTTP_200_OK)
@@ -85,28 +85,7 @@ class SaveComporasView(GenericAPIView,DataBase):
             return int(res[0])+1
         except:
             return 1
-class EditComprasView(GenericAPIView,DataBase):
-    fecha : datetime = datetime.now()
-    def get(self,request,*args,**kwargs):
-        try:
-            document = kwargs["document"]
-            mes,origen,comporbante = kwargs["query_string"]
-            sql = f"""
-                    SELECT 
-                        UBI_CODIGO,MOV_COMPRO,mov_fecha,MOV_GLOSA,PLA_CUENTA,aux_clave,DOC_CODIGO,MOV_SERIE,MOV_DOCUM,MOV_D,MOV_H,MOV_D_D,MOV_H_D,MOV_T_C,MOV_GLOSA1,USUARIO,ven_codigo,mov_tipoas,mov_total,mov_femisi,mov_moned,mov_fvenc,mov_diapag
-                    FROM MOVA{self.fecha.year}
-                    WHERE   
-                        mov_mes=?
-                        AND ori_codigo=?
-                        AND mov_compro=?
-            """
-            headers = res[0]
-            data = {
-            }
-            params = (mes,origen,comporbante)
-            res = self.query(document,sql,params,"GET",1)
-        except Exception as e:
-            return Response({"error":f"Ocurrio un error al recuperar la data:{str(e)}"})
+
 class SaveTipoCambio(GenericAPIView,DataBase):
     permission_classes = [AllowAny]
     authentication_classes = [TokenAuthentication]

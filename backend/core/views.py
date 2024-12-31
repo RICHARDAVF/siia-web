@@ -95,15 +95,15 @@ class GetVendedor:
         except Exception as e:
             raise ValueError(str(e)) 
 class Origen:
-    def __init__(self,document:str,tipo_origen:str,query_string:str,query:Callable):
+    def __init__(self,document:str,params:dict,query:Callable):
         self.document = document
-       
         self.query = query
-        self.query_string = query_string
-        self.tipo_origen = tipo_origen
+        self.tipo_origen = params["tipo_origen"]
+        self.ventas = params.get('ventas',0)
+        self.query_string = params.get("query_string",'')
     def get(self):
         try:
-            sql = f"SELECT ori_codigo,ori_nombre FROM t_origen WHERE ori_tipo=? AND (ori_nombre LIKE '%{self.query_string}%' OR ori_codigo LIKE '%{self.query_string}%') "
+            sql = f"SELECT ori_codigo,ori_nombre FROM t_origen WHERE ori_tipo=? {f'AND ori_ventas={self.ventas}'} AND (ori_nombre LIKE '%{self.query_string}%' OR ori_codigo LIKE '%{self.query_string}%') "
             res = self.query(self.document,sql,(self.tipo_origen,),"GET",1)
             data = [
                 {
@@ -235,9 +235,6 @@ class ListOrigen(GenericAPIView,DataBase):
             document = kwargs["document"]
             query_string = request.data["query_string"]
             tipo_origen = request.data["tipo_origen"]
-
-            sql = f"SELECT ori_codigo,ori_nombre FROM t_origen WHERE ori_tipo=? LIKE ori_nombre '%{query_string}%' OR ori_codigo LIKE '%{query_string}%' "
-
             sql = f"SELECT ori_codigo,ori_nombre FROM t_origen WHERE ori_tipo=? AND (ori_nombre LIKE '%{query_string}%' OR ori_codigo LIKE '%{query_string}%') "
 
             res = self.query(document,sql,(tipo_origen,),"GET",1)
@@ -439,7 +436,17 @@ class VendedorView(GenericAPIView,DataBase):
         except Exception as e:
             return Response({"error":f"Ocurrio un error:{str(e)}"},status=status.HTTP_400_BAD_REQUEST)
 
-
+class Detraccion:
+    def __init__(self,document:str,query:Callable):
+        self.document = document
+        self.query = query
+    def get(self):
+        try:
+            sql = f""" SEELCT tse_codigo,tse_nombre,identi FROM t_tip_serv"""
+            res = self.query(self.document,sql,(),'GET',1)
+            data = ''
+        except Exception as e:
+            raise ValueError(str(e))
 class GenericViews(GenericAPIView,DataBase):
     permission_classes = [AllowAny]
     authentication_classes = [TokenAuthentication]
@@ -450,7 +457,7 @@ class GenericViews(GenericAPIView,DataBase):
             query_string = request.data["query_string"]
             tipo_origen = request.data["tipo_origen"]
             if "origen" in request.data['dates']:
-                origen = Origen(document,tipo_origen,query_string,self.query)
+                origen = Origen(document,request.data,self.query)
                 data["origen"] = origen.get()
             if 'ubicacion' in request.data['dates']:
                 ubicacion = Ubicacion(document,self.query)
@@ -470,6 +477,9 @@ class GenericViews(GenericAPIView,DataBase):
             if 'tablas' in request.data['dates']:
                 instance = GetTablas(document,query_string,self.query)
                 data['tablas'] = instance.get()
+            if 'detraccion' in request.data['dates']:
+                instance = Detraccion(document,query_string,self.query)
+                data['detraccion'] = instance.get()
             data['success'] = True
             return Response(data,status=status.HTTP_200_OK)
         except Exception as e:

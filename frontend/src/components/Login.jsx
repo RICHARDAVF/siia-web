@@ -34,7 +34,7 @@ function Login({ onLogin }) {
         setTimeout(() => {
           onLogin(res);
           message.success('Se inició sesión exitosamente');
-          navigate('/home');
+          navigate('/');
         }, 1000);
       } else {
         const res = await response.json();

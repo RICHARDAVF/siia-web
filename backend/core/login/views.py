@@ -40,6 +40,7 @@ class LoginUser(GenericAPIView,DataBase):
             instance = TipoCambio(document,res[-1],self.query)
             instance.get_tipo_cambio()
             user['tipo_cambio'] = instance.data['compra']
+            user['razon_social'] = self.client(document)['company_name']
             return Response(user,status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error":f"Ocurrio un error:{str(e)}"},status=status.HTTP_400_BAD_REQUEST)

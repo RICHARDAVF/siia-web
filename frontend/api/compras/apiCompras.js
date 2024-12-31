@@ -102,3 +102,20 @@ export const endpointsTipoServicio={
         }
     }
 }
+
+export const endpointComprobantes={
+    get:async(url,token)=>{
+        try{
+            const res = await fetch(url,{
+                headers:{
+                    'Authorization':`Bearer ${token}`,
+                    'Content-Type':'application/json'
+                    },
+                method:'GET'
+            })
+            return await res.json()
+        }catch(err){
+            return {'error':err.toString()}
+        }
+    }
+}

@@ -5,7 +5,7 @@ from .centroCostos.views import ListCentroCostos,SaveCentroCostos,DeleteCentroCo
 from .Asientos.views import EditAsientos,DeleteAsientos
 from .MedioPago.views import ListMedioPago,SaveMedioPago,EditMedioPago,DeleteMedioPago
 from .tipoAuxiliar.views import ListTipoAuxiliarView,SaveTipoAuxiliarView
-from .reports.views import RegistroVentas
+from .reports.views import RegistroVentas,RegistroCompras
 urlpatterns = [
     path(route="list/<str:document>/",view=ListAsientosView.as_view()),
     path(route="list/<str:document>/<str:mes>/<str:origen>/<str:compro>/",view=ListAsientosView.as_view()),
@@ -33,4 +33,5 @@ urlpatterns = [
     path(route="save/tipo-auxiliar/<str:document>/",view=SaveTipoAuxiliarView.as_view()),
     #REPORTES
     path(route="reporte/registro-ventas/<str:document>/",view=RegistroVentas.as_view()),
+    path(route="reporte/registro-compras/<str:document>/",view=RegistroCompras.as_view()),
 ]
